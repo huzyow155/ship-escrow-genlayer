@@ -333,6 +333,9 @@ def decide(criteria: list[dict], results: list[str], is_truncated: bool = False)
     return verdict
 
 
+_leader_extra = {}
+
+
 # -------------------------------------------------------------------------
 # ShipEscrow Intelligent Contract
 # -------------------------------------------------------------------------
@@ -680,6 +683,8 @@ class ShipEscrow(gl.Contract):
             # Cross-check head SHA from Source B
             patch_head_sha = parse_patch_head_sha(patch_text)
             if patch_head_sha and patch_head_sha != valid_head_sha:
+                _leader_extra["gate"] = "patch_head_sha_mismatch"
+                _leader_extra["criterion_results"] = []
                 return f"REVIEW|{evidence_sha16}"
 
             # Compute structural facts from diff
@@ -696,10 +701,14 @@ class ShipEscrow(gl.Contract):
                     if matched_any:
                         break
                 if not matched_any:
+                    _leader_extra["gate"] = "required_path_untouched"
+                    _leader_extra["criterion_results"] = []
                     return f"REFUND|{evidence_sha16}"
 
             # Hard Gate B: deleted test files
             if facts["test_files_deleted"]:
+                _leader_extra["gate"] = "test_deleted"
+                _leader_extra["criterion_results"] = []
                 return f"REVIEW|{evidence_sha16}"
 
             # Step 6: LLM evaluation if no hard gate fired
@@ -728,6 +737,8 @@ class ShipEscrow(gl.Contract):
             parsed_labels = parse_strict_llm_json(raw_model_out, len(b_criteria))
             verdict = decide(b_criteria, parsed_labels, is_truncated=facts["is_truncated"])
 
+            _leader_extra["gate"] = ""
+            _leader_extra["criterion_results"] = parsed_labels
             return f"{verdict}|{evidence_sha16}"
 
         consensus_output = gl.eq_principle.strict_eq(evaluate_consensus)
@@ -742,9 +753,9 @@ class ShipEscrow(gl.Contract):
         self.seen[seen_key] = sub_id
 
         # Determine if a gate fired for informational record
-        gate_fired = ""
-        # Check required path gate
-        # We can record the gate or verdict
+        gate_fired = _leader_extra.get("gate", "")
+        criterion_results = _leader_extra.get("criterion_results", [])
+
         if verdict == "REFUND":
             self._set_counter("stat_v_refund", self._get_counter("stat_v_refund") + 1)
         elif verdict == "REVIEW":
@@ -768,7 +779,7 @@ class ShipEscrow(gl.Contract):
             "head_sha": valid_head_sha,
             "verdict": verdict,
             "evidence_sha16": evidence_sha16,
-            "criterion_results": [],
+            "criterion_results": criterion_results,
             "gate": gate_fired,
             "attempt": str(attempts + 1),
             "seq": str(next_sub_seq),

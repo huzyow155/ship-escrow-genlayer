@@ -72,6 +72,15 @@ async function main() {
     );
   }
 
+  if (deployments.reputation?.contractAddress && deployments.reputation?.deployTxHash) {
+    results.shipReputation = await verifyContract(
+      'ShipReputation',
+      deployments.reputation.deployTxHash,
+      path.join(__dirname, '../contracts/ShipReputation.py'),
+      rpcUrl
+    );
+  }
+
   fs.writeFileSync(
     path.join(__dirname, 'deploy/verification_result.json'),
     JSON.stringify(results, null, 2)
