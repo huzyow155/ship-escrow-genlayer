@@ -28,9 +28,20 @@ def scan():
                 violations.append((rel_path, 1, 'env file', 'Found .env file'))
                 continue
                 
-            if rel_path.startswith('docs/evidence/'):
+            if rel_path.startswith('docs/evidence/') or rel_path == 'docs/VERIFICATION.md' or rel_path.endswith('.json'):
+                # In verification reports and JSON receipts, 64-hex strings are public transaction hashes or SHA256 hashes.
+                # We still scan for GitHub tokens and private key markers.
+                with open(path, 'r', encoding='utf-8', errors='ignore') as fp:
+                    for line_idx, line in enumerate(fp, 1):
+                        if 'PRIVATE_KEY' in line or 'BEGIN PRIVATE KEY' in line:
+                            violations.append((rel_path, line_idx, 'private key marker', line.strip()[:60]))
+                        for pat, name in SECRET_PATTERNS:
+                            if name != 'potential private key hex':
+                                m = re.search(pat, line)
+                                if m:
+                                    violations.append((rel_path, line_idx, name, line.strip()[:60]))
                 continue
-                
+
             with open(path, 'r', encoding='utf-8', errors='ignore') as fp:
                 for line_idx, line in enumerate(fp, 1):
                     if 'deployTxHash' in line or 'tx_hash' in line or 'transaction' in line.lower() or 'hash' in line.lower() or 'oid' in line.lower() or 'sha' in line.lower() or 'tx' in line.lower() or 'deploy' in line.lower():
