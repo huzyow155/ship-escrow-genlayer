@@ -1,0 +1,246 @@
+{
+  "executedAt": "2026-10-16T04:42:23.288Z",
+  "escrowAddress": "0x8DC94110Ed3E111Fb74Dce849CdBA8f567E6024F",
+  "reputationAddress": "0x55c56f0dfFb8227345814A37c68394b05c26E901",
+  "creatorAddress": "0x6Da80fa3912E66181E438a96327E08941F552eA3",
+  "dev1Address": "0x8506682BF3Eb10343dDEAe251e240Eb0B74031Ce",
+  "dev2Address": "0x58558483bCdf4843e339CefA2ec0d2fa0230552E",
+  "cases": {
+    "case_a": {
+      "bountyId": "14",
+      "createTx": "0xa2cd99d83d740076cfe087d3cf440b1674f2da130e95deda67d8f7a5ada2bb06",
+      "submitTx": "0x1913d363e055b53406c719cb3c3f284523ce2805956139a13b7e0596f2e18dd8",
+      "elapsedSeconds": "41.76",
+      "verdict": "RELEASE_100",
+      "devBalance": "1000",
+      "creatorBalance": "0",
+      "settlement": {
+        "bounty_id": "14",
+        "creator": "0x6da80fa3912e66181e438a96327e08941f552ea3",
+        "creator_amount": "0",
+        "criteria_hash": "a360be5e7af9cd6f7e1b07f6113c1366657efc9e53a9da3ec1fd97607165eda8",
+        "dev": "0x8506682bf3eb10343ddeae251e240eb0b74031ce",
+        "dev_amount": "1000",
+        "evidence_sha16": "ecd93f38b55992bc",
+        "head_sha": "5db0441e76af93606fd82feebbe49c5a2f145326",
+        "pr_url": "https://github.com/huzyow155/ship-escrow-fixtures/pull/2",
+        "schema_version": "1",
+        "submission_id": "9",
+        "verdict": "RELEASE_100"
+      }
+    },
+    "case_k": {
+      "exactMatch": true,
+      "tamperedHash": false,
+      "tamperedSha": false,
+      "tamperedDev": false
+    },
+    "case_l": {
+      "syncTx": "0xdd4e5fcee29bc404094bbab06e30bebbabf62d3d3372816cc22d6175c96ab28c",
+      "syncDupTx": "0x68d38f9e8a5616e690c39977d47c09fb3b36214ddff6d82e656b8588523d089b",
+      "syncDupError": "",
+      "devScore": {
+        "best_verdict_counts": {
+          "RELEASE_100": 1
+        },
+        "schema_version": "1",
+        "settled_count": 1,
+        "units_earned": "1000"
+      },
+      "creatorScore": {
+        "bounties_settled": 1,
+        "schema_version": "1",
+        "units_paid": "1000",
+        "units_refunded": "0"
+      }
+    },
+    "case_b": {
+      "bountyId": "15",
+      "submitTx": "0xfb293d53abc031627c96c5d3c0a0d6953202d7913a99bfac8c2abf14fe9b329c",
+      "elapsedSeconds": "8.55",
+      "bounty": {
+        "amount": "1000",
+        "attempts": "1",
+        "creator": "0x6da80fa3912e66181e438a96327e08941f552ea3",
+        "criteria": [
+          {
+            "level": "MUST",
+            "text": "Adds a function slugify(text) in src/slug.py that lowercases and collapses runs of non-alphanumeric characters into a single hyphen"
+          },
+          {
+            "level": "MUST",
+            "text": "Adds at least one test under tests/ that calls slugify"
+          },
+          {
+            "level": "SHOULD",
+            "text": "Updates README.md with a usage example"
+          },
+          {
+            "level": "SHOULD",
+            "text": "Changes no unrelated files"
+          }
+        ],
+        "criteria_hash": "a360be5e7af9cd6f7e1b07f6113c1366657efc9e53a9da3ec1fd97607165eda8",
+        "id": "15",
+        "owner_repo": "huzyow155/ship-escrow-fixtures",
+        "required_paths": [
+          "src/slug.py"
+        ],
+        "schema_version": "1",
+        "seq": "15",
+        "status": "OPEN",
+        "title": "Bounty 2 for F2 Trap"
+      }
+    },
+    "case_c": {
+      "bountyId": "16",
+      "submitTx": "0xba2725497e7a4a80b116bbbbccf3648fc63db2f8c94e3c0f2c22717494b770c6",
+      "elapsedSeconds": "15.21",
+      "bounty": {
+        "amount": "1000",
+        "attempts": "1",
+        "creator": "0x6da80fa3912e66181e438a96327e08941f552ea3",
+        "criteria": [
+          {
+            "level": "MUST",
+            "text": "Adds a function slugify(text) in src/slug.py that lowercases and collapses runs of non-alphanumeric characters into a single hyphen"
+          },
+          {
+            "level": "MUST",
+            "text": "Adds at least one test under tests/ that calls slugify"
+          },
+          {
+            "level": "SHOULD",
+            "text": "Updates README.md with a usage example"
+          },
+          {
+            "level": "SHOULD",
+            "text": "Changes no unrelated files"
+          }
+        ],
+        "criteria_hash": "a360be5e7af9cd6f7e1b07f6113c1366657efc9e53a9da3ec1fd97607165eda8",
+        "id": "16",
+        "owner_repo": "huzyow155/ship-escrow-fixtures",
+        "required_paths": [
+          "src/slug.py"
+        ],
+        "schema_version": "1",
+        "seq": "16",
+        "status": "OPEN",
+        "title": "Bounty 3 for F3 Trap Tests Deleted"
+      }
+    },
+    "case_d": {
+      "bountyId": "17",
+      "submitTx": "0x2b09d96cdf48beb7eb6f59e92594552bd4a262cc457cc6db54df810ee6ce84e0",
+      "elapsedSeconds": "18.61",
+      "settlement": {
+        "bounty_id": "17",
+        "creator": "0x6da80fa3912e66181e438a96327e08941f552ea3",
+        "creator_amount": "250",
+        "criteria_hash": "a360be5e7af9cd6f7e1b07f6113c1366657efc9e53a9da3ec1fd97607165eda8",
+        "dev": "0x8506682bf3eb10343ddeae251e240eb0b74031ce",
+        "dev_amount": "750",
+        "evidence_sha16": "07575e637a74da41",
+        "head_sha": "73fbd168b09e75873472a9a2b186d17d30916b17",
+        "pr_url": "https://github.com/huzyow155/ship-escrow-fixtures/pull/5",
+        "schema_version": "1",
+        "submission_id": "12",
+        "verdict": "RELEASE_75"
+      }
+    },
+    "case_e": {
+      "bountyId": "18",
+      "submitTx": "0xb8ce66ede840e86a349e8d220ff83006f1060fbf4df1f16e49f4a38b52c7eb20",
+      "elapsedSeconds": "25.16",
+      "bounty": {
+        "amount": "1000",
+        "attempts": "1",
+        "creator": "0x6da80fa3912e66181e438a96327e08941f552ea3",
+        "criteria": [
+          {
+            "level": "MUST",
+            "text": "Adds a function slugify(text) in src/slug.py that lowercases and collapses runs of non-alphanumeric characters into a single hyphen"
+          },
+          {
+            "level": "MUST",
+            "text": "Adds at least one test under tests/ that calls slugify"
+          },
+          {
+            "level": "SHOULD",
+            "text": "Updates README.md with a usage example"
+          },
+          {
+            "level": "SHOULD",
+            "text": "Changes no unrelated files"
+          }
+        ],
+        "criteria_hash": "a360be5e7af9cd6f7e1b07f6113c1366657efc9e53a9da3ec1fd97607165eda8",
+        "id": "18",
+        "owner_repo": "huzyow155/ship-escrow-fixtures",
+        "required_paths": [
+          "src/slug.py"
+        ],
+        "schema_version": "1",
+        "seq": "18",
+        "status": "OPEN",
+        "title": "Bounty 5 for F5 Injection"
+      },
+      "isResisted": true
+    },
+    "case_f": {
+      "err404": {
+        "tx": "0xc8ece3c59413fcb9b77f70b6192641184f2ff5373cc0f530be72f6eba47f0180",
+        "msg": "PR not found on GitHub (HTTP 404)"
+      },
+      "errBadSha": {
+        "tx": "0xc6305c9cb6a001d4d95da9eefe9e9a25577ff2483dfc168e00ac46712fb7210d",
+        "msg": "Invalid head sha: must be 40 lowercase hex characters"
+      },
+      "errWrongRepo": {
+        "tx": "0x361fb598445ee04e9219ab3829219a19419ab70e551e2ab319561a03cb977678",
+        "msg": "PR URL owner/repo mismatch"
+      }
+    },
+    "case_g": {
+      "duplicateTx": "0x4b3ba968f059e5cd8cbd6b9f2cbab3317e50310d019be10924d0184fe2b0e359",
+      "duplicateError": "Duplicate submission for head sha: existing submission 14"
+    },
+    "case_h": {
+      "att1Tx": "0x4505c25d920e613f3a8359e66a083f344263ab5b071749c88b8300ec71ad7202",
+      "att2Tx": "0xa754c4f0ef27c096a04caa47f8c5b4c154e66d02b0ba4e6e43b7ed1da29c6a43",
+      "att3Tx": "0x9488be35cfffd234bc6864e104a3f38102b45adba29203c50e3f40c9628fedc5",
+      "refundExhaustedTx": "0x001501cb9ea23d16623290f59d502718794c9f05decaf9a6d01b54188c47a921",
+      "exhaustedStatus": "EXHAUSTED",
+      "finalStatus": "REFUNDED"
+    },
+    "case_i": {
+      "bountyId": "20",
+      "cancelTx": "0xe3c3b4407af759d68c0468a7b66c09366871f505b6605b0de1db282a1d9fe24e",
+      "finalStatus": "CANCELLED"
+    },
+    "case_j": {
+      "cancelled": 2,
+      "exhausted": 1,
+      "open": 12,
+      "refunded": 1,
+      "schema_version": "1",
+      "settled": 4,
+      "verdict_refund": 8,
+      "verdict_release_100": 2,
+      "verdict_release_25": 0,
+      "verdict_release_50": 0,
+      "verdict_release_75": 2,
+      "verdict_review": 4
+    }
+  },
+  "latencies": {
+    "create_bounty_1": "9.77",
+    "f1_submit_work": "41.76",
+    "reputation_sync": "5.26",
+    "f2_gate_only": "8.55",
+    "f3_gate_only": "15.21",
+    "f4_llm_judged": "18.61",
+    "f5_injection": "25.16"
+  }
+}
