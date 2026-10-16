@@ -2,7 +2,9 @@
 
 > Status: **Preview**  
 > Target Network: **GenLayer Studionet** (Chain ID: 61999)  
-> License: MIT (Copyright 2026 Hyper, huzyow155)
+> License: MIT (Copyright 2026 Hyper, huzyow155)  
+> ShipEscrow Address: [`0x8DC94110Ed3E111Fb74Dce849CdBA8f567E6024F`](https://explorer-studio.genlayer.com/address/0x8DC94110Ed3E111Fb74Dce849CdBA8f567E6024F)  
+> ShipReputation Address: [`0x55c56f0dfFb8227345814A37c68394b05c26E901`](https://explorer-studio.genlayer.com/address/0x55c56f0dfFb8227345814A37c68394b05c26E901)  
 
 Ship Escrow is an Intelligent Contract on GenLayer that automates bounty escrow settlement for GitHub pull requests. It combines deterministic structural diff parsing, hard safety gates, and multi-validator LLM consensus to evaluate code against human-written acceptance criteria.
 
@@ -39,8 +41,8 @@ Consensus is reached when independent validators agree on a single canonical ver
 
 ## 4. Contract Architecture
 
-- **`ShipEscrow.py`**: The main bounty escrow contract handling bounty lifecycle (`create_bounty`, `submit_work`, `cancel_bounty`, `refund_exhausted`), hard gate checks, diff parsing, and balance bookkeeping.
-- **`ShipReputation.py`**: A cross-contract consumer contract that synchronizes settlement records via synchronous view calls to maintain public contributor and creator reputation scores.
+- **`ShipEscrow.py`**: The primary Intelligent Contract handling bounty lifecycle (`create_bounty`, `submit_work`, `cancel_bounty`, `refund_exhausted`), hard gate checks, diff parsing, and balance bookkeeping.
+- **`ShipReputation.py`**: A cross-contract consumer contract that synchronizes settlement records via synchronous view calls (`sync(bounty_id)`) to maintain public contributor and creator reputation scores.
 
 ---
 
@@ -63,6 +65,7 @@ Consensus is reached when independent validators agree on a single canonical ver
 │   ├── RUNTIME_NOTES.md       # Empirical runtime diagnostic findings
 │   ├── INTEGRATION.md         # Full frontend and SDK integration guide
 │   ├── VERIFICATION.md        # Source code verification and on-chain hashes
+│   ├── ERROR_CODES.md         # Categorized list of all UserError strings
 │   └── evidence/              # Raw transaction receipt captures
 ├── scripts/
 │   ├── deploy/                # Deployment and verification scripts
@@ -74,12 +77,33 @@ Consensus is reached when independent validators agree on a single canonical ver
 
 ---
 
-## 6. Testing & Deployment
+## 6. Step-by-Step: Deploy to Studionet
 
 ```bash
-# Run unit tests
+# 1. Install dependencies
+npm install
+
+# 2. Deploy ShipEscrow
+node scripts/deploy/deploy_ship_escrow.js
+
+# 3. Deploy ShipReputation (pointing to ShipEscrow)
+node scripts/deploy/deploy_reputation.js
+
+# 4. Verify source code on-chain (byte-for-byte exact match)
+node scripts/verify_source.js
+
+# 5. Run live evidence suite
+node scripts/deploy/run_live_evidence.js
+```
+
+---
+
+## 7. Testing & Verification
+
+```bash
+# Run all unit test suites (Layer 1 pure, Layer 2 mocked, Layer 3 consensus, Star Test)
 python -m unittest discover tests
 
-# Run security and compliance scans
+# Run security, ASCII compliance, and honest phrasing scanners
 npm run check
 ```
