@@ -30,8 +30,7 @@ def scan():
                 
             with open(path, 'r', encoding='utf-8', errors='ignore') as fp:
                 for line_idx, line in enumerate(fp, 1):
-                    # Skip known tx hashes in deployment or doc files
-                    if 'deployTxHash' in line or 'tx_hash' in line or 'transaction' in line.lower() or 'hash' in line.lower() or 'oid' in line.lower() or 'sha' in line.lower():
+                    if 'deployTxHash' in line or 'tx_hash' in line or 'transaction' in line.lower() or 'hash' in line.lower() or 'oid' in line.lower() or 'sha' in line.lower() or 'tx' in line.lower() or 'deploy' in line.lower():
                         continue
                     for pat, name in SECRET_PATTERNS:
                         m = re.search(pat, line)
