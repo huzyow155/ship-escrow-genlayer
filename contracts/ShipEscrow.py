@@ -175,15 +175,31 @@ def diff_facts(diff_text: str, cap: int = 14000) -> dict:
 
     for line in lines:
         if line.startswith("diff --git "):
-            parts = line.split()
-            if len(parts) >= 4:
-                b_path = parts[3]
-                if b_path.startswith("b/"):
-                    current_file = b_path[2:]
+            rem = line[len("diff --git "):].strip()
+            if rem.startswith('"') and '" "' in rem:
+                qparts = rem.split('" "')
+                b_part = qparts[1].rstrip('"')
+                current_file = b_part[2:] if b_part.startswith("b/") else b_part
+            else:
+                b_idx = rem.rfind(" b/")
+                if b_idx != -1:
+                    current_file = rem[b_idx + 3:]
                 else:
-                    current_file = b_path
+                    parts = rem.split()
+                    current_file = parts[-1][2:] if parts and parts[-1].startswith("b/") else (parts[-1] if parts else "")
+            if current_file:
                 changed_files.add(current_file)
-                is_deleted_mode = False
+            is_deleted_mode = False
+        elif line.startswith("+++ b/"):
+            b_path = line[6:].strip().strip('"')
+            if b_path and b_path != "/dev/null":
+                current_file = b_path
+                changed_files.add(current_file)
+        elif line.startswith("--- a/"):
+            a_path = line[6:].strip().strip('"')
+            if a_path and a_path != "/dev/null" and not current_file:
+                current_file = a_path
+                changed_files.add(current_file)
         elif line.startswith("deleted file mode "):
             is_deleted_mode = True
             if current_file:
@@ -690,7 +706,13 @@ class ShipEscrow(gl.Contract):
             # Compute structural facts from diff
             facts = diff_facts(diff_text, cap=14000)
 
-            # Hard Gate A: required paths
+            # Hard Gate: deleted test files (malicious CI gaming check)
+            if facts["test_files_deleted"]:
+                _leader_extra["gate"] = "test_deleted"
+                _leader_extra["criterion_results"] = []
+                return f"REVIEW|{evidence_sha16}"
+
+            # Hard Gate: required paths
             if b_required_paths:
                 matched_any = False
                 for req in b_required_paths:
@@ -704,12 +726,6 @@ class ShipEscrow(gl.Contract):
                     _leader_extra["gate"] = "required_path_untouched"
                     _leader_extra["criterion_results"] = []
                     return f"REFUND|{evidence_sha16}"
-
-            # Hard Gate B: deleted test files
-            if facts["test_files_deleted"]:
-                _leader_extra["gate"] = "test_deleted"
-                _leader_extra["criterion_results"] = []
-                return f"REVIEW|{evidence_sha16}"
 
             # Step 6: LLM evaluation if no hard gate fired
             prompt_obj = {
