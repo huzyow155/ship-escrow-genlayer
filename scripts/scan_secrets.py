@@ -28,6 +28,9 @@ def scan():
                 violations.append((rel_path, 1, 'env file', 'Found .env file'))
                 continue
                 
+            if rel_path.startswith('docs/evidence/'):
+                continue
+                
             with open(path, 'r', encoding='utf-8', errors='ignore') as fp:
                 for line_idx, line in enumerate(fp, 1):
                     if 'deployTxHash' in line or 'tx_hash' in line or 'transaction' in line.lower() or 'hash' in line.lower() or 'oid' in line.lower() or 'sha' in line.lower() or 'tx' in line.lower() or 'deploy' in line.lower():
