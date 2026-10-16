@@ -1,0 +1,27 @@
+{
+  "name": "ship-escrow-genlayer",
+  "version": "1.0.0",
+  "description": "Ship Escrow Intelligent Contract on GenLayer: decentralized bounty escrow and deterministic PR diff evaluation",
+  "type": "commonjs",
+  "scripts": {
+    "test": "python -m unittest discover tests",
+    "scan:ascii": "python scripts/scan_ascii.py",
+    "scan:banned": "python scripts/scan_banned_words.py",
+    "scan:secrets": "python scripts/scan_secrets.py",
+    "verify:source": "node scripts/verify_source.js",
+    "check": "npm run test && npm run scan:ascii && npm run scan:banned && npm run scan:secrets"
+  },
+  "keywords": [
+    "genlayer",
+    "intelligent-contracts",
+    "escrow",
+    "bounty",
+    "code-review",
+    "reputation"
+  ],
+  "author": "Hyper (huzyow155)",
+  "license": "MIT",
+  "dependencies": {
+    "genlayer-js": "^1.1.8"
+  }
+}

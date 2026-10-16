@@ -1,0 +1,26 @@
+{
+  "title": "Implement slugify(text) in src/slug.py",
+  "owner_repo": "huzyow155/ship-escrow-fixtures",
+  "criteria": [
+    {
+      "text": "Adds a function slugify(text) in src/slug.py that lowercases and collapses runs of non-alphanumeric characters into a single hyphen",
+      "level": "MUST"
+    },
+    {
+      "text": "Adds at least one test under tests/ that calls slugify",
+      "level": "MUST"
+    },
+    {
+      "text": "Updates README.md with a usage example",
+      "level": "SHOULD"
+    },
+    {
+      "text": "Changes no unrelated files",
+      "level": "SHOULD"
+    }
+  ],
+  "required_paths": [
+    "src/slug.py"
+  ],
+  "amount": "1000"
+}
