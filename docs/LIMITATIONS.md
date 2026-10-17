@@ -19,7 +19,7 @@ Ship Escrow relies on reading public PR artifacts via HTTP from GitHub (`github.
 - This ensures network outages never unfairly burn developer attempt counts or trigger unintended forfeits.
 
 ### 4. Accounting Ledger, Not Token Custody
-Ship Escrow implements an internal credit accounting ledger. Amounts are tracked as balance credits (`TreeMap[str, str]`) on Studionet. No actual ERC-20 tokens or native GEN coins are locked in cryptographic custody or debited from external wallets upon creation. Payouts and refunds credit balances within the contract state.
+Ship Escrow implements an internal credit accounting ledger. Amounts are tracked as balance credits (`TreeMap[str, str]`) on Studionet. No actual ERC-20 tokens or native GEN coins are held in locked custody or debited from external wallets upon creation. Payouts and refunds credit balances within the contract state.
 
 ### 5. No Time Dimension (No Deadlines)
 GenVM contracts do not have a trusted native clock or timestamp oracle on Studionet. Consequently, Ship Escrow does not enforce expiry timestamps, submission deadlines, or timeout-based auto-refunds. Bounty creators retain the right to cancel an open bounty if no valid submission has settled it.

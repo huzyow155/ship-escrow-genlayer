@@ -22,3 +22,43 @@ This document compares the pre-registered fixture predictions in [`fixtures/EXPE
 - **Gate Evaluation**: On-chain submission record `13` shows `gate: ""` (empty string), confirming that **no deterministic gate fired**. The required path `src/slug.py` was touched, and no test files were deleted.
 - **Decision Source**: The verdict `REFUND` was computed by the deterministic scoring function `decide()` from the LLM's label outputs, which evaluated the unfulfilled MUST criteria (missing slugify implementation and missing tests) as `NO`. Under the decision rules, any MUST criterion evaluated as `NO` triggers an immediate `REFUND`.
 - **Raw Model Labels**: **labels not stored** (the GenLayer consensus rule compares only `<VERDICT>|<diff_sha16>` via `gl.eq_principle.strict_eq`; internal intermediate LLM label lists are not persisted to persistent contract storage).
+
+---
+
+## 3. Case H: Bounty Exhaustion & Refund Sequence
+
+Case H proves the 3-attempt lifecycle boundary where repeated failing submissions transition an open bounty to `EXHAUSTED`, allowing the creator to reclaim all escrowed credits via `refund_exhausted`.
+
+The actual sequence of attempts on Bounty `19` and their verified receipt calldata are:
+
+1. **Attempt 1**: PR #3 (`3de6b568ca38717a2d6a62a14aa581c0bcc4e28b`)
+   - **Transaction Hash**: `0x4505c25d920e613f3a8359e66a083f344263ab5b071749c88b8300ec71ad7202`
+   - **Saved Receipt**: `docs/evidence/case_h_att1_receipt.json`
+   - **Receipt Calldata**:
+     ```json
+     {"args":["19","https://github.com/huzyow155/ship-escrow-fixtures/pull/3","3de6b568ca38717a2d6a62a14aa581c0bcc4e28b",]"method":"submit_work"}
+     ```
+   - **Outcome**: `REFUND` (fast gate exit: required path untouched). Attempts incremented to 1.
+
+2. **Attempt 2**: PR #4 (`aa9a2af9ccb0fa6d13b030a8f176c5235d15a982`)
+   - **Transaction Hash**: `0xa754c4f0ef27c096a04caa47f8c5b4c154e66d02b0ba4e6e43b7ed1da29c6a43`
+   - **Saved Receipt**: `docs/evidence/case_h_att2_receipt.json`
+   - **Receipt Calldata**:
+     ```json
+     {"args":["19","https://github.com/huzyow155/ship-escrow-fixtures/pull/4","aa9a2af9ccb0fa6d13b030a8f176c5235d15a982",]"method":"submit_work"}
+     ```
+   - **Outcome**: `REVIEW` (gate: test deleted). Attempts incremented to 2.
+
+3. **Attempt 3**: PR #6 (`b9e099153ea3dd002fc3584a8078d68e974fa427`)
+   - **Transaction Hash**: `0x9488be35cfffd234bc6864e104a3f38102b45adba29203c50e3f40c9628fedc5`
+   - **Saved Receipt**: `docs/evidence/case_h_att3_receipt.json`
+   - **Receipt Calldata**:
+     ```json
+     {"args":["19","https://github.com/huzyow155/ship-escrow-fixtures/pull/6","b9e099153ea3dd002fc3584a8078d68e974fa427",]"method":"submit_work"}
+     ```
+   - **Outcome**: `REFUND` (LLM prompt injection resisted). Attempts incremented to 3; bounty status transitions to `EXHAUSTED`.
+
+4. **Refund Exhausted Execution**: `refund_exhausted("19")`
+   - **Transaction Hash**: `0x001501cb9ea23d16623290f59d502718794c9f05decaf9a6d01b54188c47a921`
+   - **Saved Receipt**: `docs/evidence/case_h_refund_exhausted_receipt.json`
+   - **Outcome**: `SUCCESS` (Bounty transitions to `REFUNDED`; 1000 credits returned to creator).

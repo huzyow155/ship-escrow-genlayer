@@ -10,8 +10,8 @@ This guide describes how frontend clients and external dApps interact with the d
 - **Chain ID**: `61999`
 - **RPC Endpoint**: `https://studio.genlayer.com/api`
 - **Explorer Base**: `https://explorer-studio.genlayer.com`
-- **ShipEscrow Address**: `0xA80143A8Bffa445bDc1EBbee5Db56670f9C7295C`
-- **ShipReputation Address**: `0xfB4a1092375d33bcE55bc093383EF885ed337D04`
+- **ShipEscrow Address**: `0x8DC94110Ed3E111Fb74Dce849CdBA8f567E6024F`
+- **ShipReputation Address**: `0x55c56f0dfFb8227345814A37c68394b05c26E901`
 
 ---
 
