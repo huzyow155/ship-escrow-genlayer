@@ -86,7 +86,7 @@ async function sendWrite(client, contractAddress, functionName, args) {
 
 async function main() {
   console.log("=============================================================");
-  console.log("MILESTONE 4 & 5: LIVE EVIDENCE VALIDATION ON STUDIONET");
+  console.log("MILESTONE 4 & 5: STUDIONET EVIDENCE VALIDATION");
   console.log("=============================================================");
 
   const deployments = JSON.parse(
@@ -203,15 +203,15 @@ async function main() {
   });
 
   console.log("  is_settled_for(exact matching tuple):", isSettledTrue);
-  console.log("  is_settled_for(tampered hash):", isSettledBadHash);
-  console.log("  is_settled_for(tampered sha):", isSettledBadSha);
-  console.log("  is_settled_for(tampered dev):", isSettledBadDev);
+  console.log("  is_settled_for(mutated hash):", isSettledBadHash);
+  console.log("  is_settled_for(mutated sha):", isSettledBadSha);
+  console.log("  is_settled_for(mutated dev):", isSettledBadDev);
 
   liveEvidence.cases.case_k = {
     exactMatch: isSettledTrue,
-    tamperedHash: isSettledBadHash,
-    tamperedSha: isSettledBadSha,
-    tamperedDev: isSettledBadDev,
+    mutatedHash: isSettledBadHash,
+    mutatedSha: isSettledBadSha,
+    mutatedDev: isSettledBadDev,
   };
 
   // -------------------------------------------------------------------------
@@ -472,10 +472,10 @@ async function main() {
     path.join(evidenceDir, 'live_evidence.json'),
     JSON.stringify(liveEvidence, null, 2)
   );
-  console.log("\nSaved live evidence to scripts/deploy/live_evidence.json and docs/evidence/live_evidence.json");
+  console.log("\nSaved studionet evidence to scripts/deploy/live_evidence.json and docs/evidence/live_evidence.json");
 }
 
 main().catch(err => {
-  console.error("Live evidence execution failed:", err);
+  console.error("Studionet evidence execution failed:", err);
   process.exit(1);
 });

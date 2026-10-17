@@ -5,8 +5,22 @@
 > License: MIT (Copyright 2026 Hyper, huzyow155)  
 > ShipEscrow Address: [`0x8DC94110Ed3E111Fb74Dce849CdBA8f567E6024F`](https://explorer-studio.genlayer.com/address/0x8DC94110Ed3E111Fb74Dce849CdBA8f567E6024F)  
 > ShipReputation Address: [`0x55c56f0dfFb8227345814A37c68394b05c26E901`](https://explorer-studio.genlayer.com/address/0x55c56f0dfFb8227345814A37c68394b05c26E901)  
+> Web app (Preview): https://ship-escrow-app.vercel.app  
+> App repository: https://github.com/huzyow155/ship-escrow-app  
+> Fixtures: https://github.com/huzyow155/ship-escrow-fixtures  
 
 Ship Escrow is an Intelligent Contract on GenLayer that automates bounty escrow settlement for GitHub pull requests. It combines deterministic structural diff parsing, hard safety gates, and multi-validator LLM consensus to evaluate code against human-written acceptance criteria.
+
+---
+
+## How to try it in 2 minutes
+
+No wallet is needed to read:
+1. Open the web app: https://ship-escrow-app.vercel.app
+2. Inspect Bounty 14 (settled, `RELEASE_100` verdict).
+3. Scroll to the **Settlement Verification Tool**: click **Verify Settlement On-Chain** to see `✓ VERIFIED: TRUE`.
+4. Click **Mutate 1 Char** and verify it returns `✗ MISMATCH: FALSE`.
+5. Open the **Evidence** page to review all pre-registered fixture predictions against on-chain transaction receipts.
 
 ---
 
@@ -92,7 +106,7 @@ node scripts/deploy/deploy_reputation.js
 # 4. Verify source code on-chain (byte-for-byte exact match)
 node scripts/verify_source.js
 
-# 5. Run live evidence suite
+# 5. Run the studionet evidence suite
 node scripts/deploy/run_live_evidence.js
 ```
 

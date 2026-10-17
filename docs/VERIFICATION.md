@@ -5,7 +5,7 @@
 > RPC: `https://studio.genlayer.com/api`  
 > Explorer Base: `https://explorer-studio.genlayer.com`  
 
-This document details the on-chain addresses, deployment transactions, source code hash integrity, and live execution evidence for the Ship Escrow and Ship Reputation Intelligent Contracts.
+This document details the on-chain addresses, deployment transactions, source code hash integrity, and studionet execution evidence for the Ship Escrow and Ship Reputation Intelligent Contracts.
 
 ---
 

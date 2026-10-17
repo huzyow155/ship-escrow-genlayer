@@ -5,6 +5,7 @@ import sys
 BANNED_PATTERNS = [
     (r'\bcryptographic\s+proof\b', 'cryptographic proof'),
     (r'\btamper-?proof\b', 'tamper-proof'),
+    (r'\btampered\b', 'tampered'),
     (r'\bbytecode\b', 'bytecode'),
     (r'\btestnet\b', 'testnet'),
     (r'\bunanimous(ly)?\b', 'unanimous'),
@@ -35,9 +36,9 @@ def scan():
                         if 'status_name' not in line and 'FINALIZED' not in line:
                             violations.append((rel_path, line_idx, 'finalized', line.strip()))
 
-                    # Check 'live' in docs/markdown (must write studionet or Preview instead of live testnet/live network)
-                    if f.endswith('.md') and re.search(r'\blive\s+(network|contract|mainnet|testnet|system|mode|environment)\b', line, re.IGNORECASE):
-                        violations.append((rel_path, line_idx, 'live network/system', line.strip()))
+                    # Check 'live' as a status word or descriptor
+                    if re.search(r'\b(status[:\s]+[*_`"\']*\s*live|is\s+live|currently\s+live|live\s+(site|network|contract|mainnet|testnet|system|mode|environment|execution|evidence|timer|script))\b', line, re.IGNORECASE):
+                        violations.append((rel_path, line_idx, 'live as status/descriptor', line.strip()))
 
                     for pat, name in BANNED_PATTERNS:
                         m = re.search(pat, line, re.IGNORECASE)
