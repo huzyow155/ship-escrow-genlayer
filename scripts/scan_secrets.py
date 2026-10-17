@@ -28,7 +28,7 @@ def scan():
                 violations.append((rel_path, 1, 'env file', 'Found .env file'))
                 continue
                 
-            if rel_path.startswith('docs/evidence/') or rel_path == 'docs/VERIFICATION.md' or rel_path.endswith('.json'):
+            if rel_path.startswith('docs/evidence/') or rel_path in ('docs/VERIFICATION.md', 'docs/EXPECTED_VS_ACTUAL.md') or rel_path.endswith('.json'):
                 # In verification reports and JSON receipts, 64-hex strings are public transaction hashes or SHA256 hashes.
                 # We still scan for GitHub tokens and private key markers.
                 with open(path, 'r', encoding='utf-8', errors='ignore') as fp:
