@@ -1,15 +1,31 @@
-# Ship Escrow Intelligent Contract
+# Ship Escrow Intelligent Contract (V2)
+
+[![CI](https://github.com/huzyow155/ship-escrow-genlayer/actions/workflows/ci.yml/badge.svg)](https://github.com/huzyow155/ship-escrow-genlayer/actions/workflows/ci.yml)
 
 > Status: **Preview**  
 > Target Network: **GenLayer Studionet** (Chain ID: 61999)  
 > License: MIT (Copyright 2026 Hyper, huzyow155)  
-> ShipEscrow Address: [`0x8DC94110Ed3E111Fb74Dce849CdBA8f567E6024F`](https://explorer-studio.genlayer.com/address/0x8DC94110Ed3E111Fb74Dce849CdBA8f567E6024F)  
-> ShipReputation Address: [`0x55c56f0dfFb8227345814A37c68394b05c26E901`](https://explorer-studio.genlayer.com/address/0x55c56f0dfFb8227345814A37c68394b05c26E901)  
-> Web app (Preview): https://ship-escrow-app.vercel.app  
-> App repository: https://github.com/huzyow155/ship-escrow-app  
-> Fixtures: https://github.com/huzyow155/ship-escrow-fixtures  
+>
+> **Active V2 Contracts**:
+> - ShipEscrowV2: [`0xAD5579496E66a3ac5C79c27C9Bd8784Aae7747Cd`](https://explorer-studio.genlayer.com/address/0xAD5579496E66a3ac5C79c27C9Bd8784Aae7747Cd)  
+> - ShipReputationV2: [`0x88F9Bb007266f4e35Ad50a6a244117EC61BC446F`](https://explorer-studio.genlayer.com/address/0x88F9Bb007266f4e35Ad50a6a244117EC61BC446F)  
+>
+> **Superseded V1 Contracts (Audit only)**:
+> - ShipEscrowV1: [`0x8DC94110Ed3E111Fb74Dce849CdBA8f567E6024F`](https://explorer-studio.genlayer.com/address/0x8DC94110Ed3E111Fb74Dce849CdBA8f567E6024F)  
+> - ShipReputationV1: [`0x55c56f0dfFb8227345814A37c68394b05c26E901`](https://explorer-studio.genlayer.com/address/0x55c56f0dfFb8227345814A37c68394b05c26E901)  
+>
+> **External Links**:
+> - Web app (Preview): https://ship-escrow-app.vercel.app  
+> - App repository: https://github.com/huzyow155/ship-escrow-app  
+> - Fixtures repository: https://github.com/huzyow155/ship-escrow-fixtures  
 
-Ship Escrow is an Intelligent Contract on GenLayer that automates bounty escrow settlement for GitHub pull requests. It combines deterministic structural diff parsing, hard safety gates, and multi-validator LLM consensus to evaluate code against human-written acceptance criteria.
+> [!IMPORTANT]
+> **DISCLAIMER: SIMULATED CREDITS, NOT CUSTODY-BACKED TOKENS**  
+> Credits in Ship Escrow V2 are maintained on an internal, conserved accounting ledger with auditable deposit, release, and refund invariants (`total_balances + total_escrowed == total_minted`). They do not represent custody-backed tokens, cryptocurrencies, or monetary value.
+
+---
+
+Ship Escrow is an Intelligent Contract on GenLayer that automates bounty escrow settlement for GitHub pull requests. It combines deterministic structural diff parsing, hard safety gates, cryptographic packet commitments, and multi-validator LLM consensus to evaluate code against human-written acceptance criteria.
 
 ---
 
@@ -17,46 +33,50 @@ Ship Escrow is an Intelligent Contract on GenLayer that automates bounty escrow 
 
 No wallet is needed to read:
 1. Open the web app: https://ship-escrow-app.vercel.app
-2. Inspect Bounty 14 (settled, `RELEASE_100` verdict).
-3. Scroll to the **Settlement Verification Tool**: click **Verify Settlement On-Chain** to see `✓ VERIFIED: TRUE`.
-4. Click **Mutate 1 Char** and verify it returns `✗ MISMATCH: FALSE`.
+2. Inspect settled bounties and review on-chain verdict stamps (`RELEASE_100`, `RELEASE_75`, `REFUND`, `REVIEW`).
+3. Scroll to the **Settlement Verification Tool**: click **Verify Settlement On-Chain** to confirm settlement parameters match on-chain facts.
+4. Click **Mutate 1 Char** and verify it returns false when criteria or head SHA are altered.
 5. Open the **Evidence** page to review all pre-registered fixture predictions against on-chain transaction receipts.
 
 ---
 
-## 1. Problem Statement
+## 1. Problem Statement & V2 Steward Improvements
 
-Open-source bounty programs traditionally suffer from two failure modes:
-1. **Maintainer Centralization & Delay**: Payouts require human maintainers to manually evaluate PRs. Maintainers can delay indefinitely, arbitrarily reject valid work, or merge PRs without releasing funds.
-2. **Naive Automation Vulnerability**: Automated bots that rely solely on "green CI" or keyword matching ("fixes #1") are easily gamed by contributors who delete failing tests or modify only documentation without implementing requested features.
+Open-source bounty programs traditionally suffer from maintainer delays, arbitrary rejections, or naive bot automation that gets gamed by deleting tests or touching unrelated files.
+
+In V2, Ship Escrow addresses all 5 steward audit findings:
+1. **Conserved Credit Ledger**: Enforces `total_balances + total_escrowed == total_minted` invariant across `claim_demo_credits`, `create_bounty`, `submit_work`, `cancel_bounty`, and `refund_exhausted`.
+2. **Authenticated, Immutable Revision**: Evaluates pull requests strictly by immutable `compare/<base_sha>...<head_sha>.diff` verified against the authoritative GitHub REST API `head.sha`, rejecting draft, closed-unmerged, or cross-repo pull requests before state mutations.
+3. **Attribution Binding & Anti-Spam**: Requires explicit PR body marker `ship-escrow-wallet: 0x<address>` matching the caller, debits a refundable submission bond (50 credits), and enforces attempt caps (2 per developer, 6 per bounty).
+4. **Strict Diff Parsing & Hard Gates**: Requires touching EVERY mandatory prefix (at path boundaries), isolates test file deletions per file header (no broad keyword heuristics), and forces `REVIEW` on truncated diffs.
+5. **Canonical Consensus Packet Commitments**: Consensus is reached on `verdict|payout_pct|packet_sha256` committing to all facts, metadata, diff SHA-256, and criteria hash, with parameter-bound `is_settled_for` and synchronous reputation tracking.
 
 ---
 
 ## 2. Why GenLayer
 
-Ship Escrow requires two capabilities impossible on traditional EVM chains:
-- **Direct Web Access**: Validators independently fetch public GitHub pull request diffs and commit metadata over HTTPS.
+Ship Escrow leverages unique GenLayer capabilities:
+- **Direct Web Access**: Validators independently fetch public GitHub pull request metadata and immutable diffs over HTTPS.
 - **Natural Language & Semantic Judgment**: Validators interpret whether code changes fulfill written acceptance criteria using an LLM.
-
-Consensus is reached when independent validators agree on a single canonical verdict string and evidence hash (`<VERDICT>|<diff_sha16>`) via `gl.eq_principle.strict_eq`.
+- **Equivalence Principle**: Multi-validator consensus validates strict equality of the assessment packet digest (`gl.eq_principle.strict_eq`).
 
 ---
 
-## 3. Non-Goals
+## 3. Non-Goals & Trust Boundaries
 
 - **No Token Custody**: Studionet does not provide external token custody. Balances are tracked as credit accounts in an on-contract ledger.
 - **No Dynamic Code Execution**: Ship Escrow does not run compilers, execute tests, or execute arbitrary code. It judges textual diffs and metadata.
 - **Public GitHub Repositories Only**: Private repositories, GitLab, and other code hosts are out of scope.
-- **Majority Consensus, Not Absolute Certainty**: Borderline code changes may result in split votes or `REVIEW` verdicts.
-- **No Native Deadlines**: Due to lack of a trusted on-chain clock in GenVM, time-based expirations are not enforced.
-- **Criteria Dependent**: Evaluation quality is strictly bound to the quality and precision of the creator's written criteria.
+- **Same-Repository Pull Requests**: Required for immutable compare-by-SHA diff availability.
+- **No Native Deadlines**: Due to lack of a trusted on-chain clock in GenVM, time-based expirations are not enforced. Cancel is allowed only when `attempts == 0`.
 
 ---
 
 ## 4. Contract Architecture
 
-- **`ShipEscrow.py`**: The primary Intelligent Contract handling bounty lifecycle (`create_bounty`, `submit_work`, `cancel_bounty`, `refund_exhausted`), hard gate checks, diff parsing, and balance bookkeeping.
-- **`ShipReputation.py`**: A cross-contract consumer contract that synchronizes settlement records via synchronous view calls (`sync(bounty_id)`) to maintain public contributor and creator reputation scores.
+- **`ShipEscrowV2.py`**: The primary Intelligent Contract handling bounty lifecycle, conserved credit balances, attempt caps, submission bonds, diff parsing, and packet commitments.
+- **`ShipReputationV2.py`**: Cross-contract reputation consumer contract synchronizing verified settlements via `is_settled_for` with parameter-bound threshold checks.
+- **`archive/v1/`**: Superseded V1 contracts preserved for historical audit.
 
 ---
 
@@ -65,59 +85,32 @@ Consensus is reached when independent validators agree on a single canonical ver
 ```
 .
 ├── contracts/
-│   ├── ShipEscrow.py          # Primary Intelligent Contract
-│   ├── ShipReputation.py      # Reputation Consumer Contract
+│   ├── ShipEscrowV2.py        # Primary Intelligent Contract (V2)
+│   ├── ShipReputationV2.py    # Reputation Consumer Contract (V2)
 │   └── Probe.py               # Runtime diagnostic probe
+├── archive/
+│   └── v1/                    # Superseded V1 contracts (audit only)
 ├── fixtures/
-│   ├── bounty.json            # Reference bounty definition
-│   ├── EXPECTED.md            # Pre-registered fixture predictions
-│   └── diffs/                 # Raw PR diffs for offline evaluation
+│   ├── fixtures_v2.json       # F1-F12 test fixtures catalog
+│   ├── EXPECTED.md            # Pre-registered predictions
+│   └── diffs_v2/              # Immutable recorded diff files
 ├── docs/
-│   ├── PRIOR_ART.md           # Prior art comparison and honest differences
-│   ├── DESIGN.md              # Consensus primitive & architectural design
-│   ├── LIMITATIONS.md         # Comprehensive list of honest limitations
-│   ├── RUNTIME_NOTES.md       # Empirical runtime diagnostic findings
+│   ├── PROBE_DECISIONS.md     # Studionet empirical runtime probe findings
+│   ├── EXPECTED.md            # Pre-registered fixture outcomes
+│   ├── DESIGN.md              # V2 architecture & packet commitment design
+│   ├── ERROR_CODES.md         # Pinned error catalog
+│   ├── LIMITATIONS.md         # Honest limitations & trust boundaries
 │   ├── INTEGRATION.md         # Full frontend and SDK integration guide
-│   ├── VERIFICATION.md        # Source code verification and on-chain hashes
-│   ├── ERROR_CODES.md         # Categorized list of all UserError strings
-│   └── evidence/              # Raw transaction receipt captures
-├── scripts/
-│   ├── deploy/                # Deployment and verification scripts
-│   ├── scan_ascii.py          # Enforces pure ASCII contract files
-│   ├── scan_banned_words.py   # Enforces honest phrasing standards
-│   └── scan_secrets.py        # Prevents credential leaks
-└── tests/                     # Multi-layered test suites
-```
-
----
-
-## 6. Step-by-Step: Deploy to Studionet
-
-```bash
-# 1. Install dependencies
-npm install
-
-# 2. Deploy ShipEscrow
-node scripts/deploy/deploy_ship_escrow.js
-
-# 3. Deploy ShipReputation (pointing to ShipEscrow)
-node scripts/deploy/deploy_reputation.js
-
-# 4. Verify source code on-chain (byte-for-byte exact match)
-node scripts/verify_source.js
-
-# 5. Run the studionet evidence suite
-node scripts/deploy/run_live_evidence.js
-```
-
----
-
-## 7. Testing & Verification
-
-```bash
-# Run all unit test suites (Layer 1 pure, Layer 2 mocked, Layer 3 consensus, Star Test)
-python -m unittest discover tests
-
-# Run security, ASCII compliance, and honest phrasing scanners
-npm run check
+│   ├── VERIFICATION.md        # On-chain test results and receipts
+│   └── ADDRESS_REGISTRY.md    # Active V2 and superseded V1 contracts
+├── tests/
+│   ├── test_layer1_pure.py    # Layer 1: Pure functions & parser parity
+│   ├── test_layer2_ledger_fuzz.py # Layer 2: 5000-iteration ledger fuzz & attacks
+│   ├── test_layer3_mocked_contract.py # Layer 3: End-to-end pipeline simulation
+│   └── direct/                # Official Direct Mode genlayer-test suite
+└── scripts/
+    ├── deploy/                # Deploy & verification scripts
+    ├── run_robustness_batches.js # 10-run robustness evaluation batches
+    ├── check_finalization_v2.js  # Finalization status tracker
+    └── v2_report.mjs          # Verification report generator
 ```
