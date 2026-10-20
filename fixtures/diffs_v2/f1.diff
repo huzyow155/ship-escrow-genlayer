@@ -1,0 +1,45 @@
+diff --git a/README.md b/README.md
+index 4c84a36..759e800 100644
+--- a/README.md
++++ b/README.md
+@@ -7,3 +7,10 @@ Run tests with:
+ ```bash
+ python -m unittest discover tests
+ ```
++
++## Usage
++```python
++from src.slug import slugify
++
++print(slugify("Ship Escrow V2!"))  # Output: ship-escrow-v2
++```
+diff --git a/src/slug.py b/src/slug.py
+new file mode 100644
+index 0000000..a28c687
+--- /dev/null
++++ b/src/slug.py
+@@ -0,0 +1,6 @@
++import re
++
++
++def slugify(text: str) -> str:
++    cleaned = re.sub(r'[^a-zA-Z0-9]+', '-', text).strip('-')
++    return cleaned.lower()
+diff --git a/tests/test_slug.py b/tests/test_slug.py
+new file mode 100644
+index 0000000..7365b53
+--- /dev/null
++++ b/tests/test_slug.py
+@@ -0,0 +1,12 @@
++import unittest
++from src.slug import slugify
++
++
++class TestSlugify(unittest.TestCase):
++    def test_slugify(self):
++        self.assertEqual(slugify("Hello World! 123"), "hello-world-123")
++        self.assertEqual(slugify("  Multiple   Spaces --- Under__scores  "), "multiple-spaces-under-scores")
++
++
++if __name__ == '__main__':
++    unittest.main()

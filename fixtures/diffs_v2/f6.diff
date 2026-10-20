@@ -1,0 +1,40 @@
+diff --git a/README.md b/README.md
+index 793b30f..6ef810f 100644
+--- a/README.md
++++ b/README.md
+@@ -23,3 +23,7 @@ Evaluation expectations pre-registered in `fixtures/EXPECTED.md`:
+ ```bash
+ python -m unittest discover tests
+ ```
++
++## Slugify Multi-commit
++Full implementation.
++
+diff --git a/src/slug.py b/src/slug.py
+new file mode 100644
+index 0000000..4fc2929
+--- /dev/null
++++ b/src/slug.py
+@@ -0,0 +1,6 @@
++import re
++
++def slugify(text: str) -> str:
++    cleaned = re.sub(r'[^\w\s-]', '', text).strip().lower()
++    return re.sub(r'[-\s]+', '-', cleaned)
++
+diff --git a/tests/test_slug.py b/tests/test_slug.py
+new file mode 100644
+index 0000000..1925720
+--- /dev/null
++++ b/tests/test_slug.py
+@@ -0,0 +1,10 @@
++import unittest
++from src.slug import slugify
++
++class TestSlug(unittest.TestCase):
++    def test_basic(self):
++        self.assertEqual(slugify('Hello World'), 'hello-world')
++
++if __name__ == '__main__':
++    unittest.main()
++

@@ -1,0 +1,13 @@
+diff --git a/src/slug.py b/src/slug.py
+new file mode 100644
+index 0000000..ffc11eb
+--- /dev/null
++++ b/src/slug.py
+@@ -0,0 +1,7 @@
++import re
++
++def slugify(text: str) -> str:
++    return re.sub(r'[-\s]+', '-', re.sub(r'[^\w\s-]', '', text).strip().lower())
++
++# Advanced commit head comment
++

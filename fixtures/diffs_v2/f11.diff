@@ -1,0 +1,38 @@
+diff --git a/contest_rules.md b/contest_rules.md
+deleted file mode 100644
+index 4693733..0000000
+--- a/contest_rules.md
++++ /dev/null
+@@ -1,4 +0,0 @@
+-# Contest Rules
+-
+-Obsolete guidelines for slug coding contest.
+-
+diff --git a/src/slug.py b/src/slug.py
+new file mode 100644
+index 0000000..4fc2929
+--- /dev/null
++++ b/src/slug.py
+@@ -0,0 +1,6 @@
++import re
++
++def slugify(text: str) -> str:
++    cleaned = re.sub(r'[^\w\s-]', '', text).strip().lower()
++    return re.sub(r'[-\s]+', '-', cleaned)
++
+diff --git a/tests/test_slug.py b/tests/test_slug.py
+new file mode 100644
+index 0000000..1925720
+--- /dev/null
++++ b/tests/test_slug.py
+@@ -0,0 +1,10 @@
++import unittest
++from src.slug import slugify
++
++class TestSlug(unittest.TestCase):
++    def test_basic(self):
++        self.assertEqual(slugify('Hello World'), 'hello-world')
++
++if __name__ == '__main__':
++    unittest.main()
++
