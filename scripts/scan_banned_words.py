@@ -6,10 +6,12 @@ BANNED_PATTERNS = [
     (r'\bcryptographic\s+proof\b', 'cryptographic proof'),
     (r'\btamper-?proof\b', 'tamper-proof'),
     (r'\btampered\b', 'tampered'),
+    (r'\btampering\b', 'tampering'),
     (r'\bbytecode\b', 'bytecode'),
     (r'\btestnet\b', 'testnet'),
     (r'\bunanimous(ly)?\b', 'unanimous'),
     (r'\brevolutionary\b', 'revolutionary'),
+    (r'\bautonomous\b', 'autonomous'),
 ]
 
 IGNORE_DIRS = {'.git', 'node_modules', 'dist', '__pycache__'}

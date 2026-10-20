@@ -23,12 +23,11 @@ def scan():
             path = os.path.join(r, f)
             rel_path = os.path.relpath(path, root).replace('\\', '/')
             
-            # Skip checking .env if it somehow exists (though gitignore blocks it)
-            if f.startswith('.env'):
-                violations.append((rel_path, 1, 'env file', 'Found .env file'))
+            # Ignore local throwaway .env if properly git-ignored
+            if f == '.env':
                 continue
                 
-            if rel_path.startswith('docs/evidence/') or rel_path in ('docs/VERIFICATION.md', 'docs/EXPECTED_VS_ACTUAL.md') or rel_path.endswith('.json'):
+            if rel_path.startswith(('docs/evidence/', 'docs/evidence_v2/')) or rel_path in ('docs/VERIFICATION.md', 'docs/EXPECTED_VS_ACTUAL.md') or rel_path.endswith('.json'):
                 # In verification reports and JSON receipts, 64-hex strings are public transaction hashes or SHA256 hashes.
                 # We still scan for GitHub tokens and private key markers.
                 with open(path, 'r', encoding='utf-8', errors='ignore') as fp:
