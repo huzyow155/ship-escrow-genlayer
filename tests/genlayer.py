@@ -74,7 +74,7 @@ class Address:
         return self.as_hex == str(other).lower()
 
 
-class ContractBase:
+class Contract:
     def __new__(cls, *args, **kwargs):
         inst = super().__new__(cls)
         for attr, attr_type in getattr(cls, '__annotations__', {}).items():
@@ -84,13 +84,21 @@ class ContractBase:
 
 
 class GlMock:
-    Contract = ContractBase
+    Contract = Contract
     vm = GlVM()
     public = GlPublic()
     eq_principle = GlEqPrinciple()
     nondet = GlNondet()
     message = GlMessage()
     contracts_registry = {}
+
+    @classmethod
+    def set_sender(cls, addr: str):
+        cls.message.sender_address.as_hex = str(addr).lower()
+
+    @classmethod
+    def register_contract(cls, addr: str, instance):
+        cls.contracts_registry[str(addr).lower()] = instance
 
     @classmethod
     def get_contract_at(cls, addr):
@@ -102,6 +110,14 @@ class GlMock:
                     return inst
             return BoundView()
         raise ValueError(f"Contract at {addr_str} not registered in GlMock")
+
+    @classmethod
+    def reset(cls):
+        cls.set_sender("0x1111111111111111111111111111111111111111")
+        cls.contracts_registry.clear()
+        cls.nondet.prompt_handler = None
+        cls.nondet.web.pages.clear()
+        cls.nondet.web.get_handler = None
 
 
 gl = GlMock()

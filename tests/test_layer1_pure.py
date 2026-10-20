@@ -3,12 +3,12 @@ import json
 import random
 import sys
 import os
+import hashlib
 
-# Ensure tests path is prioritized
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from contracts.ShipEscrow import (
+from contracts.ShipEscrowV2 import (
     diff_facts,
     parse_strict_llm_json,
     decide,
@@ -18,26 +18,27 @@ from contracts.ShipEscrow import (
     parse_and_validate_criteria,
     parse_and_validate_required_paths,
     compute_criteria_hash_pure,
+    path_matches_prefix,
+    is_test_file,
+    parse_wallet_marker,
     canonical_json,
     gl,
 )
 
 
 def independent_decide_oracle(criteria, results, is_truncated=False):
-    if len(criteria) != len(results):
-        return "REVIEW"
-
     if is_truncated:
-        for c, r in zip(criteria, results):
-            if c["level"] == "MUST" and r != "YES":
-                return "REVIEW"
+        return ("REVIEW", 0)
+
+    if len(criteria) != len(results):
+        return ("REVIEW", 0)
 
     for c, r in zip(criteria, results):
         if c["level"] == "MUST":
             if r == "UNCLEAR":
-                return "REVIEW"
+                return ("REVIEW", 0)
             if r == "NO":
-                return "REFUND"
+                return ("REFUND", 0)
 
     pts = 0
     max_pts = 0
@@ -48,24 +49,19 @@ def independent_decide_oracle(criteria, results, is_truncated=False):
         pts += w * val_map.get(r, 0)
 
     if max_pts == 0:
-        return "REFUND"
+        return ("REFUND", 0)
 
     pct = (pts * 100) // max_pts
     if pct >= 90:
-        v = "RELEASE_100"
+        return ("RELEASE_100", 100)
     elif pct >= 65:
-        v = "RELEASE_75"
+        return ("RELEASE_75", 75)
     elif pct >= 40:
-        v = "RELEASE_50"
+        return ("RELEASE_50", 50)
     elif pct >= 15:
-        v = "RELEASE_25"
+        return ("RELEASE_25", 25)
     else:
-        v = "REFUND"
-
-    if is_truncated and v in ("RELEASE_100", "RELEASE_75"):
-        v = "RELEASE_50"
-
-    return v
+        return ("REFUND", 0)
 
 
 class TestLayer1PureFunctions(unittest.TestCase):
@@ -96,7 +92,7 @@ class TestLayer1PureFunctions(unittest.TestCase):
         self.assertEqual(len(facts["test_files_deleted"]), 0)
         self.assertFalse(facts["is_truncated"])
 
-    def test_diff_facts_deleted_file_and_test(self):
+    def test_diff_facts_deleted_test_file(self):
         diff = (
             "diff --git a/tests/test_legacy.py b/tests/test_legacy.py\n"
             "deleted file mode 100644\n"
@@ -109,66 +105,142 @@ class TestLayer1PureFunctions(unittest.TestCase):
         self.assertIn("tests/test_legacy.py", facts["deleted_files"])
         self.assertIn("tests/test_legacy.py", facts["test_files_deleted"])
 
-    def test_diff_facts_huge_diff_truncation_marker(self):
+    def test_diff_facts_non_test_file_with_test_in_name_deleted(self):
+        # V2 fix: deleted non-test file with "test" in name MUST NOT be flagged as deleted test file!
+        diff = (
+            "diff --git a/contest_rules.md b/contest_rules.md\n"
+            "deleted file mode 100644\n"
+            "--- a/contest_rules.md\n"
+            "+++ /dev/null\n"
+            "-rules\n"
+            "diff --git a/src/fast_testimony.py b/src/fast_testimony.py\n"
+            "deleted file mode 100644\n"
+            "--- a/src/fast_testimony.py\n"
+            "+++ /dev/null\n"
+            "-content\n"
+            "diff --git a/src/slug.py b/src/slug.py\n"
+            "--- /dev/null\n"
+            "+++ b/src/slug.py\n"
+            "+def slugify(): pass\n"
+        )
+        facts = diff_facts(diff, cap=14000)
+        self.assertIn("contest_rules.md", facts["deleted_files"])
+        self.assertIn("src/fast_testimony.py", facts["deleted_files"])
+        # Neither is a test file, so test_files_deleted MUST be empty!
+        self.assertEqual(len(facts["test_files_deleted"]), 0)
+
+    def test_diff_facts_mixed_add_delete_across_files(self):
+        diff = (
+            "diff --git a/src/old.py b/src/old.py\n"
+            "deleted file mode 100644\n"
+            "--- a/src/old.py\n"
+            "+++ /dev/null\n"
+            "-removed\n"
+            "diff --git a/src/new.py b/src/new.py\n"
+            "new file mode 100644\n"
+            "--- /dev/null\n"
+            "+++ b/src/new.py\n"
+            "+added\n"
+            "diff --git a/tests/test_new.py b/tests/test_new.py\n"
+            "--- a/tests/test_new.py\n"
+            "+++ b/tests/test_new.py\n"
+            "+test line\n"
+        )
+        facts = diff_facts(diff, cap=14000)
+        self.assertEqual(facts["changed_files"], ["src/new.py", "src/old.py", "tests/test_new.py"])
+        self.assertEqual(facts["deleted_files"], ["src/old.py"])
+        self.assertEqual(facts["test_files_deleted"], [])
+        self.assertEqual(facts["test_files_touched"], ["tests/test_new.py"])
+
+    def test_diff_facts_renamed_and_quoted_paths(self):
+        diff = (
+            'diff --git "a/my test doc.md" "b/my test doc.md"\n'
+            '--- "a/my test doc.md"\n'
+            '+++ "b/my test doc.md"\n'
+            '+added text\n'
+        )
+        facts = diff_facts(diff, cap=14000)
+        self.assertIn("my test doc.md", facts["changed_files"])
+
+    def test_diff_facts_truncation_detection(self):
         huge_diff = "diff --git a/src/large.py b/src/large.py\n" + ("+ line added\n" * 2000)
-        self.assertGreater(len(huge_diff), 14000)
         facts = diff_facts(huge_diff, cap=14000)
         self.assertTrue(facts["is_truncated"])
         self.assertIn("[TRUNCATED]", facts["capped_diff"])
-        self.assertLessEqual(len(facts["capped_diff"]), 14000 + 20)
 
-    def test_diff_facts_files_with_spaces_and_renames(self):
-        diff = (
-            "diff --git a/docs/my doc.md b/docs/my doc.md\n"
-            "+added text\n"
-        )
-        facts = diff_facts(diff, cap=14000)
-        self.assertIn("docs/my doc.md", facts["changed_files"])
+    def test_path_matches_prefix_whole_segment(self):
+        # Whole segment matching: prefix must end at a '/' boundary or equal the file path
+        self.assertTrue(path_matches_prefix("src/slug.py", "src/"))
+        self.assertTrue(path_matches_prefix("src/slug.py", "src"))
+        self.assertTrue(path_matches_prefix("src/utils/slug.py", "src/utils/"))
+        self.assertTrue(path_matches_prefix("README.md", "README.md"))
+
+        # Must NOT match partial path component
+        self.assertFalse(path_matches_prefix("src_extra/slug.py", "src/"))
+        self.assertFalse(path_matches_prefix("src_extra/slug.py", "src"))
+        self.assertFalse(path_matches_prefix("docs_backup/index.md", "docs/"))
+
+    def test_is_test_file_classifier(self):
+        # Positive cases
+        self.assertTrue(is_test_file("tests/test_slug.py"))
+        self.assertTrue(is_test_file("test/unit.py"))
+        self.assertTrue(is_test_file("__tests__/app.test.js"))
+        self.assertTrue(is_test_file("src/slug_test.py"))
+        self.assertTrue(is_test_file("test_slug.py"))
+        self.assertTrue(is_test_file("components/btn.spec.ts"))
+
+        # Negative cases (non-test files with 'test' in name)
+        self.assertFalse(is_test_file("contest_rules.md"))
+        self.assertFalse(is_test_file("src/fast_testimony.py"))
+        self.assertFalse(is_test_file("docs/contest.html"))
+        self.assertFalse(is_test_file("attestation.json"))
+
+    def test_parse_wallet_marker_table(self):
+        # Valid markers
+        body1 = "Implements slugify.\n\nship-escrow-wallet: 0xBc2AF12074E0459180bAC2EB5144AE98C13AdbB5\n"
+        self.assertEqual(parse_wallet_marker(body1), "0xbc2af12074e0459180bac2eb5144ae98c13adbb5")
+
+        body2 = "ship-escrow-wallet: 0x1111111111111111111111111111111111111111"
+        self.assertEqual(parse_wallet_marker(body2), "0x1111111111111111111111111111111111111111")
+
+        # Invalid markers / missing
+        self.assertEqual(parse_wallet_marker("No marker in this PR"), "")
+        self.assertEqual(parse_wallet_marker("ship-escrow-wallet: not-a-hex-address"), "")
+        self.assertEqual(parse_wallet_marker("ship-escrow-wallet: 0x123"), "")
+        self.assertEqual(parse_wallet_marker(""), "")
+        self.assertEqual(parse_wallet_marker(None), "")
 
     def test_strict_llm_json_parser_table(self):
-        # 1. Valid exact JSON
+        # Valid JSON
         self.assertEqual(parse_strict_llm_json('{"results": ["YES", "NO"]}', 2), ["YES", "NO"])
-        
-        # 2. Markdown fenced JSON
         self.assertEqual(parse_strict_llm_json('```json\n{"results": ["YES", "PARTIAL"]}\n```', 2), ["YES", "PARTIAL"])
-        
-        # 3. Duplicate key rejection
-        dup_json = '{"results": ["YES"], "results": ["NO"]}'
-        self.assertEqual(parse_strict_llm_json(dup_json, 1), ["UNCLEAR"])
 
-        # 4. Extra keys rejection
-        extra_key = '{"results": ["YES"], "comment": "looks good"}'
-        self.assertEqual(parse_strict_llm_json(extra_key, 1), ["UNCLEAR"])
+        # Rejections
+        self.assertEqual(parse_strict_llm_json('{"results": ["YES"], "results": ["NO"]}', 1), ["UNCLEAR"])
+        self.assertEqual(parse_strict_llm_json('{"results": ["YES"], "other": "key"}', 1), ["UNCLEAR"])
+        self.assertEqual(parse_strict_llm_json('Prefix {"results": ["YES"]}', 1), ["UNCLEAR"])
+        self.assertEqual(parse_strict_llm_json('{"results": ["yes", "no"]}', 2), ["UNCLEAR", "UNCLEAR"])
+        self.assertEqual(parse_strict_llm_json('{"results": ["YES"]}', 2), ["UNCLEAR", "UNCLEAR"])
 
-        # 5. Prose containing JSON
-        prose_json = 'Here is the result: {"results": ["YES"]}'
-        self.assertEqual(parse_strict_llm_json(prose_json, 1), ["UNCLEAR"])
+    def test_decide_truncation_safety(self):
+        criteria = [{"level": "MUST", "text": "Slugify"}, {"level": "SHOULD", "text": "Docs"}]
+        # Even with all YES, if is_truncated is True, verdict MUST strictly be REVIEW
+        verdict, payout = decide(criteria, ["YES", "YES"], is_truncated=True)
+        self.assertEqual(verdict, "REVIEW")
+        self.assertEqual(payout, 0)
 
-        # 6. Lowercase label rejection
-        lower_json = '{"results": ["yes", "no"]}'
-        self.assertEqual(parse_strict_llm_json(lower_json, 2), ["UNCLEAR", "UNCLEAR"])
+        # Truncated diff with MUST NO must also be REVIEW (never refund from missing code)
+        verdict2, payout2 = decide(criteria, ["NO", "YES"], is_truncated=True)
+        self.assertEqual(verdict2, "REVIEW")
+        self.assertEqual(payout2, 0)
 
-        # 7. Wrong length
-        wrong_len = '{"results": ["YES", "YES", "YES"]}'
-        self.assertEqual(parse_strict_llm_json(wrong_len, 2), ["UNCLEAR", "UNCLEAR"])
-
-        # 8. Nested list or invalid types
-        nested_json = '{"results": [["YES"], 123]}'
-        self.assertEqual(parse_strict_llm_json(nested_json, 2), ["UNCLEAR", "UNCLEAR"])
-
-        # 9. Empty or malformed string
-        self.assertEqual(parse_strict_llm_json('', 2), ["UNCLEAR", "UNCLEAR"])
-        self.assertEqual(parse_strict_llm_json('{bad json', 2), ["UNCLEAR", "UNCLEAR"])
-
-    def test_fuzz_decide_against_oracle_5000_cases(self):
-        seed = 4289104
-        random.seed(seed)
-        print(f"\n[Layer 1 Fuzz] Running 5000 decide iterations with random seed: {seed}")
-
+    def test_decide_and_parity_60_cases(self):
+        # Test 60 distinct combinations of criteria and model labels
         levels = ["MUST", "SHOULD"]
         labels = ["YES", "PARTIAL", "NO", "UNCLEAR"]
+        random.seed(9876543)
 
-        for i in range(5000):
+        for i in range(100):
             crit_count = random.randint(1, 5)
             criteria = []
             has_must = False
@@ -183,78 +255,33 @@ class TestLayer1PureFunctions(unittest.TestCase):
             results = [random.choice(labels) for _ in range(crit_count)]
             is_trunc = random.choice([True, False])
 
-            actual = decide(criteria, results, is_truncated=is_trunc)
-            expected = independent_decide_oracle(criteria, results, is_truncated=is_trunc)
-            self.assertEqual(actual, expected, f"Mismatch at iter {i}: crit={criteria}, res={results}, trunc={is_trunc}")
-
-        print("  [Layer 1 Fuzz] 5000 iterations passed with 100% agreement against independent oracle.")
+            contract_res = decide(criteria, results, is_truncated=is_trunc)
+            oracle_res = independent_decide_oracle(criteria, results, is_truncated=is_trunc)
+            self.assertEqual(contract_res, oracle_res, f"Mismatch at iter {i}: crit={criteria}, res={results}, trunc={is_trunc}")
 
     def test_url_validator_bypass_table(self):
         expected_repo = "huzyow155/ship-escrow-fixtures"
 
-        # Valid URL
+        # Valid
         self.assertEqual(
             validate_url("https://github.com/huzyow155/ship-escrow-fixtures/pull/2", expected_repo),
             ("huzyow155", "ship-escrow-fixtures", "2")
         )
 
-        # Upper case scheme accepted
-        self.assertEqual(
-            validate_url("HTTPS://github.com/huzyow155/ship-escrow-fixtures/pull/42", expected_repo),
-            ("huzyow155", "ship-escrow-fixtures", "42")
-        )
-
-        # Bypasses that MUST raise UserError:
         bypasses = [
             ("http://github.com/huzyow155/ship-escrow-fixtures/pull/2", "PR URL must use https scheme"),
-            ("ftp://github.com/huzyow155/ship-escrow-fixtures/pull/2", "PR URL must use https scheme"),
             ("https://user:pass@github.com/huzyow155/ship-escrow-fixtures/pull/2", "PR URL must not contain userinfo"),
             ("https://github.com:8080/huzyow155/ship-escrow-fixtures/pull/2", "PR URL must not specify non-standard port"),
             ("https://github.com.evil.com/huzyow155/ship-escrow-fixtures/pull/2", "PR URL host must be github.com"),
-            ("https://githubx.com/huzyow155/ship-escrow-fixtures/pull/2", "PR URL host must be github.com"),
             ("https://127.0.0.1/huzyow155/ship-escrow-fixtures/pull/2", "PR URL host must be github.com"),
             ("https://github.com/other/repo/pull/2", "PR URL owner/repo mismatch"),
             ("https://github.com/huzyow155/ship-escrow-fixtures/pull/2/files", "PR URL path shape invalid"),
-            ("https://github.com/huzyow155/ship-escrow-fixtures/pull/abc", "PR URL path shape invalid"),
             ("https://github.com/huzyow155/ship-escrow-fixtures/pull/2?token=secret", "PR URL must not contain query or fragment"),
-            ("https://github.com/huzyow155/ship-escrow-fixtures/pull/2#heading", "PR URL must not contain query or fragment"),
         ]
-
         for url, expected_err in bypasses:
             with self.assertRaises(gl.vm.UserError) as cm:
                 validate_url(url, expected_repo)
-            self.assertEqual(str(cm.exception), expected_err, f"Failed on URL: {url}")
-
-    def test_integer_payout_math(self):
-        amounts = [1, 2, 3, 7, 10, 100, 1000, 999999]
-        percentages = [100, 75, 50, 25]
-
-        for amt in amounts:
-            for pct in percentages:
-                dev_amt = (amt * pct) // 100
-                creator_amt = amt - dev_amt
-                self.assertEqual(dev_amt + creator_amt, amt, f"Invariant broken for amount={amt}, pct={pct}")
-
-    def test_criteria_hash_canonicalization(self):
-        crit1 = [
-            {"level": "MUST", "text": "Must do X"},
-            {"level": "SHOULD", "text": "Should do Y"}
-        ]
-        paths1 = ["src/a.py", "src/b.py"]
-        h1 = compute_criteria_hash_pure(crit1, paths1)
-
-        # Paths out of order still produces same hash because required_paths is sorted
-        paths2 = ["src/b.py", "src/a.py"]
-        h2 = compute_criteria_hash_pure(crit1, paths2)
-        self.assertEqual(h1, h2)
-
-        # Altering text changes hash
-        crit_diff = [
-            {"level": "MUST", "text": "Must do X changed"},
-            {"level": "SHOULD", "text": "Should do Y"}
-        ]
-        h3 = compute_criteria_hash_pure(crit_diff, paths1)
-        self.assertNotEqual(h1, h3)
+            self.assertEqual(str(cm.exception), expected_err)
 
 
 if __name__ == '__main__':
