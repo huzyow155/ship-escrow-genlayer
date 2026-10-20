@@ -28,10 +28,16 @@
 
 ## Probe (c): Deterministic timestamp
 
-**Measured behavior**: `time.time()` returned `1792505178.066999` (a valid UNIX timestamp). `datetime.now()` returned `2026-10-20T14:06:18.066999`. No `gl.block`, `gl.transaction`, or `gl.message.timestamp` attributes exist.
+**Measured behavior**: The probe revealed:
+- `gl.block`: "no gl.block attribute"
+- `gl.transaction`: "no gl.transaction attribute"
+- `gl.message.timestamp`: "no gl.message.timestamp attribute"
+- `time.time()`: returns the local host machine's system time (e.g., `1792505178.066999`).
 
-**Decision**: `time.time()` is available in GenVM and returns a value that reached consensus (all validators agreed on the result). V2 will use `time.time()` to record creation timestamps and last-submission timestamps. The `cancel_idle` rule will allow the creator to cancel after a fixed idle period (e.g. 7 days = 604800 seconds) since the last submission or creation.
+**Decision**: GenVM does NOT expose an on-chain, block-level deterministic transaction timestamp. System wall-clock time (`time.time()`) is inherently non-deterministic across independent validator hardware nodes and subject to node clock skew. Per the explicit prompt instructions: *"if there is no timestamp, document the stuck-bounty limitation in LIMITATIONS and report it to me as a decision, do not invent a clock."*
 
-**Caveat**: The timestamp is "deterministic enough" because validators ran the probe in the same time window and `strict_eq` accepted the result. However, validators with clock skew might disagree on a sub-second call. V2 will read `time.time()` outside the nondet block (in a write method's pre-consensus section) and store it as an integer (seconds), reducing clock-skew risk. The idle period is long enough (7 days) that minor skew is irrelevant.
-
-**Correction**: Since `time.time()` was called inside a `write` method (the probe_timestamp method is `@gl.public.write`) and it succeeded, it is usable in writes. The value was consistent across validators because it ran inside the same transaction round.
+Therefore, we do NOT invent a synthetic clock or rely on host `time.time()` for state-transition validation. Instead:
+- We record `created_at` purely as informational metadata if available, but do NOT enforce time-based execution transitions.
+- A creator can cancel an OPEN bounty only when `attempts == 0` (zero authenticated submissions exist).
+- Once an authenticated submission is accepted, the bounty cannot be cancelled; it can only terminate via settlement or exhaustion (`attempts == 6`).
+- The stuck-bounty boundary is documented explicitly in `docs/LIMITATIONS.md` and surfaced in `get_limits()`.
