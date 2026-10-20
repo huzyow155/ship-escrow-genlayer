@@ -197,8 +197,8 @@ class TestLayer1PureFunctions(unittest.TestCase):
 
     def test_parse_wallet_marker_table(self):
         # Valid markers
-        body1 = "Implements slugify.\n\nship-escrow-wallet: 0xBc2AF12074E0459180bAC2EB5144AE98C13AdbB5\n"
-        self.assertEqual(parse_wallet_marker(body1), "0xbc2af12074e0459180bac2eb5144ae98c13adbb5")
+        body1 = "Implements slugify.\n\nship-escrow-wallet: 0x6325B360Db455435BF5e81D0aE18DC3b249f226C\n"
+        self.assertEqual(parse_wallet_marker(body1), "0x6325b360db455435bf5e81d0ae18dc3b249f226c")
 
         body2 = "ship-escrow-wallet: 0x1111111111111111111111111111111111111111"
         self.assertEqual(parse_wallet_marker(body2), "0x1111111111111111111111111111111111111111")

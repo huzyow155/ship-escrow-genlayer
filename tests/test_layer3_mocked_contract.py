@@ -24,9 +24,9 @@ class TestLayer3MockedContractPipelines(unittest.TestCase):
         gl.register_contract(self.escrow_addr, self.escrow)
         self.reputation = ShipReputationV2(self.escrow_addr)
 
-        self.creator = "0x5c5a10dbada2fe0505628cfbbddf0b1d848daf80"
-        self.dev = "0xbc2af12074e0459180bac2eb5144ae98c13adbb5"
-        self.attacker = "0x44dbcd42cb603dd27a12242d1cab6008800c7dcb"
+        self.creator = "0x79ed3fc4e32d8df7b23a221a27a057170e6d2069"
+        self.dev = "0x6325b360db455435bf5e81d0ae18dc3b249f226c"
+        self.attacker = "0xd033dd543890c4eb2952b796037a11481497da9a"
 
         # Claim initial demo credits
         gl.set_sender(self.creator)
