@@ -26,8 +26,8 @@ def test_direct_edge_cases(direct_vm, direct_deploy, direct_alice, direct_bob, d
     dev_hex = "0x" + dev.hex().lower()
     attacker_hex = "0x" + attacker.hex().lower()
 
-    # Deploy ShipEscrowV2 via direct_deploy
-    escrow = direct_deploy("contracts/ShipEscrowV2.py")
+    # Deploy ShipEscrowV2 via direct_deploy with stable sdk_version
+    escrow = direct_deploy("contracts/ShipEscrowV2.py", sdk_version="v0.2.12")
 
     # Claim demo credits for creator and dev
     with direct_vm.prank(creator):

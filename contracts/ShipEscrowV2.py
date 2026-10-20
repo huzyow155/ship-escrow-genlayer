@@ -377,6 +377,7 @@ _leader_extra = {}
 # -------------------------------------------------------------------------
 
 class ShipEscrowV2(gl.Contract):
+    __gl_contract__ = True
     bounties: TreeMap[str, str]
     submissions: TreeMap[str, str]
     settlements: TreeMap[str, str]

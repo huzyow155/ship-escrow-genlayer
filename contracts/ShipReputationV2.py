@@ -10,6 +10,7 @@ def canonical_json(obj) -> str:
 
 
 class ShipReputationV2(gl.Contract):
+    __gl_contract__ = True
     escrow_address: Address
     processed: TreeMap[str, str]
     dev_scores: TreeMap[str, str]

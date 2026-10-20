@@ -7,6 +7,10 @@ if str(tests_dir) not in sys.path:
 
 import genlayer
 import gltest.direct.loader as loader
+import gltest.direct.sdk_loader as sdk_loader
+
+# Force known stable genvm release that contains genvm-universal.tar.xz asset
+sdk_loader.get_latest_version = lambda: "v0.2.12"
 
 _orig_find = loader._find_contract_class
 
