@@ -1,13 +1,22 @@
-# Ship Escrow - Architecture & Consensus Design
+# Ship Escrow V2 - Architecture & Consensus Design
 
-## 1. The Core Consensus Primitive
+> Status: **Preview**  
+> Network: **GenLayer Studionet** (Chain ID: 61999)  
+
+> [!IMPORTANT]
+> **DISCLAIMER: SIMULATED CREDITS, NOT CUSTODY-BACKED TOKENS**  
+> Credits in Ship Escrow V2 are maintained on an internal, conserved accounting ledger with auditable deposit, release, and refund invariants (`total_balances + total_escrowed == total_minted`). They do not represent custody-backed tokens, cryptocurrencies, or monetary value.
+
+---
+
+## 1. The Core Consensus Primitive (V2)
 
 In GenLayer Intelligent Contracts, multi-validator consensus is achieved when independent validators execute the contract code and agree on the return value of the non-deterministic block wrapped in `gl.eq_principle.strict_eq`.
 
 ### What Validators Compare
-The function passed to `gl.eq_principle.strict_eq` returns strictly **ONE** canonical string:
+In V2, the function passed to `gl.eq_principle.strict_eq` returns strictly **ONE** canonical triple:
 ```
-"<VERDICT>|<evidence_sha16>"
+"<VERDICT>|<payout_pct>|<packet_sha256>"
 ```
 Where:
 - `VERDICT`: One of six strictly defined enum strings:
@@ -15,112 +24,100 @@ Where:
   - `RELEASE_75`: 75% payout to contributor, 25% refunded to creator.
   - `RELEASE_50`: 50% payout to contributor, 50% refunded to creator.
   - `RELEASE_25`: 25% payout to contributor, 75% refunded to creator.
-  - `REFUND`: 0% payout, attempt consumed (or refunded if exhausted/cancelled).
-  - `REVIEW`: Inconclusive, gated, or truncated without full verification; attempt consumed without financial movement.
-- `evidence_sha16`: The first 16 hexadecimal characters of `sha256(diff_bytes)` of the exact public GitHub pull request diff retrieved by the validator.
+  - `REFUND`: 0% payout (fails criteria or gates; dev bond forfeited to creator).
+  - `REVIEW`: Inconclusive, gated, or truncated diff; attempt consumed without balance transfer; bond returned to dev.
+- `payout_pct`: Decimal integer string (`0`, `25`, `50`, `75`, `100`).
+- `packet_sha256`: SHA-256 digest (64 hex characters) of the canonical JSON assessment packet binding all assessment facts.
 
-### Why Include `evidence_sha16`?
-Including the evidence hash forces validators to prove they fetched and evaluated the exact same textual evidence. If a GitHub edge node serves stale or mismatched diff text to one validator, consensus fails (`MAJORITY_DISAGREE`) rather than recording an inconsistent state.
-
-### What Is Deliberately Excluded From Consensus
-1. **Free-form LLM Explanations / Thoughts**: Large language model prose reasoning naturally varies across runs and validator model seeds. Forcing equality on textual explanations causes false consensus splits.
-2. **Per-criterion Intermediate Labels**: The model's raw intermediate labels (`YES`, `PARTIAL`, `NO`, `UNCLEAR`) and structural facts are recorded in the leader-reported informational field (`criterion_results`) for UI display, but are not in the primary consensus equality check.
-3. **Execution Timestamps and System Metrics**: Dynamic timestamps vary between nodes and are strictly prohibited from consensus values.
-
----
-
-## 2. The Verification Pipeline
-
-Each submission via `submit_work(bounty_id, pr_url, head_sha)` executes the following deterministic sequential pipeline:
-
-```
-[User Submission: bounty_id, pr_url, head_sha]
-                   │
-                   ▼
-       1. Pre-Execution Validation (UserErrors)
-       - Bounty must exist and be OPEN
-       - Sender cannot be creator
-       - attempts < 3
-       - head_sha is 40 lowercase hex
-       - pr_url strict structured validation (scheme, host, userinfo, port, path)
-       - sha256(bounty_id|head_sha) must not be previously seen
-                   │
-                   ▼
-     2. Non-Deterministic Consensus Block (strict_eq)
-       - Source A Fetch: https://github.com/<owner>/<repo>/pull/<n>.diff
-       - Source B Fetch: https://github.com/<owner>/<repo>/pull/<n>.patch
-       - Patch Commit SHA Cross-Check (must match submitted head_sha -> else REVIEW)
-                   │
-                   ▼
-       3. Structural Facts Extraction (diff_facts)
-       - changed_files, added_lines, deleted_lines
-       - deleted_files, test_files_touched, test_files_deleted
-       - 14,000 char cap check and deterministic truncation
-                   │
-                   ▼
-       4. Hard Deterministic Gates (No LLM)
-       - Gate A: required_paths untouched? ───────► REFUND
-       - Gate B: any test file deleted?   ───────► REVIEW
-                   │
-                   ▼
-       5. Isolated LLM Adjudication (If no gate fired)
-       - Diff isolated as untrusted data in JSON prompt
-       - Strict parser: exact 'results' key, exact N items
-       - Fallback: unparseable / malformed -> all UNCLEAR
-                   │
-                   ▼
-       6. Pure Decision Arithmetic (decide)
-       - MUST == NO ──────────────────────────────► REFUND
-       - MUST == UNCLEAR ─────────────────────────► REVIEW
-       - Weighted Points / Max Points Percentage
-       - Thresholds: 90% (100), 65% (75), 40% (50), 15% (25)
-       - Truncation Safety Cap: max RELEASE_50
-                   │
-                   ▼
-       7. Post-Consensus State Mutations
-       - Submission record written
-       - Balance credits updated
-       - If RELEASE_x -> Bounty SETTLED, Settlement record written
-       - If attempts >= 3 -> Bounty EXHAUSTED
+### Bound Fields in `packet_sha256`
+The canonical assessment packet commits to:
+```json
+{
+  "base_sha": "05fedc3b516a90c1dd49f348db45c864a19d1148",
+  "body_sha256": "8d45d764906f34bae4053ae76f4a64e17ae24e69a73812266f02c11ac5589f83",
+  "criteria_hash": "2f4b...3a1c",
+  "diff_sha256": "672d...7389",
+  "facts": {
+    "added_lines": 12,
+    "changed_files": ["src/slug.py"],
+    "deleted_files": [],
+    "deleted_lines": 0,
+    "is_truncated": false,
+    "test_files_deleted": [],
+    "test_files_touched": []
+  },
+  "gate": "",
+  "head_sha": "5db0441e76af93606fd82feebbe49c5a2f145326",
+  "metadata": {
+    "author_login": "huzyow155",
+    "commits": 1,
+    "draft": false,
+    "merged": false,
+    "state": "open"
+  },
+  "payout_pct": 100,
+  "verdict": "RELEASE_100"
+}
 ```
 
 ---
 
-## 3. Pure Decision Arithmetic
+## 2. Conserved Balance Ledger Architecture
 
-Each criterion carries a weight:
-- `MUST`: Weight = 3
-- `SHOULD`: Weight = 1
+All balance modifications strictly conserve credits:
+- **`claim_demo_credits()`**: Mints 1,000 demo credits to the caller (enforced once per address).
+- **`create_bounty(...)`**: Debits creator's balance by `amount` and locks it into `escrowed[bounty_id]`.
+- **`submit_work(...)`**: Debits a refundable 50 credit submission bond from the developer.
+  - If verdict is `RELEASE_x`: Dev bond returned + payout released from escrow to dev. Unused escrow returned to creator.
+  - If verdict is `REVIEW`: Dev bond returned. Escrow remains locked for subsequent attempts.
+  - If verdict is `REFUND`: Dev bond (50 credits) is forfeited to creator. Escrow remains locked.
+- **`cancel_bounty(...)`**: Permitted ONLY when `attempts == 0`. Full escrowed amount refunded to creator.
+- **`refund_exhausted(...)`**: Permitted when bounty status is `EXHAUSTED` (attempts reach cap 6). Full escrowed amount refunded to creator.
 
-Values assigned to model labels:
-- `YES`: 2 points
-- `PARTIAL`: 1 point
-- `NO`: 0 points
-- `UNCLEAR`: 0 points
+### Invariant Equation
+The contract enforces and exposes `get_ledger_invariant()`:
+$$\sum \text{balances} + \sum \text{escrowed} = \text{total\_minted}$$
 
-Formulas:
-- $\text{points} = \sum (\text{weight} \times \text{value})$
-- $\text{max\_points} = 2 \times \sum \text{weight}$
-- $\text{pct} = \lfloor \frac{\text{points} \times 100}{\text{max\_points}} \rfloor$ (integer division)
-
-### Threshold Table
-| Percentage Range | Verdict | Ledger Action |
-| :---: | :---: | :---: |
-| $\ge 90\%$ | `RELEASE_100` | 100% to dev, 0% to creator |
-| $65\% \le \text{pct} < 90\%$ | `RELEASE_75` | 75% to dev, 25% to creator |
-| $40\% \le \text{pct} < 65\%$ | `RELEASE_50` | 50% to dev, 50% to creator |
-| $15\% \le \text{pct} < 40\%$ | `RELEASE_25` | 25% to dev, 75% to creator |
-| $< 15\%$ | `REFUND` | No money moves, attempt + 1 |
+Fuzz tested over 5,000 randomized operations with 100% invariant preservation.
 
 ---
 
-## 4. Cross-Contract Architecture: ShipReputation
+## 3. Pull Request Authentication & Revision Immutability
 
-`ShipReputation.py` consumes data from `ShipEscrow.py` using synchronous cross-contract view calls:
-```python
-escrow = gl.get_contract_at(self.escrow_address)
-raw_settlement = escrow.view().get_settlement(bounty_id)
-```
-- **Pull Model**: Reputation state is updated when `sync(bounty_id)` is called.
-- **Idempotency**: `self.processed[bounty_id]` prevents double-counting.
-- **Integrity**: Verifies `dev`, `head_sha`, and `criteria_hash` are non-empty before updating scores.
+1. **Authoritative REST API Metadata**: Validators fetch `https://api.github.com/repos/<owner>/<repo>/pulls/<n>` and verify:
+   - PR state is `open` or `merged` (drafts and closed-unmerged rejected).
+   - PR is same-repository (`head.repo == base.repo == bounty.owner_repo`).
+   - `head.sha` strictly equals the caller's claimed `head_sha`.
+2. **Attribution Binding**: The PR body must include:
+   ```
+   ship-escrow-wallet: 0x<caller_address>
+   ```
+   If absent or bound to another address, submission reverts before consuming attempts.
+3. **Immutable Revision Diff**: Validators fetch `https://github.com/<owner>/<repo>/compare/<base_sha>...<head_sha>.diff`, which is permanently pinned to the commit SHAs, preventing race conditions or moving-head attacks.
+
+---
+
+## 4. Deterministic Gates & Diff Parsing
+
+- **Required Paths Gate (`required_path_untouched`)**:
+  - Requires EVERY mandatory prefix in `required_paths` to be touched.
+  - Evaluated on path segment boundaries (`path.startswith(prefix + "/")` or `path == prefix`).
+  - Fails to `REFUND` (bond forfeited).
+- **Deleted Test Files Gate (`test_deleted`)**:
+  - Tracked per file header (`diff --git`). Only files whose header contains `deleted file mode` are treated as deleted.
+  - Deleted non-test files with `"test"` in their name do NOT fire this gate.
+  - If deleted file is a test file, yields `REVIEW` (bond returned).
+- **Diff Truncation Gate (`diff_truncated`)**:
+  - Diffs exceeding 14,000 characters are capped.
+  - Any evaluation on truncated diffs strictly yields `REVIEW` (never `RELEASE_x` or `REFUND` from missing files).
+
+---
+
+## 5. Cross-Contract Reputation Synchronization
+
+`ShipReputationV2` maintains public scores by synchronizing verified settlements:
+- Calls `ShipEscrowV2.is_settled_for(bounty_id, criteria_hash, head_sha, dev, min_payout_pct)`.
+- If settlement payout is below `min_payout_pct`, the call reverts.
+- Each bounty can be synced at most once.
+- Developers accumulate `units_earned` and verdict counters (`RELEASE_100`, `RELEASE_75`, etc.).
+- Creators accumulate `units_paid` and `units_refunded`.

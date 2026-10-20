@@ -1,4 +1,4 @@
-# Prior Art Analysis: Autonomous Bounty Escrows and Dispute Resolution
+# Prior Art Analysis: Automated Bounty Escrows and Dispute Resolution
 
 ## 1. Overview of Prior Solutions
 

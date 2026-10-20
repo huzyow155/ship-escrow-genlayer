@@ -1,40 +1,62 @@
-# Ship Escrow - Honest Limitations and Trade-offs
+# Ship Escrow V2 - Honest Limitations & Trust Boundaries
 
-This document outlines the known boundaries, failure modes, and trade-offs of the Ship Escrow intelligent contract on GenLayer Studionet. These limitations are intentional architectural constraints and must be understood before deploying or integrating.
+> Status: **Preview**  
+> Network: **GenLayer Studionet** (Chain ID: 61999)  
+
+> [!IMPORTANT]
+> **DISCLAIMER: SIMULATED CREDITS, NOT CUSTODY-BACKED TOKENS**  
+> Credits in Ship Escrow V2 are maintained on an internal, conserved accounting ledger with auditable deposit, release, and refund invariants (`total_balances + total_escrowed == total_minted`). They do not represent custody-backed tokens, cryptocurrencies, or monetary value.
+
+This document outlines the architectural trust assumptions, honest boundaries, and deliberate constraints of Ship Escrow V2 on GenLayer Studionet.
 
 ---
 
-### 1. No Code Execution or Test Execution
-Ship Escrow evaluates code strictly through static textual artifacts (the PR diff and metadata) interpreted by deterministic structural analysis and an LLM. It does not execute the code, run compilers, build binaries, or execute test suites. It cannot detect dynamic bugs, infinite loops, runtime memory leaks, or behavioral flaws that only dynamic execution would reveal.
+## 1. Trust Assumptions & Attribution Binding
 
-### 2. Diff Cap and Truncation Behavior
-To maintain consensus stability and GenVM gas/memory bounds, PR diffs are capped at 14,000 characters. If a diff exceeds this cap, it is deterministically truncated along file boundaries with a `[TRUNCATED]` marker. Under truncated conditions:
-- The maximum verdict is capped at `RELEASE_50`.
-- Any MUST criterion that the LLM does not mark as an explicit `YES` yields a `REVIEW` verdict rather than auto-release.
-Large PRs spanning thousands of lines should be split into smaller, modular pull requests to be fully evaluated.
+### PR Body Wallet Marker (`ship-escrow-wallet: 0x<address>`)
+- **Mechanism**: The submitter must ensure the PR body on GitHub contains the exact line:
+  ```
+  ship-escrow-wallet: 0x<caller_address>
+  ```
+- **Trust Model**: Ship Escrow trusts GitHub's access control: only the PR creator or repository maintainers with write permissions can edit the PR body.
+- **Threat Mitigated**: Third parties cannot observe an open PR and submit it to claim another contributor's reward (attempt fails before consensus with `"Pull request is not bound to the submitting wallet"`).
+- **Residual Risk**: A malicious repository maintainer could theoretically edit a contributor's PR description on GitHub to hijack attribution before on-chain submission. Contributors should submit on-chain immediately after opening their pull request.
 
-### 3. GitHub Availability and Rate Limits
-Ship Escrow relies on reading public PR artifacts via HTTP from GitHub (`github.com/<owner>/<repo>/pull/<n>.diff` and metadata via `.patch` or API). If GitHub experiences outages, network latency spikes, or IP rate-limiting, validator fetches may fail.
-- Fetch failures and non-200 responses are treated as contract `UserError`, NOT as negative verdicts (`REFUND`).
-- This ensures network outages never unfairly burn developer attempt counts or trigger unintended forfeits.
+---
 
-### 4. Accounting Ledger, Not Token Custody
-Ship Escrow implements an internal credit accounting ledger. Amounts are tracked as balance credits (`TreeMap[str, str]`) on Studionet. No actual ERC-20 tokens or native GEN coins are held in locked custody or debited from external wallets upon creation. Payouts and refunds credit balances within the contract state.
+## 2. GitHub REST API & Rate Limits
 
-### 5. No Time Dimension (No Deadlines)
-GenVM contracts do not have a trusted native clock or timestamp oracle on Studionet. Consequently, Ship Escrow does not enforce expiry timestamps, submission deadlines, or timeout-based auto-refunds. Bounty creators retain the right to cancel an open bounty if no valid submission has settled it.
+- **Unauthenticated Endpoint Usage**: Validators independently query `https://api.github.com/repos/<owner>/<repo>/pulls/<n>`. Unauthenticated requests on GitHub are subject to IP-based rate limits (60 requests per hour per egress IP).
+- **Failure Mode**: If a validator experiences rate limiting or HTTP 403/404, the validator raises `gl.vm.UserError("Pull request metadata unavailable")`.
+- **Safety Guarantee**: State mutations only happen after consensus. A rate limit failure causes the transaction to revert with zero credits debited and zero attempt counters consumed.
 
-### 6. Validator Majority Consensus, Not Absolute Determinism
-While structural facts and gate checks are purely deterministic, borderline code evaluations rely on an LLM called across multiple independent validators. While GenLayer enforces consensus across validator executions via `strict_eq`, non-deterministic edge cases may lead to validators disagreeing (`MAJORITY_DISAGREE`), triggering retry or non-acceptance.
+---
 
-### 7. Criteria Quality Sensitivity
-The accuracy of the evaluation depends heavily on the clarity, specificity, and testability of the creator's written acceptance criteria. Vague requirements like "make it good" or "refactor nicely" can lead to `UNCLEAR` or divergent interpretations.
+## 3. Same-Repository Pull Request Restriction
 
-### 8. Attempt Limits (Max 3 Attempts)
-Each bounty allows up to 3 evaluation attempts. If 3 submissions fail to reach a `RELEASE_x` verdict, the bounty transitions to `EXHAUSTED`. Once exhausted, the bounty creator can invoke `refund_exhausted` to reclaim escrowed credits.
+- **Requirement**: The pull request `head.repo.full_name` must equal `base.repo.full_name`.
+- **Rationale**: Fetching immutable revision diffs via `https://github.com/<owner>/<repo>/compare/<base_sha>...<head_sha>.diff` requires both commits to reside within the same repository. Cross-fork compare diffs can produce ambiguous merge bases or 404 responses across independent validator network routes.
+- **Integration Impact**: Bounties require contributors to push branches directly to the repository (e.g. feature branches) or maintainers to mirror fork branches before on-chain submission.
 
-### 9. Sybil Submissions / Address Separation
-The contract strictly forbids the creator from submitting to their own bounty (`gl.message.sender_address.as_hex != creator`). However, like all permissionless blockchain systems without proof-of-humanity, a creator could theoretically use a secondary address. The transparent submission log and public reputation scores serve as social disincentives.
+---
 
-### 10. Public Repositories Only
-Because validators must fetch diffs and commit metadata over public HTTPS without private credentials or OAuth bearer tokens, Ship Escrow strictly supports public GitHub repositories. Private repositories and enterprise on-premise instances are out of scope.
+## 4. Stuck-Bounty Boundary (No On-Chain Clock)
+
+- **Root Cause**: GenVM currently does not expose a deterministic block timestamp, transaction timestamp, or clock oracle (`gl.block`, `gl.transaction`, and `gl.message.timestamp` do not exist in the runtime; `time.time()` reads non-deterministic host system wall clocks).
+- **Design Decision**: To prevent consensus divergence across validators with differing local clocks, Ship Escrow V2 does NOT invent or simulate a clock.
+- **Cancel Boundary**: The bounty creator can invoke `cancel_bounty` ONLY while `attempts == 0`.
+- **Trade-off**: If a developer submits work that yields `REVIEW` (payout 0%, attempts = 1), the creator cannot unilaterally cancel the bounty to reclaim escrowed funds. The bounty remains open until subsequent submissions either settle (`RELEASE_x`), reject (`REFUND`), or reach the total cap of 6 attempts (`EXHAUSTED`), at which point `refund_exhausted` unlocks the creator's deposit. This design prioritizes protecting developers against malicious maintainer cancellations over creator liquidity.
+
+---
+
+## 5. Diff Cap & Truncation Safety
+
+- **14,000 Character Boundary**: Diff texts are capped at 14,000 characters to prevent GenVM out-of-memory faults and keep LLM context evaluation bounded.
+- **Fail-Safe Rule**: If a diff is truncated, the contract strictly forbids releasing funds or failing on missing files. Any truncated diff evaluation automatically yields `REVIEW` with 0% payout.
+
+---
+
+## 6. Simulated Accounting Ledger, Not External Custody
+
+- **Ledger Invariant**: Balances are conserved internally (`total_balances + total_escrowed == total_minted`).
+- **No Native Token Custody**: No ERC-20 tokens, wrapped assets, or native gas coins are held in smart contract custody. The contract provides verifiable settlement accounting, not financial asset custody.
