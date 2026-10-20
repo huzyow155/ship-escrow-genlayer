@@ -1,74 +1,85 @@
-# On-Chain Verification & Deployment Records
+﻿# SHIP ESCROW V2 & REPUTATION V2 - LIVE VERIFICATION REPORT
+STATUS: Preview
 
-> Network: **GenLayer Studionet** (Chain ID: 61999)  
-> Status: **Preview**  
-> RPC: `https://studio.genlayer.com/api`  
-> Explorer Base: `https://explorer-studio.genlayer.com`  
+## 1. Deployed Contracts & Source Verification
+- **ShipEscrowV2**: `0xAD5579496E66a3ac5C79c27C9Bd8784Aae7747Cd`
+  - Deploy Tx: `0x6fe51f08455cda0f0fcb9ae35e19258ef062a389507d5d3b9888f6c21fd121c3`
+  - Source SHA256: `28bd8f52f5874d58a1b415589ed78f9ee7d8f0a704a1380e7ae91e41e1486cb0`
+  - Byte-for-byte exact match: `true`
+- **ShipReputationV2**: `0x88F9Bb007266f4e35Ad50a6a244117EC61BC446F`
+  - Deploy Tx: `0x42d8611b053c77ea509344efb93962841c14448b81c19b6437e1dbda4561d60b`
+  - Source SHA256: `12e4c5e9cf8f480823ff778181b6a0d50ae7d37ec7c3a5b079cf6275779d1ed7`
+  - Byte-for-byte exact match: `true`
 
-This document details the on-chain addresses, deployment transactions, source code hash integrity, and studionet execution evidence for the Ship Escrow and Ship Reputation Intelligent Contracts.
+## 2. On-Chain Scenario Verification Table (F1 - F12)
+| ID | PR | Description | Expected Verdict | Actual Verdict | Payout % | Tx Hash | Receipt Triple | Match |
+|:---|:---|:------------|:-----------------|:---------------|:---------|:--------|:---------------|:------|
+| F1 | #2 | Clean Full Release | RELEASE_100 | RELEASE_100 | 100% | `0x468048b8dd1d8eef61cdb1d95a32d160ccfc94c962646308340b3e0355dc8616` | ACCEPTED / MAJORITY_AGREE / SUCCESS | **TRUE** |
+| F2 | #3 | Missing Required Path Gate | REFUND | REFUND | 0% | `0xe9af11590d4a6dc11afd19cab05f7f95b21c1760f006d1b07b2ff907d9c93f58` | ACCEPTED / MAJORITY_AGREE / SUCCESS | **TRUE** |
+| F3 | #4 | Deleted Test Files Gate | REVIEW | REVIEW | 0% | `0x97970698282eec8d41580f8bb135f1401deb6d55b4f554615745b1453a722573` | ACCEPTED / MAJORITY_AGREE / SUCCESS | **TRUE** |
+| F4 | #5 | Partial Release | RELEASE_75 | RELEASE_75 | 75% | `0x201f2e36fbd4246ef497c8a0987e384f30a7d98433fe95de23e5226878efbfbc` | ACCEPTED / MAJORITY_AGREE / SUCCESS | **TRUE** |
+| F5 | #6 | Prompt Injection Defense | REFUND | REFUND | 0% | `0xd0ae855cc54aba922715210d845896cdc2c05fa7790f26eeaff7b85b42d9b823` | ACCEPTED / MAJORITY_AGREE / SUCCESS | **TRUE** |
+| F6 | #7 | Multi-Commit PR Authentication | RELEASE_100 | RELEASE_100 | 100% | `0x9a2b2a2e6756070bcd53f7991ac15b76341bc7ba1cda23eae4ee8b6b57c24fa3` | ACCEPTED / MAJORITY_AGREE / SUCCESS | **TRUE** |
+| F7 | #8 | Advancing Head Stale SHA | REVERT (ERROR) | REVERT (ERROR) | N/A | `0x174e5e0b9efc4c29d34990ea34b338a23854a6ca82239d099e1e8fe3b5e26e57` | ACCEPTED / MAJORITY_AGREE / ERROR | **TRUE** |
+| F8 | #9 | Wrong-Wallet Marker Rejection | REVERT (ERROR) | REVERT (ERROR) | N/A | `0x3573533fe67e90889048a80d29e1d3df3dfa13a8727cf8fbf24d6f137b4b345d` | ACCEPTED / MAJORITY_AGREE / ERROR | **TRUE** |
+| F9 | #10 | No Wallet Marker Rejection | REVERT (ERROR) | REVERT (ERROR) | N/A | `0x0e27fea63c4e1562f4315de75cd73ed8ee317312ea76a272c12b44b98634dc1e` | ACCEPTED / MAJORITY_AGREE / ERROR | **TRUE** |
+| F10 | #11 | Partial Required Prefix Gate | REFUND | REFUND | 0% | `0x516b88e022cab960bcdd525685c29daafba2f205356bbae4af2691de0712a888` | ACCEPTED / MAJORITY_AGREE / SUCCESS | **TRUE** |
+| F11 | #12 | Non-Test Deleted File Mode | RELEASE_100 | RELEASE_100 | 100% | `0xc9c21ea16bc460e291fbc26ae92b008b79080420e96b822d52d52f48a6257317` | ACCEPTED / MAJORITY_AGREE / SUCCESS | **TRUE** |
+| F12 | #13 | Oversize Diff (> 14k chars) | REVIEW | REVIEW | 0% | `0x863106348c889f0cc95fefa7da8668b0853632f980232b8ae0b9e47ffca0a697` | ACCEPTED / MAJORITY_AGREE / SUCCESS | **TRUE** |
 
----
+## 3. Attack & Lifecycle Protection Tests
+| Test Description | Caller | Target | Expected Outcome | Actual On-Chain Outcome | Tx Hash | Result |
+|:-----------------|:-------|:-------|:-----------------|:------------------------|:--------|:-------|
+| Stale SHA submission (F7) | Dev | Bounty 7 | Revert before attempt consumed | ERROR (Consensus agree) | `0x174e5e0b9efc4c29d34990ea34b338a23854a6ca82239d099e1e8fe3b5e26e57` | **PASSED** |
+| Attribution hijacking (F8) | Dev | Bounty 8 | Revert: not bound to submitter | ERROR (Consensus agree) | `0x3573533fe67e90889048a80d29e1d3df3dfa13a8727cf8fbf24d6f137b4b345d` | **PASSED** |
+| Unmarked PR spam (F9) | Dev | Bounty 9 | Revert: missing wallet marker | ERROR (Consensus agree) | `0x0e27fea63c4e1562f4315de75cd73ed8ee317312ea76a272c12b44b98634dc1e` | **PASSED** |
+| Cancel after submission | Creator | Bounty 3 | Revert: attempts > 0 | ERROR (Consensus agree) | `0x7f979fb5fecf4c6da3398fe32391caecdcc7432d22763d0abf5ca8ad01483739` | **PASSED** |
+| Cancel at attempts == 0 | Creator | Bounty 13 | Success: escrow refunded | SUCCESS | `0x23ef16c657be7aec348ef9aae0c86f063219927f25b69d98424c8c703ce58c5a` | **PASSED** |
+| Reputation sync duplicate | Dev | Bounty 1 | Revert: already synced | ERROR (Consensus agree) | `0x23fdcc69e351bc7722334085de0746dba372f1c9cc0c259355bb7c58de1ae2f0` | **PASSED** |
+| Reputation sync low payout | Dev | Bounty 4 | Revert: payout < required | ERROR (Consensus agree) | `0xfb0273a690977630578cfe68e0585fcb3902b37e54bacfd7300636cdc39fbb75` | **PASSED** |
+| Reputation sync valid threshold | Dev | Bounty 4 | Success: scores updated | SUCCESS | `0x31aedd5b196463f3b397eb867557a293de18e95aa11b9e4c36ef0fc6d816bdc5` | **PASSED** |
 
-## 1. Primary Contract: ShipEscrow
+## 4. Conserved Ledger Invariant & Statistics
+```json
+{
+  "invariant_holds": true,
+  "total_balances": "2600",
+  "total_escrowed": "400",
+  "total_minted": "3000"
+}
+```
+- **Invariant Holds**: `true`
+- **Formula**: `total_balances (2600) + total_escrowed (400) == total_minted (3000)`
 
-- **Contract Address**: [`0x8DC94110Ed3E111Fb74Dce849CdBA8f567E6024F`](https://explorer-studio.genlayer.com/address/0x8DC94110Ed3E111Fb74Dce849CdBA8f567E6024F)
-- **Deployment Transaction Hash**: `0x0dcfc833e0379f1259cfcdad6ca1a77c0783ba8a2eeb461e32c314a7086c16c3`
-- **Deploy Status**: `status_name: ACCEPTED`, `result_name: MAJORITY_AGREE`, `leader execution_result: SUCCESS`
-- **Saved Receipt**: `docs/evidence/deploy_receipt.json`
-- **Local Source File**: `contracts/ShipEscrow.py`
-- **Local SHA-256 Hash**: `2de0496eea2d940dd1985dcfa8e766abf0fbb56d36220297ddc6683b5f118b54`
-- **On-Chain Decoded SHA-256 Hash**: `2de0496eea2d940dd1985dcfa8e766abf0fbb56d36220297ddc6683b5f118b54`
-- **Source Integrity Verification**: **EXACT MATCH (Byte-for-byte verified)**
+### On-Chain Final Stats (`get_stats`):
+```json
+{
+  "cancelled": 1,
+  "exhausted": 0,
+  "open": 8,
+  "refunded": 0,
+  "schema_version": "2",
+  "settled": 4,
+  "total_bonds_forfeited": 3,
+  "verdict_refund": 3,
+  "verdict_release_100": 3,
+  "verdict_release_25": 0,
+  "verdict_release_50": 0,
+  "verdict_release_75": 1,
+  "verdict_review": 2
+}
+```
 
-### Verification Method
-1. Query RPC method `eth_getTransactionByHash` with the deployment transaction hash `0x0dcfc833e0379f1259cfcdad6ca1a77c0783ba8a2eeb461e32c314a7086c16c3`.
-2. Extract `result.data.contract_code`.
-3. Base64-decode the payload and compute `sha256(decoded_bytes)`.
-4. Compare with local `contracts/ShipEscrow.py` SHA-256 hash. Result: `EXACT MATCH`.
+## 5. Robustness Batches (10 runs on F1, F4, F5)
+| Fixture | Runs | Label-Vector Identical Count | Verdict Matches | Expected Label Vector | Actual Label Vector | Verdict |
+|:--------|:-----|:-----------------------------|:----------------|:----------------------|:--------------------|:--------|
+| F1 | 10 | 10 / 10 | 10 / 10 | `["YES","YES","YES"]` | `["YES","YES","YES"]` | `RELEASE_100` |
+| F4 | 10 | 10 / 10 | 10 / 10 | `["YES","YES","NO"]` | `["YES","YES","NO"]` | `RELEASE_75` |
+| F5 | 10 | 10 / 10 | 10 / 10 | `["NO"]` | `["NO"]` | `REFUND` |
 
----
-
-## 2. Multi-Contract Consumer: ShipReputation
-
-- **Contract Address**: [`0x55c56f0dfFb8227345814A37c68394b05c26E901`](https://explorer-studio.genlayer.com/address/0x55c56f0dfFb8227345814A37c68394b05c26E901)
-- **Deployment Transaction Hash**: `0xca13e68ba0743939041b61985062b39fa95ef54c9134c5d47c65441dc03b1602`
-- **Target Escrow Address Bound**: `0x8DC94110Ed3E111Fb74Dce849CdBA8f567E6024F`
-- **Deploy Status**: `status_name: ACCEPTED`, `result_name: MAJORITY_AGREE`, `leader execution_result: SUCCESS`
-- **Saved Receipt**: `docs/evidence/deploy_reputation_receipt.json`
-- **Local Source File**: `contracts/ShipReputation.py`
-- **Local SHA-256 Hash**: `6dc14ae2714d93cae2fe152112ca0f9ff69fa58284f25b77ea02fa9db647381e`
-- **On-Chain Decoded SHA-256 Hash**: `6dc14ae2714d93cae2fe152112ca0f9ff69fa58284f25b77ea02fa9db647381e`
-- **Source Integrity Verification**: **EXACT MATCH (Byte-for-byte verified)**
-
----
-
-## 3. Real On-Chain Transactions & Measured Latencies
-
-> **Transaction Hash Provenance Note**: Earlier documentation drafts displayed transaction hashes typed from memory; every hash listed below is strictly verified and corresponds 1:1 with an existing JSON receipt saved under `docs/evidence/`.
-
-All transactions below were executed and accepted by validators on Studionet during Milestone 4 & 5 validation runs:
-
-| Case | Description | Target / Method | Tx Hash | Saved Receipt | Leader Latency | Execution Result / Outcome |
-| :--- | :--- | :--- | :--- | :--- | :---: | :--- |
-| **Case A** | Positive Payout (F1 Good PR) | `submit_work(14, PR#2, 5db0441...)` | `0x1913d363e055b53406c719cb3c3f284523ce2805956139a13b7e0596f2e18dd8` | `f1_submit_receipt.json` | 41.76s | `SUCCESS` -> `RELEASE_100` (Dev: 1000, Creator: 0) |
-| **Case B** | Fast Gate Exit (F2 Trap README) | `submit_work(15, PR#3, 3de6b56...)` | `0xfb293d53abc031627c96c5d3c0a0d6953202d7913a99bfac8c2abf14fe9b329c` | `f2_submit_receipt.json` | 8.55s | `SUCCESS` -> `REFUND` (fast gate exit) |
-| **Case C** | CI Gaming Defense (F3 Trap Deleted Tests) | `submit_work(16, PR#4, aa9a2af...)` | `0xba2725497e7a4a80b116bbbbccf3648fc63db2f8c94e3c0f2c22717494b770c6` | `f3_submit_receipt.json` | 15.21s | `SUCCESS` -> `REVIEW` (gate: test_deleted) |
-| **Case D** | Partial Payout (F4 Partial PR) | `submit_work(17, PR#5, 73fbd16...)` | `0x2b09d96cdf48beb7eb6f59e92594552bd4a262cc457cc6db54df810ee6ce84e0` | `f4_submit_receipt.json` | 18.61s | `SUCCESS` -> `RELEASE_75` (Dev: 750, Creator: 250) |
-| **Case E** | Injection Resistance (F5 Injection) | `submit_work(18, PR#6, b9e0991...)` | `0xb8ce66ede840e86a349e8d220ff83006f1060fbf4df1f16e49f4a38b52c7eb20` | `f5_submit_receipt.json` | 25.16s | `SUCCESS` -> `REFUND` (injection defeated) |
-| **Case F** | Non-Existent PR (HTTP 404) | `submit_work(19, PR#99999, ...)` | `0xc8ece3c59413fcb9b77f70b6192641184f2ff5373cc0f530be72f6eba47f0180` | `case_f_404_receipt.json` | 8.55s | `ERROR` -> `"PR not found on GitHub (HTTP 404)"` |
-| **Case F** | Invalid Head SHA format | `submit_work(19, PR#2, "shortsha123")` | `0xc6305c9cb6a001d4d95da9eefe9e9a25577ff2483dfc168e00ac46712fb7210d` | `case_f_bad_sha_receipt.json` | 5.25s | `ERROR` -> `"Invalid head sha: must be 40 lowercase hex characters"` |
-| **Case F** | Wrong Repo PR URL | `submit_work(19, torvalds/linux, ...)` | `0x361fb598445ee04e9219ab3829219a19419ab70e551e2ab319561a03cb977678` | `case_f_wrong_repo_receipt.json` | 5.23s | `ERROR` -> `"PR URL owner/repo mismatch"` |
-| **Case G** | Duplicate Head SHA check | `submit_work(19, PR#3, 3de6b56...)` | `0x4b3ba968f059e5cd8cbd6b9f2cbab3317e50310d019be10924d0184fe2b0e359` | `case_g_receipt.json` | 8.52s | `ERROR` -> `"Duplicate submission for head sha: existing submission 14"` |
-| **Case H** | Exhaustion Flow (Attempt 1) | `submit_work(19, PR#3, 3de6b56...)` | `0x4505c25d920e613f3a8359e66a083f344263ab5b071749c88b8300ec71ad7202` | `case_h_att1_receipt.json` | 15.18s | `SUCCESS` -> Attempt 1 recorded (`REFUND`) |
-| **Case H** | Exhaustion Flow (Attempt 2) | `submit_work(19, PR#4, aa9a2af...)` | `0xa754c4f0ef27c096a04caa47f8c5b4c154e66d02b0ba4e6e43b7ed1da29c6a43` | `case_h_att2_receipt.json` | 15.22s | `SUCCESS` -> Attempt 2 recorded (`REVIEW`) |
-| **Case H** | Exhaustion Flow (Attempt 3) | `submit_work(19, PR#6, b9e0991...)` | `0x9488be35cfffd234bc6864e104a3f38102b45adba29203c50e3f40c9628fedc5` | `case_h_att3_receipt.json` | 15.20s | `SUCCESS` -> Attempt 3 recorded; bounty transitions to `EXHAUSTED` |
-| **Case H** | Refund Exhausted | `refund_exhausted(19)` | `0x001501cb9ea23d16623290f59d502718794c9f05decaf9a6d01b54188c47a921` | `case_h_refund_exhausted_receipt.json` | 8.67s | `SUCCESS` -> Status `REFUNDED` (1000 credits to creator) |
-| **Case I** | Voluntary Cancellation | `cancel_bounty(20)` | `0xe3c3b4407af759d68c0468a7b66c09366871f505b6605b0de1db282a1d9fe24e` | `case_i_cancel_receipt.json` | 5.30s | `SUCCESS` -> Status `CANCELLED` (750 credits to creator) |
-| **Case L** | Reputation Synchronization | `ShipReputation.sync(14)` | `0xdd4e5fcee29bc404094bbab06e30bebbabf62d3d3372816cc22d6175c96ab28c` | `reputation_sync_receipt.json` | 5.26s | `SUCCESS` -> Dev & creator scores synchronized |
-| **Case L** | Sync Idempotency Enforcement | `ShipReputation.sync(14)` | `0x68d38f9e8a5616e690c39977d47c09fb3b36214ddff6d82e656b8588523d089b` | `case_l_sync_dup_receipt.json` | 5.21s | `ERROR` -> `"Bounty settlement already processed"` |
-
----
-
-## 4. Explorer Observations
-
-Opening [`https://explorer-studio.genlayer.com/address/0x8DC94110Ed3E111Fb74Dce849CdBA8f567E6024F`](https://explorer-studio.genlayer.com/address/0x8DC94110Ed3E111Fb74Dce849CdBA8f567E6024F) renders the contract overview panel displaying the contract address, transaction history for each write execution, status `ACCEPTED`, consensus result `MAJORITY_AGREE`, and the contract creator address.
+## 6. Finalization Log Summary
+- **Checked At**: `2026-10-20T15:00:33.505Z`
+- **Receipts Checked**: `36`
+- **Initial Status**: `ACCEPTED` (36 / 36)
+- **Re-fetched Status**: `ACCEPTED` (All write transactions confirmed on Studionet with `MAJORITY_AGREE` and leader SUCCESS/ERROR)
+- **Reached FINALIZED**: `0` (Honest observation: studionet node consensus reaches ACCEPTED; transactions do not transition to FINALIZED on current studionet node RPC)
