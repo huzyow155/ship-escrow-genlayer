@@ -3,20 +3,33 @@ const fs = require('fs');
 const path = require('path');
 
 const evidenceDir = path.join(__dirname, '../docs/evidence_v2');
+const finalizationDir = path.join(evidenceDir, 'finalization');
+if (!fs.existsSync(finalizationDir)) {
+  fs.mkdirSync(finalizationDir, { recursive: true });
+}
+
 const client = createClient({ chain: chains.studionet });
 
 async function main() {
-  console.log("Checking finalization status for all write receipts...");
+  const now = new Date();
+  const utcIso = now.toISOString();
+  const utcSafe = utcIso.replace(/[:.]/g, '-');
+  console.log(`====================================================`);
+  console.log(`CHECKING FINALIZATION STATUS ON STUDIONET`);
+  console.log(`Timestamp: ${utcIso}`);
+  console.log(`====================================================`);
 
-  const files = fs.readdirSync(evidenceDir).filter(f => f.endsWith('.json') && !f.includes('invariant') && !f.includes('stats') && !f.includes('live_evidence') && !f.includes('finalization'));
+  const files = fs.readdirSync(evidenceDir).filter(f =>
+    f.endsWith('.json') &&
+    !f.includes('invariant') &&
+    !f.includes('stats') &&
+    !f.includes('live_evidence') &&
+    !f.includes('finalization') &&
+    !f.includes('packet_recomputation')
+  );
 
-  const finalizationLog = {
-    checked_at: new Date().toISOString(),
-    receipts_checked: 0,
-    accepted_count: 0,
-    finalized_count: 0,
-    entries: [],
-  };
+  const entries = [];
+  const countsByStatus = {};
 
   for (const file of files) {
     const filePath = path.join(evidenceDir, file);
@@ -25,46 +38,81 @@ async function main() {
       const txHash = receipt.hash || receipt.transaction_hash;
       if (!txHash) continue;
 
-      const initialStatus = receipt.status_name || (receipt.status === 5 ? 'ACCEPTED' : (receipt.status === 2 ? 'FINALIZED' : String(receipt.status)));
+      const fileStat = fs.statSync(filePath);
+      const initialStatusName = receipt.status_name || (receipt.status === 5 ? 'ACCEPTED' : (receipt.status === 7 ? 'FINALIZED' : String(receipt.status)));
+      const initialTime = receipt.created_at || receipt.timestamp || fileStat.mtime.toISOString();
 
-      // Re-fetch current status from Studionet
-      let currentStatus = initialStatus;
-      let refetched = null;
-      try {
-        refetched = await client.getTransactionReceipt({ hash: txHash });
-        currentStatus = refetched.status_name || (refetched.status === 5 ? 'ACCEPTED' : (refetched.status === 2 ? 'FINALIZED' : String(refetched.status)));
-      } catch (err) {
-        // If query fails or returns same, use known
-      }
+      // Fetch transaction from RPC
+      const tx = await client.getTransaction({ hash: txHash });
+      const currentStatusName = tx.statusName || tx.status_name || (tx.status === 7 ? 'FINALIZED' : (tx.status === 5 ? 'ACCEPTED' : String(tx.status)));
+      const currentResultName = tx.result_name || receipt.result_name;
+      const leaderExec = tx.consensus_data?.leader_receipt?.[0]?.execution_result || receipt.consensus_data?.leader_receipt?.[0]?.execution_result;
 
-      finalizationLog.receipts_checked++;
-      if (currentStatus === 'FINALIZED') {
-        finalizationLog.finalized_count++;
-      } else {
-        finalizationLog.accepted_count++;
-      }
+      countsByStatus[currentStatusName] = (countsByStatus[currentStatusName] || 0) + 1;
 
-      finalizationLog.entries.push({
+      entries.push({
         file,
         tx_hash: txHash,
-        initial_status_name: initialStatus,
-        current_status_name: currentStatus,
-        result_name: receipt.result_name || refetched?.result_name,
-        leader_execution_result: receipt.consensus_data?.leader_receipt?.[0]?.execution_result || refetched?.consensus_data?.leader_receipt?.[0]?.execution_result,
-        timestamp_initial: receipt.timestamp || null,
-        timestamp_checked: new Date().toISOString(),
+        initial_status_name: initialStatusName,
+        initial_timestamp: initialTime,
+        current_status: tx.status,
+        current_status_name: currentStatusName,
+        current_result_name: currentResultName,
+        leader_execution_result: leaderExec,
+        fetched_at: utcIso,
       });
 
-      console.log(`  ${file}: initial=${initialStatus} -> current=${currentStatus}`);
-    } catch (e) {
-      console.warn(`  Could not process ${file}: ${e.message}`);
+      console.log(`  ${file}: initial=${initialStatusName} (${initialTime}) -> current=${currentStatusName} (status: ${tx.status})`);
+    } catch (err) {
+      console.warn(`  Error checking ${file}: ${err.message}`);
     }
   }
 
-  const logPath = path.join(evidenceDir, 'finalization_log.json');
-  fs.writeFileSync(logPath, JSON.stringify(finalizationLog, null, 2));
-  console.log(`\nFinalization log saved to ${logPath}`);
-  console.log(`Total: ${finalizationLog.receipts_checked}, ACCEPTED: ${finalizationLog.accepted_count}, FINALIZED: ${finalizationLog.finalized_count}`);
+  const runResult = {
+    checked_at: utcIso,
+    receipts_checked: entries.length,
+    counts_by_status_name: countsByStatus,
+    entries,
+  };
+
+  const runFilePath = path.join(finalizationDir, `finalization_check_${utcSafe}.json`);
+  fs.writeFileSync(runFilePath, JSON.stringify(runResult, null, 2));
+  console.log(`\nRun recorded to: ${runFilePath}`);
+  console.log("Summary counts:", countsByStatus);
+
+  // Write summary script helper
+  updateSummaryScript();
+}
+
+function updateSummaryScript() {
+  const summaryFile = path.join(__dirname, 'print_finalization_summary.mjs');
+  const code = `import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const finalDir = path.join(__dirname, '../docs/evidence_v2/finalization');
+
+if (!fs.existsSync(finalDir)) {
+  console.log("No finalization directory found.");
+  process.exit(0);
+}
+
+const files = fs.readdirSync(finalDir).filter(f => f.startsWith('finalization_check_') && f.endsWith('.json')).sort();
+
+console.log("# FINALIZATION LOG RUNS SUMMARY");
+console.log("| Run UTC Timestamp | Total Checked | FINALIZED Count | ACCEPTED Count | Other |");
+console.log("|:------------------|:--------------|:----------------|:---------------|:------|");
+
+for (const f of files) {
+  const data = JSON.parse(fs.readFileSync(path.join(finalDir, f), 'utf8'));
+  const finalized = data.counts_by_status_name['FINALIZED'] || 0;
+  const accepted = data.counts_by_status_name['ACCEPTED'] || 0;
+  const other = data.receipts_checked - finalized - accepted;
+  console.log(\`| \${data.checked_at} | \${data.receipts_checked} | \${finalized} | \${accepted} | \${other} |\`);
+}
+`;
+  fs.writeFileSync(summaryFile, code);
 }
 
 main().catch(err => {
