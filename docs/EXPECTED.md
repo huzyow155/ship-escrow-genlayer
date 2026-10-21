@@ -69,14 +69,14 @@
 ### F8: Wrong-Wallet Binding
 - **PR**: https://github.com/huzyow155/ship-escrow-fixtures/pull/9
 - **Marker in PR Body**: `ship-escrow-wallet: 0x44DbCd42cb603DD27a12242D1caB6008800C7DCb` (attacker)
-- **Caller**: Dev (`0x6325B360Db455435BF5e81D0aE18DC3b249f226C`)
+- **Caller**: Dev (`0xBc2AF12074E0459180bAC2EB5144AE98C13AdbB5`)
 - **Why It Matters**: Prevents frontrunning or submitting third-party PRs to claim bounties.
 - **Consensus Prediction**: Transaction reverts with `UserError("Pull request is not bound to the submitting wallet")`.
 
 ### F9: Missing Wallet Marker
 - **PR**: https://github.com/huzyow155/ship-escrow-fixtures/pull/10
 - **Marker in PR Body**: None
-- **Caller**: Dev (`0x6325B360Db455435BF5e81D0aE18DC3b249f226C`)
+- **Caller**: Dev (`0xBc2AF12074E0459180bAC2EB5144AE98C13AdbB5`)
 - **Why It Matters**: Submissions without explicit PR attribution binding cannot consume bounty attempts.
 - **Consensus Prediction**: Transaction reverts with `UserError("Pull request is not bound to the submitting wallet")`.
 
