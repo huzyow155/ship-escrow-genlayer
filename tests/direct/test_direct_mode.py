@@ -384,3 +384,67 @@ def test_case10_required_all_prefixes_gate(direct_env):
     with vm.prank(dev):
         v10 = escrow.submit_work(bid10, "https://github.com/owner/repo/pull/10", "10" + "0" * 38)
     assert v10 == "REFUND", "Failing any required prefix must trigger REFUND"
+
+
+def test_case11_cross_fork_rejection(direct_env):
+    """11. Cross-fork rejection (head.repo differs from base.repo)"""
+    vm = direct_env["vm"]
+    escrow = direct_env["escrow"]
+    creator = direct_env["creator"]
+    dev = direct_env["dev"]
+    dev_hex = direct_env["dev_hex"]
+    crit = direct_env["crit"]
+
+    with vm.prank(creator):
+        bid11 = escrow.create_bounty("Fork Bounty", "owner/repo", crit, "[]", "100")
+
+    meta_fork = {
+        "state": "open",
+        "draft": False,
+        "merged": False,
+        "head": {"sha": "11" + "0" * 38, "repo": {"full_name": "attacker/fork-repo"}},
+        "base": {"sha": "0" * 40, "repo": {"full_name": "owner/repo"}},
+        "body": f"ship-escrow-wallet: {dev_hex}",
+        "user": {"login": "attacker"},
+        "commits": 1,
+    }
+    vm.mock_web("https://api.github.com/repos/owner/repo/pulls/11", json.dumps(meta_fork))
+
+    with vm.prank(dev):
+        with pytest.raises(Exception, match="Pull request must be same-repository"):
+            escrow.submit_work(bid11, "https://github.com/owner/repo/pull/11", "11" + "0" * 38)
+
+
+def test_case12_rename_resilience_alias(direct_env):
+    """12. Rename resilience (alias huzyow155 / hypercybers99 accepted interchangeably)"""
+    vm = direct_env["vm"]
+    escrow = direct_env["escrow"]
+    creator = direct_env["creator"]
+    dev = direct_env["dev"]
+    dev_hex = direct_env["dev_hex"]
+    crit = direct_env["crit"]
+
+    with vm.prank(creator):
+        bid12 = escrow.create_bounty("Alias Bounty", "hypercybers99/ship-escrow-fixtures", crit, "[]", "100")
+
+    meta_alias = {
+        "state": "open",
+        "draft": False,
+        "merged": False,
+        "head": {"sha": "12" + "0" * 38, "repo": {"full_name": "hypercybers99/ship-escrow-fixtures"}},
+        "base": {"sha": "0" * 40, "repo": {"full_name": "hypercybers99/ship-escrow-fixtures"}},
+        "body": f"ship-escrow-wallet: {dev_hex}",
+        "user": {"login": "dev"},
+        "commits": 1,
+    }
+    vm.mock_web("https://api.github.com/repos/huzyow155/ship-escrow-fixtures/pulls/12", json.dumps(meta_alias))
+    vm.mock_web(
+        f"https://github.com/huzyow155/ship-escrow-fixtures/compare/{'0'*40}...{'12'+'0'*38}.diff",
+        "diff --git a/src/slug.py b/src/slug.py\n+code\n"
+    )
+    vm.mock_llm(r".*", '{"results": ["YES", "YES"]}')
+
+    with vm.prank(dev):
+        v12 = escrow.submit_work(bid12, "https://github.com/huzyow155/ship-escrow-fixtures/pull/12", "12" + "0" * 38)
+    assert v12 == "RELEASE_100", "Bounty with renamed owner accepts submission under alias URL"
+

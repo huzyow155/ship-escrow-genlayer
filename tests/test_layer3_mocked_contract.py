@@ -279,6 +279,51 @@ class TestLayer3MockedContractPipelines(unittest.TestCase):
             self.reputation.sync(bid, min_payout_pct=75)
         self.assertEqual(str(cm.exception), "Bounty settlement already processed")
 
+    def test_fork_rejection_cross_repository(self):
+        """Cross-fork submission must be rejected with 'Pull request must be same-repository'."""
+        fx = self.fixtures_data["F1"]
+        fork_meta = {
+            "state": fx["state"],
+            "draft": fx["draft"],
+            "merged": False,
+            "head": {"sha": fx["head_sha"], "repo": {"full_name": "attacker/ship-escrow-fixtures"}},
+            "base": {"sha": fx["base_sha"], "repo": {"full_name": "huzyow155/ship-escrow-fixtures"}},
+            "body": fx["body"],
+            "user": {"login": fx["user_login"]},
+            "commits": fx["commits"],
+        }
+        api_url = f"https://api.github.com/repos/huzyow155/ship-escrow-fixtures/pulls/{fx['pr_number']}"
+        gl.nondet.web.pages[api_url] = json.dumps(fork_meta)
+
+        gl.set_sender(self.creator)
+        crit = json.dumps([{"level": "MUST", "text": "Implement slugify in src/slug.py"}])
+        bid = self.escrow.create_bounty("Fork Bounty", "huzyow155/ship-escrow-fixtures", crit, "[]", "100")
+
+        gl.set_sender(self.dev)
+        with self.assertRaises(gl.vm.UserError) as cm:
+            self.escrow.submit_work(bid, fx["pr_url"], fx["head_sha"])
+        self.assertEqual(str(cm.exception), "Pull request must be same-repository")
+
+    def test_rename_resilience_alias_resolution(self):
+        """Bounty created under alias repo name validates and settles cleanly."""
+        fx = self.setup_mock_fixture("F1")
+        gl.nondet.prompt_handler = lambda p: '{"results": ["YES", "YES", "YES"]}'
+
+        gl.set_sender(self.creator)
+        crit = json.dumps([
+            {"level": "MUST", "text": "Implement slugify in src/slug.py"},
+            {"level": "MUST", "text": "Add unit tests in tests/test_slug.py"},
+            {"level": "SHOULD", "text": "Update README with usage example"}
+        ])
+        # Bounty created with renamed alias owner
+        bid = self.escrow.create_bounty("Alias Bounty", "hypercybers99/ship-escrow-fixtures", crit, "[]", "100")
+
+        # Developer submits using legacy URL
+        gl.set_sender(self.dev)
+        verdict = self.escrow.submit_work(bid, fx["pr_url"], fx["head_sha"])
+        self.assertEqual(verdict, "RELEASE_100")
+
+
 
 if __name__ == '__main__':
     unittest.main()

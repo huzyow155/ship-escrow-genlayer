@@ -268,6 +268,16 @@ class TestLayer1PureFunctions(unittest.TestCase):
             ("huzyow155", "ship-escrow-fixtures", "2")
         )
 
+        # Alias handling (rename-resilience)
+        self.assertEqual(
+            validate_url("https://github.com/hypercybers99/ship-escrow-fixtures/pull/2", "huzyow155/ship-escrow-fixtures"),
+            ("hypercybers99", "ship-escrow-fixtures", "2")
+        )
+        self.assertEqual(
+            validate_url("https://github.com/huzyow155/ship-escrow-fixtures/pull/2", "hypercybers99/ship-escrow-fixtures"),
+            ("huzyow155", "ship-escrow-fixtures", "2")
+        )
+
         bypasses = [
             ("http://github.com/huzyow155/ship-escrow-fixtures/pull/2", "PR URL must use https scheme"),
             ("https://user:pass@github.com/huzyow155/ship-escrow-fixtures/pull/2", "PR URL must not contain userinfo"),
