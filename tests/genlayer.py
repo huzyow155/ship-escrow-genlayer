@@ -57,6 +57,8 @@ class GlWeb:
             return self.get_handler(url)
         if url in self.pages:
             content = self.pages[url]
+            if isinstance(content, GlWebResponse):
+                return content
             body_bytes = content.encode("utf-8") if isinstance(content, str) else content
             return GlWebResponse(status=200, body=body_bytes)
         return GlWebResponse(status=404, body=b"Not Found")

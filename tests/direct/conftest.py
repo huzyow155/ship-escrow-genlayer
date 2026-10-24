@@ -51,8 +51,17 @@ _orig_mock_web = vm_module.VMContext.mock_web
 
 
 def _patched_mock_web(self, url, response, *args, **kwargs):
-    genlayer.gl.nondet.web.pages[url] = response
-    return _orig_mock_web(self, url, response)
+    status = kwargs.get("status", 200)
+    body = response
+    if isinstance(response, dict):
+        status = response.get("status", status)
+        body = response.get("body", "")
+    genlayer.gl.nondet.web.pages[url] = genlayer.GlWebResponse(
+        status=status,
+        body=body.encode("utf-8") if isinstance(body, str) else body
+    )
+    mock_dict = {"status": status, "body": body}
+    return _orig_mock_web(self, url, mock_dict)
 
 
 vm_module.VMContext.mock_web = _patched_mock_web

@@ -323,6 +323,70 @@ class TestLayer3MockedContractPipelines(unittest.TestCase):
         verdict = self.escrow.submit_work(bid, fx["pr_url"], fx["head_sha"])
         self.assertEqual(verdict, "RELEASE_100")
 
+    def test_error_pinning_301_repository_moved(self):
+        """HTTP 301 from GitHub API must return exact 'Repository moved' UserError."""
+        from tests.genlayer import GlWebResponse
+        fx = self.fixtures_data["F1"]
+        gl.nondet.web.get_handler = lambda url: GlWebResponse(status=301, body=b"Moved")
+
+        gl.set_sender(self.creator)
+        crit = json.dumps([{"level": "MUST", "text": "Implement slugify in src/slug.py"}])
+        bid = self.escrow.create_bounty("Moved PR Bounty", "huzyow155/ship-escrow-fixtures", crit, "[]", "100")
+
+        gl.set_sender(self.dev)
+        with self.assertRaises(gl.vm.UserError) as cm:
+            self.escrow.submit_work(bid, fx["pr_url"], fx["head_sha"])
+        self.assertEqual(str(cm.exception), "Repository moved: use the current owner/repo name in the bounty and the PR URL")
+        gl.nondet.web.get_handler = None
+
+    def test_error_pinning_403_rate_limit(self):
+        """HTTP 403 from GitHub API must return exact 'GitHub rate limit reached' UserError."""
+        from tests.genlayer import GlWebResponse
+        fx = self.fixtures_data["F1"]
+        gl.nondet.web.get_handler = lambda url: GlWebResponse(status=403, body=b"Rate Limit")
+
+        gl.set_sender(self.creator)
+        crit = json.dumps([{"level": "MUST", "text": "Implement slugify in src/slug.py"}])
+        bid = self.escrow.create_bounty("Rate Limit Bounty", "huzyow155/ship-escrow-fixtures", crit, "[]", "100")
+
+        gl.set_sender(self.dev)
+        with self.assertRaises(gl.vm.UserError) as cm:
+            self.escrow.submit_work(bid, fx["pr_url"], fx["head_sha"])
+        self.assertEqual(str(cm.exception), "GitHub rate limit reached, retry later")
+        gl.nondet.web.get_handler = None
+
+    def test_error_pinning_500_metadata_unavailable(self):
+        """HTTP 500 from GitHub API must return exact 'Pull request metadata unavailable' UserError."""
+        from tests.genlayer import GlWebResponse
+        fx = self.fixtures_data["F1"]
+        gl.nondet.web.get_handler = lambda url: GlWebResponse(status=500, body=b"Internal Server Error")
+
+        gl.set_sender(self.creator)
+        crit = json.dumps([{"level": "MUST", "text": "Implement slugify in src/slug.py"}])
+        bid = self.escrow.create_bounty("500 Bounty", "huzyow155/ship-escrow-fixtures", crit, "[]", "100")
+
+        gl.set_sender(self.dev)
+        with self.assertRaises(gl.vm.UserError) as cm:
+            self.escrow.submit_work(bid, fx["pr_url"], fx["head_sha"])
+        self.assertEqual(str(cm.exception), "Pull request metadata unavailable")
+        gl.nondet.web.get_handler = None
+
+    def test_validator_fn_criterion_results_consensus_binding(self):
+        """In V2.2, validator_fn strictly compares criterion_results vector equality."""
+        fx = self.setup_mock_fixture("F1")
+        # Ensure base mock runs cleanly
+        gl.nondet.prompt_handler = lambda p: '{"results": ["YES", "YES", "YES"]}'
+        gl.set_sender(self.creator)
+        crit = json.dumps([
+            {"level": "MUST", "text": "Implement slugify in src/slug.py"},
+            {"level": "MUST", "text": "Add unit tests in tests/test_slug.py"},
+            {"level": "SHOULD", "text": "Update README with usage example"}
+        ])
+        bid = self.escrow.create_bounty("Binding Bounty F1", "huzyow155/ship-escrow-fixtures", crit, "[]", "400")
+        gl.set_sender(self.dev)
+        verdict = self.escrow.submit_work(bid, fx["pr_url"], fx["head_sha"])
+        self.assertEqual(verdict, "RELEASE_100")
+
 
 
 if __name__ == '__main__':
