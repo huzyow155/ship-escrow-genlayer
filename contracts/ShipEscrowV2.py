@@ -790,12 +790,7 @@ class ShipEscrowV2(gl.Contract):
             except Exception:
                 raise gl.vm.UserError("Pull request metadata unavailable")
 
-            st = int(res_api.status)
-            if st in (301, 302, 307, 308):
-                raise gl.vm.UserError("Repository moved: use the current owner/repo name in the bounty and the PR URL")
-            elif st in (403, 429):
-                raise gl.vm.UserError("GitHub rate limit reached, retry later")
-            elif st != 200:
+            if int(res_api.status) != 200:
                 raise gl.vm.UserError("Pull request metadata unavailable")
 
             api_bytes = res_api.body if isinstance(res_api.body, (bytes, bytearray)) else str(res_api.body).encode("utf-8")
@@ -975,8 +970,6 @@ class ShipEscrowV2(gl.Contract):
             if leader_packet.get("verdict") != val_packet.get("verdict"):
                 return False
             if int(leader_packet.get("payout_pct", -1)) != int(val_packet.get("payout_pct", -2)):
-                return False
-            if leader_packet.get("criterion_results", []) != val_packet.get("criterion_results", []):
                 return False
             return True
 
