@@ -1,30 +1,32 @@
 {
   "fixture_id": "F4",
   "run_index": 10,
-  "bounty_id": "33",
-  "submission_id": "29",
+  "bounty_id": "47",
+  "submission_id": null,
   "pr_url": "https://github.com/huzyow155/ship-escrow-fixtures/pull/5",
   "head_sha": "73fbd168b09e75873472a9a2b186d17d30916b17",
-  "create_tx_hash": "0xb12610801b723d3de2253076b2a390738376803c7cffc4f18dd5d42a64b053f2",
+  "create_tx_hash": "0x7af9c7a71b5d4ffe54f63667e9b42a03939f5a8d30806eee2645fa05eb72af82",
   "create_receipt_status": "ACCEPTED",
-  "submit_tx_hash": "0x0277f2ad8db5094acec3b6d6b5f854c24fb65697fb95df932b733c4aaae470e3",
+  "submit_tx_hash": "0xeebc590d07210216a35d3826743598cf78ff192ff6a388810516c8cc846f56f2",
   "submit_receipt": {
     "status_name": "ACCEPTED",
     "result_name": "MAJORITY_AGREE",
-    "execution_result": "SUCCESS",
+    "execution_result": "ERROR",
     "votes": {
-      "0x1242E9f5bf9b253327f130E8802b7b2F438A21Ef": "agree",
-      "0x17ac0CaefB18205c737e64ee582c9245A28ca1f9": "agree",
-      "0x40533175AfBbAee2c030F88259Afb5aEDbCF0E05": "agree",
-      "0xA712cB25a4002666FA9D09477251f238dD9e06b3": "idle",
-      "0xf1C7551292319EE334e2D8A24eAC108Bd4C63b21": "idle"
+      "0x336458747913FE397be82c4F0926ACeB3ab13618": "idle",
+      "0x378aED3bA912Ce77C3C66155961A7e61C2fE8F3B": "agree",
+      "0x4868b172ddEBC18b5219aaCeAB77ae0Df330c83A": "agree",
+      "0x5e84e17266a193077728229751aC8A1dD24be146": "agree",
+      "0xe06A34A1eBd398AF3399d08593B8c3C433CdD947": "idle"
     }
   },
   "on_chain_submission": {
-    "verdict": "RELEASE_75",
-    "payout_pct": "75",
-    "packet_sha256": "52988c4c6a125ba6f11ef795de5c26066d33e9044c9382f98d9d2266381c4fc5",
-    "criterion_results": []
+    "verdict": null,
+    "payout_pct": null,
+    "packet_sha256": null,
+    "criterion_results": [],
+    "gate": null,
+    "packet": {}
   },
-  "timestamp": "2026-10-21T03:24:19.949Z"
+  "timestamp": "2026-10-24T04:57:14.870Z"
 }

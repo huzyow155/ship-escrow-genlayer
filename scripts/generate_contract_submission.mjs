@@ -23,7 +23,7 @@ const content = `# Ship Escrow V2 - Contract Submission Reference
 
 > Status: **Preview**  
 > Target Network: **GenLayer Studionet** (Chain ID: 61999)  
-> Tag Reference: \`se-v2\`
+> Tag Reference: \`se-v2-1\`
 
 ---
 
@@ -32,8 +32,8 @@ const content = `# Ship Escrow V2 - Contract Submission Reference
 - **Contract Name**: \`ShipEscrowV2\`
 - **Contract Address**: [\`${escrowAddr}\`](https://explorer-studio.genlayer.com/address/${escrowAddr})
 - **Deployment Transaction**: [\`${deployTx}\`](https://explorer-studio.genlayer.com/tx/${deployTx})
-- **Repository URL (at final tag)**: [https://github.com/huzyow155/ship-escrow-genlayer/tree/se-v2](https://github.com/huzyow155/ship-escrow-genlayer/tree/se-v2)
-- **Contract Source Path in Repo**: [\`${contractPath}\`](https://github.com/huzyow155/ship-escrow-genlayer/blob/se-v2/${contractPath})
+- **Repository URL (at final tag)**: [https://github.com/huzyow155/ship-escrow-genlayer/tree/se-v2-1](https://github.com/huzyow155/ship-escrow-genlayer/tree/se-v2-1)
+- **Contract Source Path in Repo**: [\`${contractPath}\`](https://github.com/huzyow155/ship-escrow-genlayer/blob/se-v2-1/${contractPath})
 - **Explorer URL**: [https://explorer-studio.genlayer.com/address/${escrowAddr}](https://explorer-studio.genlayer.com/address/${escrowAddr})
 
 ---

@@ -4,10 +4,46 @@
   "criterion_results": [],
   "dev": "0x6325b360db455435bf5e81d0ae18dc3b249f226c",
   "dev_attempt": "1",
+  "gate": "test_deleted",
   "head_sha": "aa9a2af9ccb0fa6d13b030a8f176c5235d15a982",
   "id": "3",
-  "packet": {},
-  "packet_sha256": "23e463a07ec3ec46019e62c950aee59d52f80f7f194fdb032f4d5be59fc12901",
+  "packet": {
+    "base_sha": "9d3e8ada2d4c7ed38e6a7843e971df38f6ab4207",
+    "body_sha256": "92d368b039c850253cd1861cf237a4d94b9ecd1c72aa333995dfe6cef00f4792",
+    "criteria_hash": "53f660f34bdf0667ca9e70adec4b427d79891631cd2e8beb22fcb310bf0b9785",
+    "criterion_results": [],
+    "diff_sha256": "8ab52ce69392632a1dae2db1accebf6c631b2220848aa9df7730bac455227722",
+    "facts": {
+      "added_lines": 0,
+      "changed_files": [
+        "tests/test_basic.py"
+      ],
+      "deleted_files": [
+        "tests/test_basic.py"
+      ],
+      "deleted_lines": 10,
+      "is_truncated": false,
+      "test_files_deleted": [
+        "tests/test_basic.py"
+      ],
+      "test_files_touched": [
+        "tests/test_basic.py"
+      ]
+    },
+    "gate": "test_deleted",
+    "gate_reason": "Test files deleted in diff",
+    "head_sha": "aa9a2af9ccb0fa6d13b030a8f176c5235d15a982",
+    "metadata": {
+      "author_login": "hypercybers99",
+      "commits": 1,
+      "draft": false,
+      "merged": false,
+      "state": "open"
+    },
+    "payout_pct": 0,
+    "verdict": "REVIEW"
+  },
+  "packet_sha256": "95097f512bb01f390284935cf5a9017a83489a418ddc27829317650fa1889877",
   "payout_pct": "0",
   "pr_number": "4",
   "pr_url": "https://github.com/huzyow155/ship-escrow-fixtures/pull/4",

@@ -1,13 +1,53 @@
 {
   "attempt": "1",
   "bounty_id": "11",
-  "criterion_results": [],
+  "criterion_results": [
+    "YES"
+  ],
   "dev": "0x6325b360db455435bf5e81d0ae18dc3b249f226c",
   "dev_attempt": "1",
+  "gate": "",
   "head_sha": "cce4293a24685e4d9dce0a1168125a76eae2e788",
   "id": "8",
-  "packet": {},
-  "packet_sha256": "45fdf2816697802e57eb4d47acf307773705015ef9883eff6c0501eb4fc5ac44",
+  "packet": {
+    "base_sha": "05fedc3b516a90c1dd49f348db45c864a19d1148",
+    "body_sha256": "8d746f3dea4c370007b2097d2d8508cb2e52bbac3420ca28b6ba9fdcbfa73e1a",
+    "criteria_hash": "53f660f34bdf0667ca9e70adec4b427d79891631cd2e8beb22fcb310bf0b9785",
+    "criterion_results": [
+      "YES"
+    ],
+    "diff_sha256": "dc660e035ae263fca5cd8d0391e2b840dd30c4d1934ddff44473c33c2df4d10c",
+    "facts": {
+      "added_lines": 16,
+      "changed_files": [
+        "contest_rules.md",
+        "src/slug.py",
+        "tests/test_slug.py"
+      ],
+      "deleted_files": [
+        "contest_rules.md"
+      ],
+      "deleted_lines": 4,
+      "is_truncated": false,
+      "test_files_deleted": [],
+      "test_files_touched": [
+        "tests/test_slug.py"
+      ]
+    },
+    "gate": "",
+    "gate_reason": "",
+    "head_sha": "cce4293a24685e4d9dce0a1168125a76eae2e788",
+    "metadata": {
+      "author_login": "hypercybers99",
+      "commits": 1,
+      "draft": false,
+      "merged": false,
+      "state": "open"
+    },
+    "payout_pct": 100,
+    "verdict": "RELEASE_100"
+  },
+  "packet_sha256": "abc70d1bb16cc9dc22afd6747fa1596c3edf39cadd389f881b2e79b8a6dc584d",
   "payout_pct": "100",
   "pr_number": "12",
   "pr_url": "https://github.com/huzyow155/ship-escrow-fixtures/pull/12",

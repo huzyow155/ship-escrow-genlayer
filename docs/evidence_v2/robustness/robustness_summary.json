@@ -1,37 +1,42 @@
 {
-  "evaluated_at": "2026-10-21T03:29:57.127Z",
-  "contract_address": "0xAD5579496E66a3ac5C79c27C9Bd8784Aae7747Cd",
+  "evaluated_at": "2026-10-24T05:02:37.883Z",
+  "contract_address": "0x8a9c079a7E1F756e07e8FbE392a5E93106DE28bF",
   "total_runs": 30,
-  "elapsed_seconds": "608.1",
+  "elapsed_seconds": "1084.8",
   "batches": {
     "F1": {
       "runs": 10,
       "modal_label_vector": [],
-      "identical_labels_count": 10,
-      "modal_verdict": "RELEASE_100",
-      "verdict_matches_count": 10,
+      "identical_labels_count": 9,
+      "modal_verdict": null,
+      "verdict_matches_count": 9,
       "label_counts_distribution": {
-        "[]": 10
+        "[]": 9,
+        "[\"YES\",\"YES\",\"YES\"]": 1
       }
     },
     "F4": {
       "runs": 10,
       "modal_label_vector": [],
-      "identical_labels_count": 10,
-      "modal_verdict": "RELEASE_75",
-      "verdict_matches_count": 10,
+      "identical_labels_count": 7,
+      "modal_verdict": null,
+      "verdict_matches_count": 7,
       "label_counts_distribution": {
-        "[]": 10
+        "[]": 7,
+        "[\"YES\",\"YES\",\"NO\"]": 3
       }
     },
     "F5": {
       "runs": 10,
-      "modal_label_vector": [],
-      "identical_labels_count": 10,
+      "modal_label_vector": [
+        "NO"
+      ],
+      "identical_labels_count": 6,
       "modal_verdict": "REFUND",
-      "verdict_matches_count": 10,
+      "verdict_matches_count": 6,
       "label_counts_distribution": {
-        "[]": 10
+        "[\"NO\"]": 6,
+        "[]": 4
       }
     }
   },

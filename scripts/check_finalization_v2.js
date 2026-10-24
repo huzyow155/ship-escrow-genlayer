@@ -19,27 +19,47 @@ async function main() {
   console.log(`Timestamp: ${utcIso}`);
   console.log(`====================================================`);
 
-  const files = fs.readdirSync(evidenceDir).filter(f =>
-    f.endsWith('.json') &&
-    !f.includes('invariant') &&
-    !f.includes('stats') &&
-    !f.includes('live_evidence') &&
-    !f.includes('finalization') &&
-    !f.includes('packet_recomputation')
-  );
+  
+  function getAllReceiptFiles(dir) {
+    let results = [];
+    const list = fs.readdirSync(dir, { withFileTypes: true });
+    for (const dirent of list) {
+      const fullPath = path.join(dir, dirent.name);
+      if (dirent.isDirectory()) {
+        if (dirent.name !== 'finalization' && dirent.name !== 'assessments_raw') {
+          results = results.concat(getAllReceiptFiles(fullPath));
+        }
+      } else if (dirent.isFile() && dirent.name.endsWith('.json')) {
+        if (
+          !dirent.name.includes('invariant') &&
+          !dirent.name.includes('stats') &&
+          !dirent.name.includes('live_evidence') &&
+          !dirent.name.includes('summary') &&
+          !dirent.name.includes('packet_recomputation') &&
+          !dirent.name.includes('finalization_log') &&
+          !dirent.name.includes('all_submissions')
+        ) {
+          results.push(fullPath);
+        }
+      }
+    }
+    return results;
+  }
+
+  const files = getAllReceiptFiles(evidenceDir);
 
   const entries = [];
   const countsByStatus = {};
 
-  for (const file of files) {
-    const filePath = path.join(evidenceDir, file);
+  for (const filePath of files) {
+    const file = path.relative(evidenceDir, filePath);
     try {
       const receipt = JSON.parse(fs.readFileSync(filePath, 'utf8'));
-      const txHash = receipt.hash || receipt.transaction_hash;
+      const txHash = receipt.hash || receipt.transaction_hash || receipt.submit_tx_hash;
       if (!txHash) continue;
 
       const fileStat = fs.statSync(filePath);
-      const initialStatusName = receipt.status_name || (receipt.status === 5 ? 'ACCEPTED' : (receipt.status === 7 ? 'FINALIZED' : String(receipt.status)));
+      const initialStatusName = receipt.status_name || receipt.submit_receipt?.status_name || (receipt.status === 5 ? 'ACCEPTED' : (receipt.status === 7 ? 'FINALIZED' : String(receipt.status)));
       const initialTime = receipt.created_at || receipt.timestamp || fileStat.mtime.toISOString();
 
       // Fetch transaction from RPC

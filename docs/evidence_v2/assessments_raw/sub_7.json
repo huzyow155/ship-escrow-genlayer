@@ -4,10 +4,40 @@
   "criterion_results": [],
   "dev": "0x6325b360db455435bf5e81d0ae18dc3b249f226c",
   "dev_attempt": "1",
+  "gate": "required_path_untouched",
   "head_sha": "5c4714948c973998b642781882b1d334a5502aed",
   "id": "7",
-  "packet": {},
-  "packet_sha256": "d9d70a9b6823b381fddf61946586b078225e338fd0adf8ba247d09581469ba6f",
+  "packet": {
+    "base_sha": "05fedc3b516a90c1dd49f348db45c864a19d1148",
+    "body_sha256": "1055e9643f5fdb910c5c54827e366aba4533a06301454c7e55275a7667aba888",
+    "criteria_hash": "877d97e671b7e5b70bce94fc1be12c9a0433f69e8356480a6bf983ba89febc8e",
+    "criterion_results": [],
+    "diff_sha256": "672d893d5e542a7a890a485c1c23257a3b8619f4e210d7d517ea6c557eed7389",
+    "facts": {
+      "added_lines": 5,
+      "changed_files": [
+        "src/slug.py"
+      ],
+      "deleted_files": [],
+      "deleted_lines": 0,
+      "is_truncated": false,
+      "test_files_deleted": [],
+      "test_files_touched": []
+    },
+    "gate": "required_path_untouched",
+    "gate_reason": "Required path not touched: docs/",
+    "head_sha": "5c4714948c973998b642781882b1d334a5502aed",
+    "metadata": {
+      "author_login": "hypercybers99",
+      "commits": 1,
+      "draft": false,
+      "merged": false,
+      "state": "open"
+    },
+    "payout_pct": 0,
+    "verdict": "REFUND"
+  },
+  "packet_sha256": "8387114d4c527e8c0659dae87a658dfd49c08b1a0346ae2b960f82de3fb3bc43",
   "payout_pct": "0",
   "pr_number": "11",
   "pr_url": "https://github.com/huzyow155/ship-escrow-fixtures/pull/11",

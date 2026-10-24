@@ -6,11 +6,13 @@
 > Target Network: **GenLayer Studionet** (Chain ID: 61999)  
 > License: MIT (Copyright 2026 Hyper, huzyow155)  
 >
-> **Active V2 Contracts**:
-> - ShipEscrowV2: [`0xAD5579496E66a3ac5C79c27C9Bd8784Aae7747Cd`](https://explorer-studio.genlayer.com/address/0xAD5579496E66a3ac5C79c27C9Bd8784Aae7747Cd)  
-> - ShipReputationV2: [`0x88F9Bb007266f4e35Ad50a6a244117EC61BC446F`](https://explorer-studio.genlayer.com/address/0x88F9Bb007266f4e35Ad50a6a244117EC61BC446F)  
+> **Active Contracts (V2.1)**:
+> - ShipEscrowV2: [`0x8a9c079a7E1F756e07e8FbE392a5E93106DE28bF`](https://explorer-studio.genlayer.com/address/0x8a9c079a7E1F756e07e8FbE392a5E93106DE28bF)  
+> - ShipReputationV2: [`0x8e6D0356F4Bf987E95eB3cC6e7DF84ce2f708C81`](https://explorer-studio.genlayer.com/address/0x8e6D0356F4Bf987E95eB3cC6e7DF84ce2f708C81)  
 >
-> **Superseded V1 Contracts (Audit only)**:
+> **Superseded Contracts (Audit only)**:
+> - ShipEscrowV2 (initial): [`0xAD5579496E66a3ac5C79c27C9Bd8784Aae7747Cd`](https://explorer-studio.genlayer.com/address/0xAD5579496E66a3ac5C79c27C9Bd8784Aae7747Cd)  
+> - ShipReputationV2 (initial): [`0x88F9Bb007266f4e35Ad50a6a244117EC61BC446F`](https://explorer-studio.genlayer.com/address/0x88F9Bb007266f4e35Ad50a6a244117EC61BC446F)  
 > - ShipEscrowV1: [`0x8DC94110Ed3E111Fb74Dce849CdBA8f567E6024F`](https://explorer-studio.genlayer.com/address/0x8DC94110Ed3E111Fb74Dce849CdBA8f567E6024F)  
 > - ShipReputationV1: [`0x55c56f0dfFb8227345814A37c68394b05c26E901`](https://explorer-studio.genlayer.com/address/0x55c56f0dfFb8227345814A37c68394b05c26E901)  
 >
@@ -18,6 +20,9 @@
 > - Web app (Preview): https://ship-escrow-app.vercel.app  
 > - App repository: https://github.com/huzyow155/ship-escrow-app  
 > - Fixtures repository: https://github.com/huzyow155/ship-escrow-fixtures  
+
+> [!NOTE]
+> **GitHub Account Rename**: The GitHub username `huzyow155` was renamed to `hypercybers99`. GitHub automatically maintains permanent redirects for repositories and pull requests (`https://github.com/huzyow155/ship-escrow-fixtures` -> `https://github.com/hypercybers99/ship-escrow-fixtures`). Both URLs route to the identical git repository, commits, and pull requests. In ShipEscrowV2, the contract validation logic explicitly recognises this alias and resolves repo names seamlessly.  
 
 > [!IMPORTANT]
 > **DISCLAIMER: SIMULATED CREDITS, NOT CUSTODY-BACKED TOKENS**  

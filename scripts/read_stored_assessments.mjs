@@ -43,7 +43,7 @@ async function main() {
   console.log(`Reading stored assessments from ${escrowAddress}...`);
   const allSubmissions = [];
 
-  for (let i = 1; i <= 60; i++) {
+  for (let i = 1; i <= 100; i++) {
     const raw = await getSubmissionWithRetry(i);
     if (!raw || raw.trim() === '') {
       console.log(`Submission ${i} is empty. End of submissions reached (total ${i - 1}).`);

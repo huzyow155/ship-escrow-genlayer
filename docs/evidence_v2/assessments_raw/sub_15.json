@@ -1,17 +1,47 @@
 {
   "attempt": "1",
-  "bounty_id": "19",
+  "bounty_id": "26",
   "criterion_results": [],
   "dev": "0x6325b360db455435bf5e81d0ae18dc3b249f226c",
   "dev_attempt": "1",
-  "head_sha": "5db0441e76af93606fd82feebbe49c5a2f145326",
+  "gate": "required_path_untouched",
+  "head_sha": "3de6b568ca38717a2d6a62a14aa581c0bcc4e28b",
   "id": "15",
-  "packet": {},
-  "packet_sha256": "ca534472d3aedc32fa5c88cafc74d7eede560cac9e67eb4aae96e8b01a681b08",
-  "payout_pct": "100",
-  "pr_number": "2",
-  "pr_url": "https://github.com/huzyow155/ship-escrow-fixtures/pull/2",
+  "packet": {
+    "base_sha": "9d3e8ada2d4c7ed38e6a7843e971df38f6ab4207",
+    "body_sha256": "52abde5aae0fddcb2a5f52c3a87fdd6ca3ad06807fe316dc58e18fd847284c47",
+    "criteria_hash": "3011d63a2462afce2d5c561e5eaa9483a5e35232dcea3bf82a6de99190aa708d",
+    "criterion_results": [],
+    "diff_sha256": "a8e4183a6771b9595d484753c1129ec062a859fc4e1565cc1f2bfaee8a521e7f",
+    "facts": {
+      "added_lines": 3,
+      "changed_files": [
+        "README.md"
+      ],
+      "deleted_files": [],
+      "deleted_lines": 0,
+      "is_truncated": false,
+      "test_files_deleted": [],
+      "test_files_touched": []
+    },
+    "gate": "required_path_untouched",
+    "gate_reason": "Required path not touched: src/",
+    "head_sha": "3de6b568ca38717a2d6a62a14aa581c0bcc4e28b",
+    "metadata": {
+      "author_login": "hypercybers99",
+      "commits": 1,
+      "draft": false,
+      "merged": false,
+      "state": "open"
+    },
+    "payout_pct": 0,
+    "verdict": "REFUND"
+  },
+  "packet_sha256": "a0fa8946562bf06499843ebbdfb6a8b52ef411ab1790f687ed95dcf12e102acf",
+  "payout_pct": "0",
+  "pr_number": "3",
+  "pr_url": "https://github.com/huzyow155/ship-escrow-fixtures/pull/3",
   "schema_version": "2",
   "seq": "15",
-  "verdict": "RELEASE_100"
+  "verdict": "REFUND"
 }

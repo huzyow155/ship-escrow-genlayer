@@ -176,6 +176,8 @@ async function runFixtureBatch(fixtureId, targetPrNum, critJson, pathsJson, runs
         payout_pct: subRecord.payout_pct || null,
         packet_sha256: subRecord.packet_sha256 || null,
         criterion_results: subRecord.criterion_results || [],
+        gate: subRecord.gate || null,
+        packet: subRecord.packet || {},
       },
       timestamp: new Date().toISOString(),
     };

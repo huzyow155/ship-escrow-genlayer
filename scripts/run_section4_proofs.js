@@ -37,8 +37,8 @@ const fixtures = JSON.parse(
   fs.readFileSync(path.join(__dirname, '../fixtures/fixtures_v2.json'), 'utf8')
 );
 
-const OWNER_REPO = "hypercybers99/ship-escrow-fixtures";
-const getPrUrl = (f) => f.pr_url.replace("huzyow155", "hypercybers99");
+const OWNER_REPO = "huzyow155/ship-escrow-fixtures";
+const getPrUrl = (f) => f.pr_url;
 
 const f1 = fixtures.find(f => f.fixture_id === 'F1');
 const f2 = fixtures.find(f => f.fixture_id === 'F2');
@@ -311,17 +311,17 @@ async function main() {
   const d2Att1 = await sendTx(attackerClient, escrowAddress, 'submit_work', [b3Id, getPrUrl(f8), f8.head_sha], "s4_3_dev2_att1");
 
   // Dev 2 (Attacker): Attempt 2 -> PR #14 -> REFUND (attempts = 4, dev2_attempts = 2)
-  const pr14Url = "https://github.com/hypercybers99/ship-escrow-fixtures/pull/14";
+  const pr14Url = "https://github.com/huzyow155/ship-escrow-fixtures/pull/14";
   const pr14Sha = "1c5a18f3bfd67ebfad84ce89baa3a39fa912b300";
   const d2Att2 = await sendTx(attackerClient, escrowAddress, 'submit_work', [b3Id, pr14Url, pr14Sha], "s4_3_dev2_att2");
 
   // Dev 3: Attempt 1 -> PR #15 -> REFUND (attempts = 5, dev3_attempts = 1)
-  const pr15Url = "https://github.com/hypercybers99/ship-escrow-fixtures/pull/15";
+  const pr15Url = "https://github.com/huzyow155/ship-escrow-fixtures/pull/15";
   const pr15Sha = "11ebccb1cc58c391d4071e94c431538e2636f525";
   const d3Att1 = await sendTx(dev3Client, escrowAddress, 'submit_work', [b3Id, pr15Url, pr15Sha], "s4_3_dev3_att1");
 
   // Dev 3: Attempt 2 -> PR #16 -> REFUND (attempts = 6 -> EXHAUSTED!)
-  const pr16Url = "https://github.com/hypercybers99/ship-escrow-fixtures/pull/16";
+  const pr16Url = "https://github.com/huzyow155/ship-escrow-fixtures/pull/16";
   const pr16Sha = "b72cca47464dad7f47a7430e811a37e0a1ba329d";
   const d3Att2 = await sendTx(dev3Client, escrowAddress, 'submit_work', [b3Id, pr16Url, pr16Sha], "s4_3_dev3_att2");
   fs.writeFileSync(path.join(section4Dir, 's4_3_exhausted_receipt.json'), JSON.stringify(d3Att2.receipt, null, 2));

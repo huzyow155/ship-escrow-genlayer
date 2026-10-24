@@ -35,10 +35,8 @@ const creatorClient = createClient({ chain: chains.studionet, account: creatorAc
 const devClient = createClient({ chain: chains.studionet, account: devAccount });
 const readClient = createClient({ chain: chains.studionet });
 
-const crit3 = JSON.stringify([
-  { level: "MUST", text: "Implement slugify in src/slug.py" },
-  { level: "MUST", text: "Add unit tests in tests/test_slug.py" },
-  { level: "SHOULD", text: "Update README with usage example" }
+const critSlug = JSON.stringify([
+  { level: "MUST", text: "Implement slugify in src/slug.py" }
 ]);
 
 async function sleep(ms) {
@@ -114,7 +112,7 @@ async function main() {
   console.log("PR URL: https://github.com/huzyow155/ship-escrow-fixtures/pull/7");
   console.log("------------------------------------------------------------------");
 
-  const pr7Url = "https://github.com/hypercybers99/ship-escrow-fixtures/pull/7";
+  const pr7Url = "https://github.com/huzyow155/ship-escrow-fixtures/pull/7";
   const pr7_first_sha = "21c20625d3b919b2acce25f82339b7b54bdfba01";
   const pr7_middle_sha = "b3b260f22889ea443bcdebd81cdc4c2a94688708";
   const pr7_random_sha = "0123456789abcdef0123456789abcdef01234567";
@@ -125,7 +123,7 @@ async function main() {
     creatorClient,
     escrowAddress,
     'create_bounty',
-    ["Multi-Commit PR#7 Head Test", "hypercybers99/ship-escrow-fixtures", crit3, "[]", "10"],
+    ["Multi-Commit PR#7 Head Test", "huzyow155/ship-escrow-fixtures", critSlug, "[]", "10"],
     "pr7_create_bounty"
   );
   const bList = await readClient.readContract({
@@ -296,8 +294,8 @@ async function main() {
       stored_settlement_head: settlement.head_sha,
       stored_submission_head: submission.head_sha,
       head_equality_verified: (
-        settlement.head_sha.toLowerCase() === pr7_real_head.toLowerCase() &&
-        submission.head_sha.toLowerCase() === pr7_real_head.toLowerCase()
+        settlement.head_sha?.toLowerCase() === pr7_real_head.toLowerCase() &&
+        submission.head_sha?.toLowerCase() === pr7_real_head.toLowerCase()
       ),
     },
     duplicate_submit: {
@@ -320,10 +318,10 @@ async function main() {
   // -------------------------------------------------------------------------
   console.log("\n------------------------------------------------------------------");
   console.log("CASE 2: FIXTURE PR #8 (ADVANCING HEAD: STALE SHA vs REAL HEAD)");
-  console.log("PR URL: https://github.com/hypercybers99/ship-escrow-fixtures/pull/8");
+  console.log("PR URL: https://github.com/huzyow155/ship-escrow-fixtures/pull/8");
   console.log("------------------------------------------------------------------");
 
-  const pr8Url = "https://github.com/hypercybers99/ship-escrow-fixtures/pull/8";
+  const pr8Url = "https://github.com/huzyow155/ship-escrow-fixtures/pull/8";
   const pr8_stale_sha = "c4eb7b2a842c306b159e1c5d66d61575b67f1ef6";
   const pr8_real_head = "2332a887996496eed2f20ed63e2c3b51fefde204";
 
@@ -332,7 +330,7 @@ async function main() {
     creatorClient,
     escrowAddress,
     'create_bounty',
-    ["Advancing Head PR#8 Test", "hypercybers99/ship-escrow-fixtures", crit3, "[]", "10"],
+    ["Advancing Head PR#8 Test", "huzyow155/ship-escrow-fixtures", critSlug, "[]", "10"],
     "pr8_create_bounty"
   );
   const b8List = await readClient.readContract({

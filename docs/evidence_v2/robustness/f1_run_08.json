@@ -1,30 +1,73 @@
 {
   "fixture_id": "F1",
   "run_index": 8,
-  "bounty_id": "21",
+  "bounty_id": "35",
   "submission_id": "17",
   "pr_url": "https://github.com/huzyow155/ship-escrow-fixtures/pull/2",
   "head_sha": "5db0441e76af93606fd82feebbe49c5a2f145326",
-  "create_tx_hash": "0x92f2026628bd37c82c8ffb8cce77e40c824ec1e76ffe98a651ab2f9e4e9c25fc",
+  "create_tx_hash": "0x56e9d57911d07e0d64910678323cc67dca885166b48d0d29178ff9de6f4705c7",
   "create_receipt_status": "ACCEPTED",
-  "submit_tx_hash": "0x8421b5e02fd6fd0e7e9fbc4e7e92d7a6c89fbaeb11ddf18c71da6b8df85496fb",
+  "submit_tx_hash": "0xd703ff9d63a1a7dc04c801cc6422e2e8432bfb5b6182678cdd910b913bc5bd4e",
   "submit_receipt": {
     "status_name": "ACCEPTED",
     "result_name": "MAJORITY_AGREE",
     "execution_result": "SUCCESS",
     "votes": {
-      "0x1dEcE6A694520b1d3a2e24b9f28500858C756BDb": "idle",
-      "0x6a4179A851B3747A458baD2f089AB2EeFE0eBbAb": "agree",
-      "0x7bf4Ea55363bbe73A4dd5b3900bf03c978A63b6e": "agree",
-      "0x9244De5F20cB75A0c51d79A9A3208D00a99aFc10": "agree",
-      "0xb0925568bFbCF00aADBcA053E6D0E1628ff3d530": "idle"
+      "0x378aED3bA912Ce77C3C66155961A7e61C2fE8F3B": "agree",
+      "0x5847AF34a4e5bA96490f8c883598f68EC9B0B907": "agree",
+      "0xCe0B66448435cA53665C954705Abd753515594Cf": "agree",
+      "0xb04cdDC4a6Ff6A0aDF715cfe00Fa307b901cebD4": "idle",
+      "0xcab45E3fe9cC9592B5C378E47734E022b7Df80c9": "idle"
     }
   },
   "on_chain_submission": {
     "verdict": "RELEASE_100",
     "payout_pct": "100",
-    "packet_sha256": "ca534472d3aedc32fa5c88cafc74d7eede560cac9e67eb4aae96e8b01a681b08",
-    "criterion_results": []
+    "packet_sha256": "0409be9b875b9fe6ac0aea7b769333417cdc21b7029edaac1a8c682faaacb1e5",
+    "criterion_results": [
+      "YES",
+      "YES",
+      "YES"
+    ],
+    "gate": null,
+    "packet": {
+      "base_sha": "9d3e8ada2d4c7ed38e6a7843e971df38f6ab4207",
+      "body_sha256": "2227f3b75a39671f044409c885917accc56784c9a2b6a5d857fa94dbdfe68aa6",
+      "criteria_hash": "17caf857878a3eb317ec078325a6ffab59b167002bab49877b8893272416496d",
+      "criterion_results": [
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "diff_sha256": "ecd93f38b55992bcea34e00190252912c3a6c9742884d8d6666720882afb116c",
+      "facts": {
+        "added_lines": 25,
+        "changed_files": [
+          "README.md",
+          "src/slug.py",
+          "tests/test_slug.py"
+        ],
+        "deleted_files": [],
+        "deleted_lines": 0,
+        "is_truncated": false,
+        "test_files_deleted": [],
+        "test_files_touched": [
+          "tests/test_slug.py"
+        ]
+      },
+      "gate": "",
+      "gate_reason": "",
+      "head_sha": "5db0441e76af93606fd82feebbe49c5a2f145326",
+      "metadata": {
+        "author_login": "hypercybers99",
+        "commits": 1,
+        "draft": false,
+        "merged": false,
+        "state": "open"
+      },
+      "payout_pct": 100,
+      "verdict": "RELEASE_100"
+    }
   },
-  "timestamp": "2026-10-21T03:15:20.941Z"
+  "timestamp": "2026-10-24T04:49:43.841Z"
 }

@@ -1,14 +1,17 @@
 # SHIP ESCROW V2 & REPUTATION V2 - LIVE VERIFICATION REPORT
 STATUS: Preview
 
+> [!NOTE]
+> **GitHub Account Rename**: The GitHub username `huzyow155` was renamed to `hypercybers99`. GitHub automatically maintains permanent redirects for repositories and pull requests (`https://github.com/huzyow155/ship-escrow-fixtures` -> `https://github.com/hypercybers99/ship-escrow-fixtures`). Both URLs route to the identical git repository, commits, and pull requests. In ShipEscrowV2, the contract validation logic explicitly recognises this alias and resolves repo names seamlessly.
+
 ## 1. Deployed Contracts & Source Verification
-- **ShipEscrowV2**: `0xAD5579496E66a3ac5C79c27C9Bd8784Aae7747Cd`
-  - Deploy Tx: `0x6fe51f08455cda0f0fcb9ae35e19258ef062a389507d5d3b9888f6c21fd121c3`
-  - Local Source SHA256: `28bd8f52f5874d58a1b415589ed78f9ee7d8f0a704a1380e7ae91e41e1486cb0`
-  - On-Chain Source SHA256: `28bd8f52f5874d58a1b415589ed78f9ee7d8f0a704a1380e7ae91e41e1486cb0`
+- **ShipEscrowV2** (Active): `0x8a9c079a7E1F756e07e8FbE392a5E93106DE28bF`
+  - Deploy Tx: `0xa47ecee0c8108c12baf8a71acfb87ce3aff22ee2aa85d73bfa0e26a67d67d733`
+  - Local Source SHA256: `c00b1366e960882367bf1f3e3c99b975691c28cb29750b7e16a0646e5e353048`
+  - On-Chain Source SHA256: `c00b1366e960882367bf1f3e3c99b975691c28cb29750b7e16a0646e5e353048`
   - Byte-for-byte exact match: `true` (git diff is empty)
-- **ShipReputationV2**: `0x88F9Bb007266f4e35Ad50a6a244117EC61BC446F`
-  - Deploy Tx: `0x42d8611b053c77ea509344efb93962841c14448b81c19b6437e1dbda4561d60b`
+- **ShipReputationV2** (Active): `0x8e6D0356F4Bf987E95eB3cC6e7DF84ce2f708C81`
+  - Deploy Tx: `0x5046e6d602dac897980c852b651aa9ab44fea2a0a7762a7dd34523742f5a3b5c`
   - Local Source SHA256: `12e4c5e9cf8f480823ff778181b6a0d50ae7d37ec7c3a5b079cf6275779d1ed7`
   - On-Chain Source SHA256: `12e4c5e9cf8f480823ff778181b6a0d50ae7d37ec7c3a5b079cf6275779d1ed7`
   - Byte-for-byte exact match: `true` (git diff is empty)

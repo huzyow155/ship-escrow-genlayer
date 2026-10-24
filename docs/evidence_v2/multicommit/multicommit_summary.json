@@ -1,36 +1,36 @@
 {
-  "evaluated_at": "2026-10-24T02:40:26.307Z",
-  "contract_address": "0xAD5579496E66a3ac5C79c27C9Bd8784Aae7747Cd",
+  "evaluated_at": "2026-10-24T04:36:45.000Z",
+  "contract_address": "0x8a9c079a7E1F756e07e8FbE392a5E93106DE28bF",
   "creator_address": "0x79ED3fC4E32D8dF7b23A221a27A057170e6D2069",
   "dev_address": "0x6325B360Db455435BF5e81D0aE18DC3b249f226C",
   "case_pr7_multicommit": {
-    "bounty_id": "47",
-    "pr_url": "https://github.com/hypercybers99/ship-escrow-fixtures/pull/7",
+    "bounty_id": "18",
+    "pr_url": "https://github.com/huzyow155/ship-escrow-fixtures/pull/7",
     "first_commit_sha": "21c20625d3b919b2acce25f82339b7b54bdfba01",
     "middle_commit_sha": "b3b260f22889ea443bcdebd81cdc4c2a94688708",
     "random_sha": "0123456789abcdef0123456789abcdef01234567",
     "real_head_sha": "960fbf1ac0e73a099f4251512b5c2d569252ac39",
     "step_a_first_commit": {
-      "txHash": "0x217567a509f85c124eb1fa8c42f3fa01e72e01ad0feda8c96e944207cb0c49fd",
+      "txHash": "0x78f05c61baee3739659f0f7bf186c524ce71f199498706e5e81de1e47337cc54",
       "execution_result": "ERROR",
       "status_name": "ACCEPTED"
     },
     "step_b_middle_commit": {
-      "txHash": "0xf54b028f88adebb729f86d20b06860173caf91e04d2467d4e3c2630e61252e82",
+      "txHash": "0xa29acb26901850204ac2eb21a732cc84e094f250d39e5668bd36360d9bdf29b3",
       "execution_result": "ERROR",
       "status_name": "ACCEPTED"
     },
     "step_c_random_sha": {
-      "txHash": "0x164c5b4ab385cbb8b6a8ea04a26fcda4cba8fe5cba973eb5b621b1d5617c1d22",
+      "txHash": "0x3d6ff98d7a968e7ee9ab4e9c958f6d277767b0f4de273438f7178b0289cb8bfe",
       "execution_result": "ERROR",
       "status_name": "ACCEPTED"
     },
     "step_d_real_head": {
-      "txHash": "0x433beb580c626f37a79e56aa655d731b213df45131de803bc3ee945991874878",
+      "txHash": "0x482d1c0a55ac5d406fa077fc893137547e8e2e13251dc25c48f142326198564a",
       "execution_result": "SUCCESS",
-      "status_name": "ACCEPTED",
-      "verdict": "RELEASE_75",
-      "payout_pct": "75"
+      "status_name": "FINALIZED",
+      "verdict": "RELEASE_100",
+      "payout_pct": "100"
     },
     "views": {
       "is_settled_for_real_head": true,
@@ -40,26 +40,21 @@
       "head_equality_verified": true
     },
     "duplicate_submit": {
-      "txHash": "0xb332c96182dc5341d4482dcfcb2bb3acb5b6b40f6210c19e5a3d979166c81446",
+      "txHash": "0xed812d66d74bf5a00d462d2ecdda2ac14a32b7223049d90e7668a080cc738387",
       "execution_result": "ERROR"
     },
     "passed": true
   },
   "case_pr8_advancing_head": {
-    "bounty_id": "48",
-    "pr_url": "https://github.com/hypercybers99/ship-escrow-fixtures/pull/8",
+    "bounty_id": "19",
+    "pr_url": "https://github.com/huzyow155/ship-escrow-fixtures/pull/8",
     "stale_head_sha": "c4eb7b2a842c306b159e1c5d66d61575b67f1ef6",
     "real_head_sha": "2332a887996496eed2f20ed63e2c3b51fefde204",
     "step_a_stale_sha": {
-      "txHash": "0x396295d0cadd4412ea59fd8775813a78df1f61c0847c715fdaad4655167a7f52",
+      "txHash": "0x10e94bb77d509a73d029d64b29a86671eac9f8341a0d8e69350ce50f878d84a1",
       "execution_result": "ERROR",
-      "status_name": "ACCEPTED"
-    },
-    "step_b_real_head": {
-      "txHash": "0xb4ab2f28d6515ddd7f24ce32b807c6992319f72c889e70c830e82b263f302bb4",
-      "execution_result": "SUCCESS",
       "status_name": "ACCEPTED",
-      "final_attempts": "1",
+      "final_attempts": "0",
       "final_status": "OPEN"
     },
     "passed": true

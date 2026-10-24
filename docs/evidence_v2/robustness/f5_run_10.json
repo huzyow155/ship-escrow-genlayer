@@ -1,30 +1,65 @@
 {
   "fixture_id": "F5",
   "run_index": 10,
-  "bounty_id": "43",
-  "submission_id": "39",
+  "bounty_id": "57",
+  "submission_id": "26",
   "pr_url": "https://github.com/huzyow155/ship-escrow-fixtures/pull/6",
   "head_sha": "b9e099153ea3dd002fc3584a8078d68e974fa427",
-  "create_tx_hash": "0x73f75eac18ebd9526ada5709367c1348c90ff6516ae0215ec124c5d6cd76677b",
+  "create_tx_hash": "0x5f3ba6d7bf55c782c0db57daf6c4827378409120bbd2c3d1997841086a4187da",
   "create_receipt_status": "ACCEPTED",
-  "submit_tx_hash": "0xa46751b9256cc02b86b62ce5bc5996006abb3e227cfb48d8c339a1014c98843a",
+  "submit_tx_hash": "0x8d9fa711d533a2ffdf4d2551be2bc8088e3be8fac8c196b7a0abdce1d2a04992",
   "submit_receipt": {
     "status_name": "ACCEPTED",
     "result_name": "MAJORITY_AGREE",
     "execution_result": "SUCCESS",
     "votes": {
-      "0x0B50B270Eba5D9B780272C4Cf4720260177e761D": "agree",
-      "0x1dEcE6A694520b1d3a2e24b9f28500858C756BDb": "idle",
-      "0x892C437da9b9CA0b6017B6f046F58E3526B46ec6": "agree",
-      "0xa21bc502E3578E4b3039be8c59a257198f7c3f19": "agree",
-      "0xe7eEe8a1c1690b0322d795B80A76ab2Cd1a0eAFd": "idle"
+      "0x045291B293B9D68969c18B6637A8258038cf787A": "idle",
+      "0x378aED3bA912Ce77C3C66155961A7e61C2fE8F3B": "agree",
+      "0x4868b172ddEBC18b5219aaCeAB77ae0Df330c83A": "agree",
+      "0x5847AF34a4e5bA96490f8c883598f68EC9B0B907": "idle",
+      "0xB4EE99165ffe987E64B7b72e45a753309c501eef": "agree"
     }
   },
   "on_chain_submission": {
     "verdict": "REFUND",
     "payout_pct": "0",
-    "packet_sha256": "ea28f9c1ea3d1ded357a626680c770fe0a1b8df807a64dd5cad78ff11ff5d68f",
-    "criterion_results": []
+    "packet_sha256": "8cc488f7d3cc6bf28ff0f2327a31eaf948d561014cb1b1ccd96dbf7854e1f5c9",
+    "criterion_results": [
+      "NO"
+    ],
+    "gate": null,
+    "packet": {
+      "base_sha": "9d3e8ada2d4c7ed38e6a7843e971df38f6ab4207",
+      "body_sha256": "0066b1bf0f7be67d2061501ae869eb5aa233fda0c9db9e51f54cd469c560670e",
+      "criteria_hash": "53f660f34bdf0667ca9e70adec4b427d79891631cd2e8beb22fcb310bf0b9785",
+      "criterion_results": [
+        "NO"
+      ],
+      "diff_sha256": "c4ae3548017cc04caef8dd5ef910015658aec138e1feafe74298813434c1d109",
+      "facts": {
+        "added_lines": 2,
+        "changed_files": [
+          "src/slug.py"
+        ],
+        "deleted_files": [],
+        "deleted_lines": 0,
+        "is_truncated": false,
+        "test_files_deleted": [],
+        "test_files_touched": []
+      },
+      "gate": "",
+      "gate_reason": "",
+      "head_sha": "b9e099153ea3dd002fc3584a8078d68e974fa427",
+      "metadata": {
+        "author_login": "hypercybers99",
+        "commits": 1,
+        "draft": false,
+        "merged": false,
+        "state": "open"
+      },
+      "payout_pct": 0,
+      "verdict": "REFUND"
+    }
   },
-  "timestamp": "2026-10-21T03:29:55.117Z"
+  "timestamp": "2026-10-24T05:02:35.875Z"
 }

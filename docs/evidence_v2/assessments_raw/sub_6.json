@@ -1,13 +1,51 @@
 {
   "attempt": "1",
   "bounty_id": "6",
-  "criterion_results": [],
+  "criterion_results": [
+    "YES"
+  ],
   "dev": "0x6325b360db455435bf5e81d0ae18dc3b249f226c",
   "dev_attempt": "1",
+  "gate": "",
   "head_sha": "960fbf1ac0e73a099f4251512b5c2d569252ac39",
   "id": "6",
-  "packet": {},
-  "packet_sha256": "b5a65f0c466b812302a7d72373e93c38bd48f55e12b155e2689abbb54720fe86",
+  "packet": {
+    "base_sha": "05fedc3b516a90c1dd49f348db45c864a19d1148",
+    "body_sha256": "b413f77837f3c27597b4441703cdb1162e166ee555a9e632ec0b6021a3761918",
+    "criteria_hash": "53f660f34bdf0667ca9e70adec4b427d79891631cd2e8beb22fcb310bf0b9785",
+    "criterion_results": [
+      "YES"
+    ],
+    "diff_sha256": "5dcd67b9170cd32959e3e4e14007d730f4e9ea6089e6f73579120f12eb5e8d6c",
+    "facts": {
+      "added_lines": 20,
+      "changed_files": [
+        "README.md",
+        "src/slug.py",
+        "tests/test_slug.py"
+      ],
+      "deleted_files": [],
+      "deleted_lines": 0,
+      "is_truncated": false,
+      "test_files_deleted": [],
+      "test_files_touched": [
+        "tests/test_slug.py"
+      ]
+    },
+    "gate": "",
+    "gate_reason": "",
+    "head_sha": "960fbf1ac0e73a099f4251512b5c2d569252ac39",
+    "metadata": {
+      "author_login": "hypercybers99",
+      "commits": 3,
+      "draft": false,
+      "merged": false,
+      "state": "open"
+    },
+    "payout_pct": 100,
+    "verdict": "RELEASE_100"
+  },
+  "packet_sha256": "a69ca517208abd9ddd5cbc46f013c27f52a805da645db3c6ece3a0d2f07c1bff",
   "payout_pct": "100",
   "pr_number": "7",
   "pr_url": "https://github.com/huzyow155/ship-escrow-fixtures/pull/7",

@@ -1,13 +1,47 @@
 {
   "attempt": "1",
   "bounty_id": "12",
-  "criterion_results": [],
+  "criterion_results": [
+    "UNCLEAR"
+  ],
   "dev": "0x6325b360db455435bf5e81d0ae18dc3b249f226c",
   "dev_attempt": "1",
+  "gate": "diff_truncated",
   "head_sha": "09fe5806d38b36c2cb39a7f343fa1a7873edd10f",
   "id": "9",
-  "packet": {},
-  "packet_sha256": "ca26484cc688c50a381fc3a6b5fd387011498fed72976447debf55f846a86bc1",
+  "packet": {
+    "base_sha": "05fedc3b516a90c1dd49f348db45c864a19d1148",
+    "body_sha256": "ff2b3bd2612f7a6f3f8caa2db4a74d718533c69893cce6bceb0768cb82d5c1c6",
+    "criteria_hash": "53f660f34bdf0667ca9e70adec4b427d79891631cd2e8beb22fcb310bf0b9785",
+    "criterion_results": [
+      "UNCLEAR"
+    ],
+    "diff_sha256": "5479e93e701a828f77646f2ebfdd7d1396b34344b735f267de46243ea8700f31",
+    "facts": {
+      "added_lines": 494,
+      "changed_files": [
+        "src/a_large_padding.py"
+      ],
+      "deleted_files": [],
+      "deleted_lines": 0,
+      "is_truncated": true,
+      "test_files_deleted": [],
+      "test_files_touched": []
+    },
+    "gate": "diff_truncated",
+    "gate_reason": "Diff truncated by size cap",
+    "head_sha": "09fe5806d38b36c2cb39a7f343fa1a7873edd10f",
+    "metadata": {
+      "author_login": "hypercybers99",
+      "commits": 1,
+      "draft": false,
+      "merged": false,
+      "state": "open"
+    },
+    "payout_pct": 0,
+    "verdict": "REVIEW"
+  },
+  "packet_sha256": "7edaa06c0260a12ce840d7ff61ef96fc66ab6a57b020dec04d6d71843e3692fd",
   "payout_pct": "0",
   "pr_number": "13",
   "pr_url": "https://github.com/huzyow155/ship-escrow-fixtures/pull/13",

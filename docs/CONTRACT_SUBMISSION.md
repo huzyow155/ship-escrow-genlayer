@@ -2,25 +2,25 @@
 
 > Status: **Preview**  
 > Target Network: **GenLayer Studionet** (Chain ID: 61999)  
-> Tag Reference: `se-v2`
+> Tag Reference: `se-v2-1`
 
 ---
 
 ## 1. Active Contract Coordinates
 
 - **Contract Name**: `ShipEscrowV2`
-- **Contract Address**: [`0xAD5579496E66a3ac5C79c27C9Bd8784Aae7747Cd`](https://explorer-studio.genlayer.com/address/0xAD5579496E66a3ac5C79c27C9Bd8784Aae7747Cd)
-- **Deployment Transaction**: [`0x6fe51f08455cda0f0fcb9ae35e19258ef062a389507d5d3b9888f6c21fd121c3`](https://explorer-studio.genlayer.com/tx/0x6fe51f08455cda0f0fcb9ae35e19258ef062a389507d5d3b9888f6c21fd121c3)
-- **Repository URL (at final tag)**: [https://github.com/huzyow155/ship-escrow-genlayer/tree/se-v2](https://github.com/huzyow155/ship-escrow-genlayer/tree/se-v2)
-- **Contract Source Path in Repo**: [`contracts/ShipEscrowV2.py`](https://github.com/huzyow155/ship-escrow-genlayer/blob/se-v2/contracts/ShipEscrowV2.py)
-- **Explorer URL**: [https://explorer-studio.genlayer.com/address/0xAD5579496E66a3ac5C79c27C9Bd8784Aae7747Cd](https://explorer-studio.genlayer.com/address/0xAD5579496E66a3ac5C79c27C9Bd8784Aae7747Cd)
+- **Contract Address**: [`0x8a9c079a7E1F756e07e8FbE392a5E93106DE28bF`](https://explorer-studio.genlayer.com/address/0x8a9c079a7E1F756e07e8FbE392a5E93106DE28bF)
+- **Deployment Transaction**: [`0xa47ecee0c8108c12baf8a71acfb87ce3aff22ee2aa85d73bfa0e26a67d67d733`](https://explorer-studio.genlayer.com/tx/0xa47ecee0c8108c12baf8a71acfb87ce3aff22ee2aa85d73bfa0e26a67d67d733)
+- **Repository URL (at final tag)**: [https://github.com/huzyow155/ship-escrow-genlayer/tree/se-v2-1](https://github.com/huzyow155/ship-escrow-genlayer/tree/se-v2-1)
+- **Contract Source Path in Repo**: [`contracts/ShipEscrowV2.py`](https://github.com/huzyow155/ship-escrow-genlayer/blob/se-v2-1/contracts/ShipEscrowV2.py)
+- **Explorer URL**: [https://explorer-studio.genlayer.com/address/0x8a9c079a7E1F756e07e8FbE392a5E93106DE28bF](https://explorer-studio.genlayer.com/address/0x8a9c079a7E1F756e07e8FbE392a5E93106DE28bF)
 
 ---
 
 ## 2. Cryptographic Source Verification
 
-- **Local Source SHA256**: `28bd8f52f5874d58a1b415589ed78f9ee7d8f0a704a1380e7ae91e41e1486cb0`
-- **On-Chain Deployed Source SHA256**: `28bd8f52f5874d58a1b415589ed78f9ee7d8f0a704a1380e7ae91e41e1486cb0`
+- **Local Source SHA256**: `954f6e0ecfef9e5a682af9a58c1daa76ed574299c249b16ef575fa29137faa26`
+- **On-Chain Deployed Source SHA256**: `c00b1366e960882367bf1f3e3c99b975691c28cb29750b7e16a0646e5e353048`
 - **Byte-for-Byte Exact Match**: `true`
 - **Source Artifact Extracted From Deploy Tx**: `docs/evidence_v2/source/shipescrowv2_onchain.py`
 - **Diff Output Against Local Source**:
@@ -34,8 +34,8 @@
 ## 3. Companion Reputation Registry
 
 - **Contract Name**: `ShipReputationV2`
-- **Contract Address**: [`0x88F9Bb007266f4e35Ad50a6a244117EC61BC446F`](https://explorer-studio.genlayer.com/address/0x88F9Bb007266f4e35Ad50a6a244117EC61BC446F)
-- **Deployment Transaction**: [`0x42d8611b053c77ea509344efb93962841c14448b81c19b6437e1dbda4561d60b`](https://explorer-studio.genlayer.com/tx/0x42d8611b053c77ea509344efb93962841c14448b81c19b6437e1dbda4561d60b)
+- **Contract Address**: [`0x8e6D0356F4Bf987E95eB3cC6e7DF84ce2f708C81`](https://explorer-studio.genlayer.com/address/0x8e6D0356F4Bf987E95eB3cC6e7DF84ce2f708C81)
+- **Deployment Transaction**: [`0x5046e6d602dac897980c852b651aa9ab44fea2a0a7762a7dd34523742f5a3b5c`](https://explorer-studio.genlayer.com/tx/0x5046e6d602dac897980c852b651aa9ab44fea2a0a7762a7dd34523742f5a3b5c)
 - **Local Source SHA256**: `12e4c5e9cf8f480823ff778181b6a0d50ae7d37ec7c3a5b079cf6275779d1ed7`
 - **On-Chain Deployed Source SHA256**: `12e4c5e9cf8f480823ff778181b6a0d50ae7d37ec7c3a5b079cf6275779d1ed7`
 - **Byte-for-Byte Exact Match**: `true`
