@@ -19,9 +19,10 @@
 ### ShipEscrowV2 (Candidate V2.2)
 - **Address**: [`0x5e403fCB8d05166A132cB9c8885bDc90b767EC6F`](https://explorer-studio.genlayer.com/address/0x5e403fCB8d05166A132cB9c8885bDc90b767EC6F)
 - **Deployment Tx**: [`0xc8c5459d3670a6824a58a1436ba3b6f4f84ce18fc8b1071236b8743a505616a9`](https://explorer-studio.genlayer.com/tx/0xc8c5459d3670a6824a58a1436ba3b6f4f84ce18fc8b1071236b8743a505616a9)
-- **Source File**: `contracts/ShipEscrowV2.py`
-- **Source SHA256**: `f2e5cd407e493763154307b77c65ad5c058d3985dec625d483991e1e85340f6c`
-- **Byte-for-Byte Exact Match**: `true`
+- **Source File**: `contracts/candidates/ShipEscrowV2_2_not_adopted.py`
+- **Repo File SHA256 (LF Normalized)**: `7b14e4399dd99cff65a47ece067a8cea9d6bcbff55f1ad8debfcdb730c12b3bf`
+- **Raw On-Chain Deployed SHA256 (Windows CRLF)**: `f2e5cd407e493763154307b77c65ad5c058d3985dec625d483991e1e85340f6c`
+- **Byte-for-Byte Exact Match**: `true` (extracted to `docs/evidence_v2/source/shipescrowv2_2_not_adopted_onchain.py`)
 - **Deployment Status**: `ACCEPTED` / `MAJORITY_AGREE` / `SUCCESS`
 
 ### ShipReputationV2 (Candidate V2.2)

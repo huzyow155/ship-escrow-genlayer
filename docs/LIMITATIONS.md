@@ -24,21 +24,30 @@ This document outlines the architectural trust assumptions, honest boundaries, a
 
 ---
 
-## 2. GitHub REST API & Rate Limits
+## 2. GitHub REST API, Rate Limits & Owner Observations
 
 - **Unauthenticated Endpoint Usage**: Validators independently query `https://api.github.com/repos/<owner>/<repo>/pulls/<n>`. Unauthenticated requests on GitHub are subject to IP-based rate limits (60 requests per hour per egress IP).
-- **Diagnosable Error Mapping**: In V2.2, HTTP responses are explicitly discriminated before consensus:
-  - `HTTP 403 / 429` -> `gl.vm.UserError("GitHub rate limit reached, retry later")`
-  - `HTTP 301 / 302 / 307 / 308` -> `gl.vm.UserError("Repository moved: use the current owner/repo name in the bounty and the PR URL")`
-  - Other non-200 responses -> `gl.vm.UserError("Pull request metadata unavailable")`
-- **Safety Guarantee**: State mutations only happen after consensus. A rate limit failure causes the transaction to revert with zero credits debited and zero attempt counters consumed. Users wait 1-2 minutes for GitHub's rolling IP window to reset.
+- **Original Robustness Run Observations**:
+  - Across the 30 initial robustness runs on active V2.1 (`0x8a9c...`), 10 runs succeeded while 20 failed with `"Pull request metadata unavailable"`.
+  - Why 10 runs succeeded with old-owner (`huzyow155`) URLs while 20 failed remains an **unexplained observation**.
+  - The actual HTTP response codes received by individual validator nodes on Studionet were **not measured on validators**.
+  - Subsequent 40-sample response tests showing HTTP 301 redirects for the old owner were measured from a local script, not from validators.
+  - An earlier probe file (`probe_old_owner_receipt.json`) tested `.../pull/2` (singular) rather than `.../pulls/2`, causing a 404 from GitHub; this file has been marked as a wrong URL and retracted from all claims.
+- **Candidate V2.2 Gate Protocol Observations**:
+  - Candidate V2.2 introduced discriminative error messages (`"GitHub rate limit reached, retry later"` for HTTP 403/429 and `"Repository moved..."` for 301 redirects).
+  - In the 30-run Addendum 3 Gate Batch, all 23 successful runs had identical label vectors; the gate failed on availability due to unauthenticated GitHub rate limits (`"GitHub rate limit reached, retry later"`), not label disagreement.
+  - Pre-registered gate outcome: `labels were identical in all successful runs; binding was not adopted because the pre-registered success threshold was not met under GitHub unauthenticated rate limits; labels are stored, hash-committed, recomputable and leader-attested; validators compare head, base, diff hash, facts, gate, verdict and payout`.
+- **Usage Guidance & Safety Guarantee**:
+  - Submissions should be spaced several minutes apart to avoid triggering GitHub's rolling unauthenticated IP rate window.
+  - If a rate limit is encountered, developers should simply retry after several minutes.
+  - A failed submission changes no balance, debits no credits, and consumes no bounty attempt counters (verified in receipts such as [`docs/evidence_v2/robustness_v2_2/failures/f4_run_08_raw.json`](file:///E:/ShipEscrow_V2/docs/evidence_v2/robustness_v2_2/failures/f4_run_08_raw.json)).
 
 ---
 
 ## 3. Same-Repository Pull Request Restriction
 
 - **Requirement**: The pull request `head.repo.full_name` must equal `base.repo.full_name`.
-- **Rationale**: Fetching immutable revision diffs via `https://github.com/<owner>/<repo>/compare/<base_sha>...<head_sha>.diff` requires both commits to reside within the same repository. Cross-fork compare diffs can produce ambiguous merge bases or 404 responses across independent validator network routes.
+- **Rationale**: Fetching immutable revision diffs via `https://github.com/<owner>/<repo>/compare/<base_sha>...<head_sha>.diff` requires both commits to reside within the same repository. Cross-fork compare diffs can produce ambiguous merge bases or missing diff responses across independent validator network routes.
 - **Integration Impact**: Bounties require contributors to push branches directly to the repository (e.g. feature branches) or maintainers to mirror fork branches before on-chain submission.
 
 ---
