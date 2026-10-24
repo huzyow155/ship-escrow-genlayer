@@ -34,6 +34,25 @@ The following contracts are currently active and receive all live bounty escrow 
 
 ---
 
+## Intermediate Superseded Contracts (Commit `d390da5`)
+
+> [!WARNING]
+> The following intermediate V2.1 contracts were deployed at commit `d390da5` featuring stored assessment packets, but were superseded by `fc53d95` (`0x8a9c...` / `0x8e6D...`) to add GitHub owner alias resilience (`huzyow155` / `hypercybers99`).
+
+### ShipEscrowV2 (Intermediate - Superseded)
+- **Address**: [`0xE52656081f95B7efa3F7566bd9e8Ace850729adb`](https://explorer-studio.genlayer.com/address/0xE52656081f95B7efa3F7566bd9e8Ace850729adb)
+- **Deployment Tx**: [`0xd7017ed1aae313367fc9f0d60988f694f6bea6335b0df1495b5e32b97cbde2de`](https://explorer-studio.genlayer.com/tx/0xd7017ed1aae313367fc9f0d60988f694f6bea6335b0df1495b5e32b97cbde2de)
+- **Commit**: `d390da5`
+- **Status**: Superseded by `0x8a9c079a7E1F756e07e8FbE392a5E93106DE28bF`
+
+### ShipReputationV2 (Intermediate - Superseded)
+- **Address**: [`0x453abD58F96b19b8F22716b538bF1F94e8aef17D`](https://explorer-studio.genlayer.com/address/0x453abD58F96b19b8F22716b538bF1F94e8aef17D)
+- **Deployment Tx**: [`0x9d66fd59dc39acbe41565b25ef9af977ba31de9b66e8710902bb7622ae404dc4`](https://explorer-studio.genlayer.com/tx/0x9d66fd59dc39acbe41565b25ef9af977ba31de9b66e8710902bb7622ae404dc4)
+- **Commit**: `d390da5`
+- **Status**: Superseded by `0x8e6D0356F4Bf987E95eB3cC6e7DF84ce2f708C81`
+
+---
+
 ## Superseded Contracts (V2 Initial - Audited in PROMPT SE-V2d)
 
 > [!WARNING]
