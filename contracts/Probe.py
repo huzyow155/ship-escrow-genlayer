@@ -294,3 +294,55 @@ class Probe(gl.Contract):
             results["gl_message_timestamp_error"] = str(e)
 
         self.results["timestamp_probe"] = json.dumps(results)
+
+    @gl.public.write
+    def probe_burst_endpoints(self, owner: str, repo: str, pr_number: str, base_sha: str, head_sha: str, count: int) -> None:
+        """Burst probe: N calls to (a) API pulls, (b) compare .diff, (c) git smart-HTTP refs."""
+        api_url = f"https://api.github.com/repos/{owner}/{repo}/pulls/{pr_number}"
+        diff_url = f"https://github.com/{owner}/{repo}/compare/{base_sha}...{head_sha}.diff"
+        git_refs_url = f"https://github.com/{owner}/{repo}.git/info/refs?service=git-upload-pack"
+
+        def run_burst() -> str:
+            api_results = []
+            for i in range(count):
+                try:
+                    r = gl.nondet.web.get(api_url)
+                    api_results.append(int(r.status))
+                except Exception as e:
+                    api_results.append(f"err: {str(e)[:40]}")
+
+            diff_results = []
+            for i in range(count):
+                try:
+                    r = gl.nondet.web.get(diff_url)
+                    diff_results.append(int(r.status))
+                except Exception as e:
+                    diff_results.append(f"err: {str(e)[:40]}")
+
+            git_results = []
+            git_found_sha = ""
+            for i in range(count):
+                try:
+                    r = gl.nondet.web.get(git_refs_url)
+                    status = int(r.status)
+                    body_b = r.body if isinstance(r.body, (bytes, bytearray)) else str(r.body).encode("utf-8")
+                    body_t = body_b.decode("utf-8", errors="replace")
+                    m = re.search(r"([0-9a-f]{40})\s+refs/pull/" + str(pr_number) + r"/head", body_t)
+                    if m:
+                        git_found_sha = m.group(1).lower()
+                    git_results.append(status)
+                except Exception as e:
+                    git_results.append(f"err: {str(e)[:40]}")
+
+            return json.dumps({
+                "api_statuses": api_results,
+                "diff_statuses": diff_results,
+                "git_statuses": git_results,
+                "git_found_sha": git_found_sha,
+                "expected_head_sha": head_sha.lower(),
+                "head_sha_authenticated": (git_found_sha == head_sha.lower()),
+            })
+
+        decision = gl.eq_principle.strict_eq(run_burst)
+        self.results["burst_endpoints"] = decision
+
