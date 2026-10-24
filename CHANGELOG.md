@@ -4,13 +4,27 @@ All notable changes to the Ship Escrow intelligent contracts will be documented 
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [2.2.1] - 2026-10-24
+
+### Changed
+- **Active Contract Source Alignment**: Restored `contracts/ShipEscrowV2.py` to active deployed source (`0x8a9c079a7E1F756e07e8FbE392a5E93106DE28bF`, SHA256: `c00b1366e960882367bf1f3e3c99b975691c28cb29750b7e16a0646e5e353048`), matching `docs/evidence_v2/source/shipescrowv2_onchain.py` with an empty diff.
+- **Candidate Contract Relocation**: Moved candidate V2.2 contract to `contracts/candidates/ShipEscrowV2_2_not_adopted.py` and extracted on-chain deployed source to `docs/evidence_v2/source/shipescrowv2_2_not_adopted_onchain.py`.
+- **Hash Discrepancy Resolution**: Documented why candidate contract deployed with Windows CRLF has on-chain payload SHA256 `f2e5cd407e493763154307b77c65ad5c058d3985dec625d483991e1e85340f6c` while normalized LF in repo has SHA256 `7b14e4399dd99cff65a47ece067a8cea9d6bcbff55f1ad8debfcdb730c12b3bf`.
+- **Test Suite Separation**: Main unit tests (`test_layer3_mocked_contract.py`) and direct mode tests (`test_direct_mode.py`) target active source `contracts/ShipEscrowV2.py`. Candidate V2.2 tests moved to dedicated files (`tests/test_candidate_v2_2.py`, `tests/direct/test_direct_candidate_v2_2.py`).
+- **Regenerated Contract Submission Reference**: Updated `docs/CONTRACT_SUBMISSION.md` targeting final tag `se-v2-4`, canonical repository URLs (`hypercybers99`), and heading "Source Verification".
+- **Evidence Claim Corrections**:
+  - Retracted `probe_old_owner_receipt.json` as it tested singular `/pull/2` rather than `/pulls/2`, removing 404 claims.
+  - Labeled `probe_owner_measurement.json` as measured from a local script, not from validators; stated old-owner status on validator nodes as not measured on validators.
+  - Formally stated V2.2 gate outcome: `labels were identical in all successful runs; binding was not adopted because the pre-registered success threshold was not met under GitHub unauthenticated rate limits; labels are stored, hash-committed, recomputable and leader-attested; validators compare head, base, diff hash, facts, gate, verdict and payout`.
+  - Added script-extracted list of compared fields from real `validator_fn`.
+
 ## [2.2.0] - 2026-10-24
 
 ### Added
 - **Pre-Registered Addendum 3 (Consensus Label Binding Gate)**: Added `docs/ROBUSTNESS_V2_PLAN_ADDENDUM3.md` specifying consensus label vector equality (`criterion_results`) and HTTP diagnostic error messages.
 - **Diagnosable HTTP Error Discrimination**: Discriminates HTTP 301/302/307/308 redirects (`"Repository moved: use the current owner/repo name in the bounty and the PR URL"`) and HTTP 403/429 rate limits (`"GitHub rate limit reached, retry later"`), pinned across unit and direct mode tests.
 - **Candidate V2.2 Deployment & Empirical Gate Evaluation**: Deployed candidate pair `0x5e403fCB8d05166A132cB9c8885bDc90b767EC6F` and `0xF4b6649e7213874140451e01Faa4d9632A8edDA2`. Executed 30-run Gate Batch across F5, F4, F1 on Studionet. Reached 100% modal label identity on all successful runs (F5: 10/10 `["NO"]`, F4: 7/7 `["YES","YES","NO"]`, F1: 6/6 `["YES","YES","YES"]`), but under sequential bursts multi-criteria fixtures encountered validator IP rate limits (7/10 and 6/10 successes). In accordance with pre-registered gate protocol (requiring >= 9/10 successes), gate outcome evaluated to `REJECT_V2_2_KEEP_V2_1`. V2.2 preserved for audit; V2.1 contracts remain active.
-- **Root-Cause Claim Measurements**: Captured `probe_rate_limit_403_receipt.json`, `probe_old_owner_receipt.json`, and 40-sample HTTP measurement `probe_owner_measurement.json` (old owner `{"301": 20}`, canonical owner `{"200": 20}`).
+- **Root-Cause Measurements**: Captured `probe_rate_limit_403_receipt.json`, `probe_old_owner_receipt.json` (subsequently retracted due to wrong URL), and 40-sample HTTP measurement `probe_owner_measurement.json` (measured from local script, not from validators).
 - **Diagnosable Error Catalog**: Added troubleshooting guide and error catalog table to `README.md` and `docs/LIMITATIONS.md`.
 
 ## [2.1.0] - 2026-10-24
