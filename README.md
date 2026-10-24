@@ -96,7 +96,12 @@ Ship Escrow leverages unique GenLayer capabilities:
 │   └── diffs_v2/              # Immutable recorded diff files
 ├── docs/
 │   ├── PROBE_DECISIONS.md     # Studionet empirical runtime probe findings
-│   ├── EXPECTED.md            # Pre-registered fixture outcomes
+│   ├── EXPECTED.md            # Pre-registered fixture outcomes (2ef5070 baseline)
+│   ├── EXPECTED_AMENDMENT.md  # Throwaway address & PR body audit amendment
+│   ├── EXPECTED_MULTICOMMIT.md# Multi-commit head verification pre-registration
+│   ├── EXPECTED_SECTION4.md   # Section 4 lifecycle & attack pre-registration
+│   ├── ROBUSTNESS_V2_PLAN.md  # 30-run robustness pre-registration plan
+│   ├── CONTRACT_SUBMISSION.md # Multi-commit proof report for reviewer
 │   ├── DESIGN.md              # V2 architecture & packet commitment design
 │   ├── ERROR_CODES.md         # Pinned error catalog
 │   ├── LIMITATIONS.md         # Honest limitations & trust boundaries
@@ -107,10 +112,13 @@ Ship Escrow leverages unique GenLayer capabilities:
 │   ├── test_layer1_pure.py    # Layer 1: Pure functions & parser parity
 │   ├── test_layer2_ledger_fuzz.py # Layer 2: 5000-iteration ledger fuzz & attacks
 │   ├── test_layer3_mocked_contract.py # Layer 3: End-to-end pipeline simulation
-│   └── direct/                # Official Direct Mode genlayer-test suite
+│   └── direct/                # Official Direct Mode genlayer-test suite (10 discrete named tests)
 └── scripts/
     ├── deploy/                # Deploy & verification scripts
-    ├── run_robustness_batches.js # 10-run robustness evaluation batches
+    ├── run_real_robustness_batches.js # 30-run real on-chain robustness evaluation
+    ├── robustness_report.mjs  # Robustness analysis & report generator
+    ├── run_multicommit_proofs.mjs # Multi-commit on-chain verification suite
+    ├── run_section4_proofs.js # Section 4 attack defense & lifecycle suite
     ├── check_finalization_v2.js  # Finalization status tracker
-    └── v2_report.mjs          # Verification report generator
+    └── v2_report.mjs          # Comprehensive verification report generator
 ```

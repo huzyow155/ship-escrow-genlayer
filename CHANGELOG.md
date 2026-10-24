@@ -4,9 +4,14 @@ All notable changes to the Ship Escrow intelligent contracts will be documented 
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## [2.0.0] - 2026-10-20
+## [2.0.0] - 2026-10-21
 
 ### Added
+- **Multi-Commit Head Proof & Contrast**: Pre-registered and verified on-chain multi-commit proof (`docs/EXPECTED_MULTICOMMIT.md` and `docs/CONTRACT_SUBMISSION.md`). Proved PR #7 rejects first commit, middle commit, and random SHA before consuming attempts; settles real head SHA with `RELEASE_75` (75% payout) and verifies parameter-bound view `is_settled_for`. Proved PR #8 advancing head rejects stale SHA and accepts real head SHA.
+- **Section 4 Steward Attack Defense & Lifecycle Proofs**: Executed 6 on-chain proof cases on Studionet: SHA poisoning defense (S4-1), legitimate recovery flow (S4-2), exhaustion flow & escrow refund (S4-3), copied submission defense (S4-4), Sybil exhaustion resistance (S4-5), and submission bond accounting invariants (S4-6).
+- **30 Real On-Chain Robustness Batches**: Executed 30 real on-chain transactions across F1, F4, and F5 with 10/10 verdict consistency (`docs/ROBUSTNESS_V2_PLAN.md`). Formally evaluated and confirmed decision `DO_NOT_BIND_LABELS_KEEP_LEADER_ATTESTED`.
+- **True Studionet Finalization Verification**: Implemented `scripts/check_finalization_v2.js` querying GenLayer `getTransaction`, confirming 36/36 transactions transitioned to `FINALIZED`.
+- **Discrete Direct Mode Suite**: Refactored `tests/direct/test_direct_mode.py` into 10 discrete named test functions passing 10/10 in pytest.
 - **Conserved Accounting Ledger**: Added `claim_demo_credits`, debited deposits on `create_bounty`, refundable submission bond (50 credits), and `get_ledger_invariant` view asserting `total_balances + total_escrowed == total_minted`.
 - **Authoritative REST API Metadata Authentication**: Fetch `head.sha`, `base.sha`, `body`, `state`, and `user.login` via GitHub REST API, verifying `head.sha == submitted head_sha` before state mutations.
 - **Immutable Revision Diff**: Fetch diffs via `compare/<base_sha>...<head_sha>.diff` permanently bound to commit SHAs.
