@@ -19,7 +19,7 @@
 
 ## 2. Cryptographic Source Verification
 
-- **Local Source SHA256**: `954f6e0ecfef9e5a682af9a58c1daa76ed574299c249b16ef575fa29137faa26`
+- **Local Source SHA256**: `f2e5cd407e493763154307b77c65ad5c058d3985dec625d483991e1e85340f6c`
 - **On-Chain Deployed Source SHA256**: `c00b1366e960882367bf1f3e3c99b975691c28cb29750b7e16a0646e5e353048`
 - **Byte-for-Byte Exact Match**: `true`
 - **Source Artifact Extracted From Deploy Tx**: `docs/evidence_v2/source/shipescrowv2_onchain.py`

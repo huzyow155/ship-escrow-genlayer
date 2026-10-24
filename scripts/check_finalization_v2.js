@@ -62,8 +62,18 @@ async function main() {
       const initialStatusName = receipt.status_name || receipt.submit_receipt?.status_name || (receipt.status === 5 ? 'ACCEPTED' : (receipt.status === 7 ? 'FINALIZED' : String(receipt.status)));
       const initialTime = receipt.created_at || receipt.timestamp || fileStat.mtime.toISOString();
 
-      // Fetch transaction from RPC
-      const tx = await client.getTransaction({ hash: txHash });
+      // Fetch transaction from RPC with retry & pacing
+      let tx = null;
+      for (let r = 0; r < 3; r++) {
+        try {
+          tx = await client.getTransaction({ hash: txHash });
+          break;
+        } catch (e) {
+          if (r === 2) throw e;
+          await new Promise(res => setTimeout(res, 800));
+        }
+      }
+      await new Promise(res => setTimeout(res, 150));
       const currentStatusName = tx.statusName || tx.status_name || (tx.status === 7 ? 'FINALIZED' : (tx.status === 5 ? 'ACCEPTED' : String(tx.status)));
       const currentResultName = tx.result_name || receipt.result_name;
       const leaderExec = tx.consensus_data?.leader_receipt?.[0]?.execution_result || receipt.consensus_data?.leader_receipt?.[0]?.execution_result;

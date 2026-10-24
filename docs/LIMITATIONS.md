@@ -27,8 +27,11 @@ This document outlines the architectural trust assumptions, honest boundaries, a
 ## 2. GitHub REST API & Rate Limits
 
 - **Unauthenticated Endpoint Usage**: Validators independently query `https://api.github.com/repos/<owner>/<repo>/pulls/<n>`. Unauthenticated requests on GitHub are subject to IP-based rate limits (60 requests per hour per egress IP).
-- **Failure Mode**: If a validator experiences rate limiting or HTTP 403/404, the validator raises `gl.vm.UserError("Pull request metadata unavailable")`.
-- **Safety Guarantee**: State mutations only happen after consensus. A rate limit failure causes the transaction to revert with zero credits debited and zero attempt counters consumed.
+- **Diagnosable Error Mapping**: In V2.2, HTTP responses are explicitly discriminated before consensus:
+  - `HTTP 403 / 429` -> `gl.vm.UserError("GitHub rate limit reached, retry later")`
+  - `HTTP 301 / 302 / 307 / 308` -> `gl.vm.UserError("Repository moved: use the current owner/repo name in the bounty and the PR URL")`
+  - Other non-200 responses -> `gl.vm.UserError("Pull request metadata unavailable")`
+- **Safety Guarantee**: State mutations only happen after consensus. A rate limit failure causes the transaction to revert with zero credits debited and zero attempt counters consumed. Users wait 1-2 minutes for GitHub's rolling IP window to reset.
 
 ---
 

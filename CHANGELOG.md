@@ -4,6 +4,23 @@ All notable changes to the Ship Escrow intelligent contracts will be documented 
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [2.2.0] - 2026-10-24
+
+### Added
+- **Pre-Registered Addendum 3 (Consensus Label Binding Gate)**: Added `docs/ROBUSTNESS_V2_PLAN_ADDENDUM3.md` specifying consensus label vector equality (`criterion_results`) and HTTP diagnostic error messages.
+- **Diagnosable HTTP Error Discrimination**: Discriminates HTTP 301/302/307/308 redirects (`"Repository moved: use the current owner/repo name in the bounty and the PR URL"`) and HTTP 403/429 rate limits (`"GitHub rate limit reached, retry later"`), pinned across unit and direct mode tests.
+- **Candidate V2.2 Deployment & Empirical Gate Evaluation**: Deployed candidate pair `0x5e403fCB8d05166A132cB9c8885bDc90b767EC6F` and `0xF4b6649e7213874140451e01Faa4d9632A8edDA2`. Executed 30-run Gate Batch across F5, F4, F1 on Studionet. Reached 100% modal label identity on all successful runs (F5: 10/10 `["NO"]`, F4: 7/7 `["YES","YES","NO"]`, F1: 6/6 `["YES","YES","YES"]`), but under sequential bursts multi-criteria fixtures encountered validator IP rate limits (7/10 and 6/10 successes). In accordance with pre-registered gate protocol (requiring >= 9/10 successes), gate outcome evaluated to `REJECT_V2_2_KEEP_V2_1`. V2.2 preserved for audit; V2.1 contracts remain active.
+- **Root-Cause Claim Measurements**: Captured `probe_rate_limit_403_receipt.json`, `probe_old_owner_receipt.json`, and 40-sample HTTP measurement `probe_owner_measurement.json` (old owner `{"301": 20}`, canonical owner `{"200": 20}`).
+- **Diagnosable Error Catalog**: Added troubleshooting guide and error catalog table to `README.md` and `docs/LIMITATIONS.md`.
+
+## [2.1.0] - 2026-10-24
+
+### Added
+- **Stored Assessment Packets**: Added `criterion_results`, `gate`, and `packet` dictionary storage in `ShipEscrowV2` on-chain storage with matching `scripts/recompute_packet.mjs` verification.
+- **GitHub Account Rename Resilience**: Added support for GitHub repository owner alias (`huzyow155` -> `hypercybers99`).
+- **Active V2.1 Deployment**: Deployed active pair `0x8a9c079a7E1F756e07e8FbE392a5E93106DE28bF` and `0x8e6D0356F4Bf987E95eB3cC6e7DF84ce2f708C81`.
+- **Honest Robustness Attempts Table**: Reconciled all 23 failure receipts, recording true attempt counts (F1: 19, F4: 17, F5: 14) and error distributions in `scripts/robustness_report.mjs`.
+
 ## [2.0.0] - 2026-10-21
 
 ### Added

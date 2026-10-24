@@ -1,0 +1,38 @@
+{
+  "executedAt": "2026-10-24T09:04:29.854Z",
+  "escrowAddress": "0x5e403fCB8d05166A132cB9c8885bDc90b767EC6F",
+  "evaluation": {
+    "F5": {
+      "attempts": 10,
+      "successes": 10,
+      "failures": 0,
+      "modalVector": "[\"NO\"]",
+      "modalVectorCount": 10,
+      "successGate": "PASS",
+      "labelGate": "PASS",
+      "overall": "PASS"
+    },
+    "F4": {
+      "attempts": 10,
+      "successes": 7,
+      "failures": 3,
+      "modalVector": "[\"YES\",\"YES\",\"NO\"]",
+      "modalVectorCount": 7,
+      "successGate": "FAIL",
+      "labelGate": "FAIL",
+      "overall": "FAIL"
+    },
+    "F1": {
+      "attempts": 10,
+      "successes": 6,
+      "failures": 4,
+      "modalVector": "[\"YES\",\"YES\",\"YES\"]",
+      "modalVectorCount": 6,
+      "successGate": "FAIL",
+      "labelGate": "FAIL",
+      "overall": "FAIL"
+    }
+  },
+  "gateOutcome": "REJECT_V2_2_KEEP_V2_1",
+  "adopted": false
+}

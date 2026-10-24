@@ -127,3 +127,22 @@ Ship Escrow leverages unique GenLayer capabilities:
     ├── check_finalization_v2.js  # Finalization status tracker
     └── v2_report.mjs          # Comprehensive verification report generator
 ```
+
+---
+
+## 6. Error Catalog & Diagnosable Error Strings ("If You See This Error")
+
+Ship Escrow V2 discriminates API error codes and diff edge cases at the contract boundary so that users receive actionable diagnostic messages rather than generic reverts:
+
+| On-Chain Error Message | Exact Trigger Condition | Cause / Investigation | Action / Resolution |
+| :--- | :--- | :--- | :--- |
+| `"Repository moved: use the current owner/repo name in the bounty and the PR URL"` | GitHub REST API returns HTTP `301`, `302`, `307`, or `308` redirect. | Repository was renamed or transferred to a new GitHub organization/owner (`huzyow155` -> `hypercybers99`). | Bounty creator and developer must specify the canonical current owner/repo (`hypercybers99/ship-escrow-fixtures`) in bounty repository field and PR URL. |
+| `"GitHub rate limit reached, retry later"` | GitHub REST API returns HTTP `403` or `429` (IP rate limit exceeded). | Unauthenticated requests exceed GitHub's hourly rolling quota (60 requests/hour per egress IP). | Wait 1-2 minutes for the rolling rate-limit window to reset, then resubmit. Transaction reverts without debiting credits or consuming submission attempts. |
+| `"Pull request metadata unavailable"` | GitHub REST API returns HTTP `404`, `500`, `502`, `503`, or invalid JSON payload. | The PR does not exist, repository is private, or GitHub is experiencing service degradation. | Verify the PR number exists, is publicly accessible in a web browser without login, and retry after GitHub service normalizes. |
+| `"Pull request is not open or merged"` | Pull request `state != "open"` and `merged == False`, or `draft == True`. | The pull request is marked as a draft, or was closed without being merged into the base branch. | Mark draft PRs as "Ready for review" on GitHub, or ensure closed PRs were merged before submission. |
+| `"Pull request is not bound to the submitting wallet"` | PR description body lacks `ship-escrow-wallet: 0x<caller_address>`. | Attacker attempt or missing wallet marker in the GitHub pull request markdown description. | Developer must edit the PR description on GitHub to include `ship-escrow-wallet: <caller_address>` before calling `submit_work`. |
+| `"Head sha does not match the pull request head"` | Submitted commit SHA differs from the PR tip commit SHA (`meta["head"]["sha"]`). | Stale commit hash submitted, or new commit pushed after hash was copied. | Run `git rev-parse HEAD` on the PR branch, or inspect GitHub PR "Commits" tab, and submit the current head commit SHA. |
+| `"Head repo does not match bounty repo"` | PR `head.repo.full_name` does not match the target repository. | Pull request submitted from an external fork repository instead of a branch within the target repository. | Push branch directly to the target repository (same-repo pull request) so immutable compare diffs can be evaluated. |
+| `"Diff exceeds maximum allowed size (14000 chars)"` | Raw compare diff exceeds 14,000 characters. | Large pull request touching many files or large assets. | Automatically sets gate `diff_truncated`, yielding `REVIEW` verdict (0% payout) for human review. |
+| `"Required path boundary was not touched"` | No modified file starts with the mandatory path prefix. | Pull request made changes entirely outside the required paths specified in the bounty. | Modify files under the mandatory paths defined in bounty acceptance criteria. |
+

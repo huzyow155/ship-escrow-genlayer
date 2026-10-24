@@ -11,9 +11,10 @@
 
 ---
 
-## Candidate Contracts (V2.2 - Gated Consensus Label-Binding & Diagnosable HTTP Errors)
+## Candidate Contracts (V2.2 - Tried, Not Adopted via Addendum 3 Gate Protocol)
 
-The following candidate contracts have been deployed on Studionet and are undergoing the pre-registered Gate Batch (Addendum 3):
+> [!NOTE]
+> The following candidate contracts were deployed on Studionet and evaluated under the pre-registered Addendum 3 Gate Batch. While label vectors were 100% identical across all successful runs (F5: 10/10 `["NO"]`, F4: 7/7 `["YES","YES","NO"]`, F1: 6/6 `["YES","YES","YES"]`), sequential validator requests encountered GitHub API IP rate limits (`"GitHub rate limit reached, retry later"`), resulting in 7/10 successes on F4 and 6/10 on F1. Under the strict pre-registered rule (requiring >= 9/10 successes on each fixture), the gate evaluated to `REJECT_V2_2_KEEP_V2_1`. V2.2 is preserved for audit, and V2.1 contracts remain the active deployment.
 
 ### ShipEscrowV2 (Candidate V2.2)
 - **Address**: [`0x5e403fCB8d05166A132cB9c8885bDc90b767EC6F`](https://explorer-studio.genlayer.com/address/0x5e403fCB8d05166A132cB9c8885bDc90b767EC6F)
