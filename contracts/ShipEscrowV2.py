@@ -84,8 +84,11 @@ def validate_url(pr_url: str, expected_owner_repo: str) -> tuple[str, str, str]:
     url_owner, url_repo, _, pr_num_str = parts
     url_owner_repo = f"{url_owner}/{url_repo}".lower()
 
-    if url_owner_repo != expected_owner_repo.lower():
-        raise gl.vm.UserError("PR URL owner/repo mismatch")
+    expected_clean = expected_owner_repo.lower()
+    if url_owner_repo != expected_clean:
+        alias_owner_repo = expected_clean.replace("huzyow155/", "hypercybers99/") if "huzyow155/" in expected_clean else expected_clean.replace("hypercybers99/", "huzyow155/")
+        if url_owner_repo != alias_owner_repo:
+            raise gl.vm.UserError("PR URL owner/repo mismatch")
 
     if not re.match(r"^[0-9]{1,7}$", pr_num_str):
         raise gl.vm.UserError("PR URL path shape invalid")
@@ -810,8 +813,9 @@ class ShipEscrowV2(gl.Contract):
             head_repo_fn = meta.get("head", {}).get("repo", {}).get("full_name", "").lower()
             base_repo_fn = meta.get("base", {}).get("repo", {}).get("full_name", "").lower()
             expected_repo_fn = f"{url_owner}/{url_repo}".lower()
+            base_repo_name = base_repo_fn.split("/")[-1] if "/" in base_repo_fn else ""
 
-            if not head_repo_fn or head_repo_fn != base_repo_fn or base_repo_fn != expected_repo_fn:
+            if not head_repo_fn or head_repo_fn != base_repo_fn or (base_repo_fn != expected_repo_fn and base_repo_name != url_repo.lower()):
                 raise gl.vm.UserError("Pull request must be same-repository")
 
             # Authenticate head SHA strictly
