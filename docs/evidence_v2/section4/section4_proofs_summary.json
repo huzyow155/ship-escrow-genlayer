@@ -1,0 +1,364 @@
+{
+  "executed_at": "2026-10-24T02:46:26.320Z",
+  "contract": "0xAD5579496E66a3ac5C79c27C9Bd8784Aae7747Cd",
+  "cases": {
+    "S4_1": {
+      "title": "SHA Poisoning Defense",
+      "bounty_id": "49",
+      "bounty_snapshot_before": {
+        "amount": "10",
+        "attempts": "0",
+        "creator": "0x79ed3fc4e32d8df7b23a221a27a057170e6d2069",
+        "criteria": [
+          {
+            "level": "MUST",
+            "text": "Implement slugify in src/slug.py"
+          },
+          {
+            "level": "MUST",
+            "text": "Add unit tests in tests/test_slug.py"
+          }
+        ],
+        "criteria_hash": "b2716c067997c0d7e97423dba85bafe7ec72f6157703e008cf3e9999a41c0690",
+        "id": "49",
+        "owner_repo": "hypercybers99/ship-escrow-fixtures",
+        "required_paths": [],
+        "schema_version": "2",
+        "seq": "49",
+        "status": "OPEN",
+        "title": "S4-1 Poisoning Target"
+      },
+      "attack_tx": "0x7c694406b29d129e062a6b50c2419d4eb3ee44038050ed96e8421c61c3aa1175",
+      "attack_status": "ACCEPTED",
+      "attack_exec": "ERROR",
+      "bounty_snapshot_after_attack": {
+        "amount": "10",
+        "attempts": "0",
+        "creator": "0x79ed3fc4e32d8df7b23a221a27a057170e6d2069",
+        "criteria": [
+          {
+            "level": "MUST",
+            "text": "Implement slugify in src/slug.py"
+          },
+          {
+            "level": "MUST",
+            "text": "Add unit tests in tests/test_slug.py"
+          }
+        ],
+        "criteria_hash": "b2716c067997c0d7e97423dba85bafe7ec72f6157703e008cf3e9999a41c0690",
+        "id": "49",
+        "owner_repo": "hypercybers99/ship-escrow-fixtures",
+        "required_paths": [],
+        "schema_version": "2",
+        "seq": "49",
+        "status": "OPEN",
+        "title": "S4-1 Poisoning Target"
+      },
+      "genuine_tx": "0x81e7713b7126699f376e75f7f150cbdcb5519436e0123b58d7c86bb7f15cb61b",
+      "genuine_status": "ACCEPTED",
+      "genuine_exec": "SUCCESS",
+      "bounty_snapshot_final": {
+        "amount": "10",
+        "attempts": "1",
+        "creator": "0x79ed3fc4e32d8df7b23a221a27a057170e6d2069",
+        "criteria": [
+          {
+            "level": "MUST",
+            "text": "Implement slugify in src/slug.py"
+          },
+          {
+            "level": "MUST",
+            "text": "Add unit tests in tests/test_slug.py"
+          }
+        ],
+        "criteria_hash": "b2716c067997c0d7e97423dba85bafe7ec72f6157703e008cf3e9999a41c0690",
+        "id": "49",
+        "owner_repo": "hypercybers99/ship-escrow-fixtures",
+        "required_paths": [],
+        "schema_version": "2",
+        "seq": "49",
+        "status": "SETTLED",
+        "title": "S4-1 Poisoning Target"
+      },
+      "passed": true
+    },
+    "S4_2": {
+      "title": "Legitimate Recovery Flow",
+      "bounty_id": "50",
+      "dev_balance_before": "674",
+      "attempt1_tx": "0x36e8858101c0afacfbb59090c94cd1f08f32c83a6ac23b1fbf742f2ab7f98906",
+      "attempt1_exec": "SUCCESS",
+      "dev_balance_after_review": "674",
+      "bounty_after_review": {
+        "amount": "10",
+        "attempts": "1",
+        "creator": "0x79ed3fc4e32d8df7b23a221a27a057170e6d2069",
+        "criteria": [
+          {
+            "level": "MUST",
+            "text": "Implement slugify in src/slug.py"
+          },
+          {
+            "level": "MUST",
+            "text": "Add unit tests in tests/test_slug.py"
+          }
+        ],
+        "criteria_hash": "b2716c067997c0d7e97423dba85bafe7ec72f6157703e008cf3e9999a41c0690",
+        "id": "50",
+        "owner_repo": "hypercybers99/ship-escrow-fixtures",
+        "required_paths": [],
+        "schema_version": "2",
+        "seq": "50",
+        "status": "OPEN",
+        "title": "S4-2 Recovery Target"
+      },
+      "attempt2_tx": "0x595388521ac7d83c1e61a2e0f5514a679dafd72d2b2e51144679351cfeadf9e9",
+      "attempt2_exec": "SUCCESS",
+      "dev_balance_after_release": "684",
+      "bounty_final": {
+        "amount": "10",
+        "attempts": "2",
+        "creator": "0x79ed3fc4e32d8df7b23a221a27a057170e6d2069",
+        "criteria": [
+          {
+            "level": "MUST",
+            "text": "Implement slugify in src/slug.py"
+          },
+          {
+            "level": "MUST",
+            "text": "Add unit tests in tests/test_slug.py"
+          }
+        ],
+        "criteria_hash": "b2716c067997c0d7e97423dba85bafe7ec72f6157703e008cf3e9999a41c0690",
+        "id": "50",
+        "owner_repo": "hypercybers99/ship-escrow-fixtures",
+        "required_paths": [],
+        "schema_version": "2",
+        "seq": "50",
+        "status": "SETTLED",
+        "title": "S4-2 Recovery Target"
+      },
+      "passed": true
+    },
+    "S4_3": {
+      "title": "Exhaustion & Escrow Refund Flow",
+      "bounty_id": "51",
+      "dev1_attempt1_tx": "0xdfb0ad1024f809f67d08bec00a3e9d886ae2aec1c4866be6fcfc01ea18b03ad4",
+      "dev1_refused_tx": "0x1f527ae2f76a5d17f018a25ae517fb6030fb66258839731def7a23388f1ccfaf",
+      "dev1_refused_exec": "ERROR",
+      "dev2_attempt1_tx": "0xdc268857662c0de2eb839755d7197393e481e24679eb84a4f3ba610a67930232",
+      "dev2_attempt2_tx": "0x535cc52840bb9c8e1461075efb52d49f0c3263581008b6e176cbd501778510fc",
+      "dev3_attempt1_tx": "0x092adc1251a8c24655ef223c1f7bfd21b548c3907352c3f287a0ca60d0a31404",
+      "dev3_attempt2_tx": "0x98f37cc748239f0fd4b27893a63ec03ab413c46c8800151946feda355ba9d35d",
+      "bounty_exhausted_snapshot": {
+        "amount": "20",
+        "attempts": "6",
+        "creator": "0x79ed3fc4e32d8df7b23a221a27a057170e6d2069",
+        "criteria": [
+          {
+            "level": "MUST",
+            "text": "Implement slugify in src/slug.py"
+          }
+        ],
+        "criteria_hash": "3011d63a2462afce2d5c561e5eaa9483a5e35232dcea3bf82a6de99190aa708d",
+        "id": "51",
+        "owner_repo": "hypercybers99/ship-escrow-fixtures",
+        "required_paths": [
+          "src/",
+          "tests/"
+        ],
+        "schema_version": "2",
+        "seq": "51",
+        "status": "EXHAUSTED",
+        "title": "S4-3 Exhaustion Target"
+      },
+      "refund_tx": "0x13db79bd9a55621de5f2ae0fccb0fa1f2a028a51049f5800bb3ff901d75554a6",
+      "creator_bal_before_refund": "1006",
+      "creator_bal_after_refund": "1026",
+      "bounty_refunded_snapshot": {
+        "amount": "20",
+        "attempts": "6",
+        "creator": "0x79ed3fc4e32d8df7b23a221a27a057170e6d2069",
+        "criteria": [
+          {
+            "level": "MUST",
+            "text": "Implement slugify in src/slug.py"
+          }
+        ],
+        "criteria_hash": "3011d63a2462afce2d5c561e5eaa9483a5e35232dcea3bf82a6de99190aa708d",
+        "id": "51",
+        "owner_repo": "hypercybers99/ship-escrow-fixtures",
+        "required_paths": [
+          "src/",
+          "tests/"
+        ],
+        "schema_version": "2",
+        "seq": "51",
+        "status": "REFUNDED",
+        "title": "S4-3 Exhaustion Target"
+      },
+      "invariant_after": {
+        "invariant_holds": true,
+        "total_balances": "3460",
+        "total_escrowed": "540",
+        "total_minted": "4000"
+      },
+      "passed": true
+    },
+    "S4_4": {
+      "title": "Copied Submission Defense",
+      "bounty_id": "52",
+      "theft_tx": "0x4e29a089224a191ec130e0a794135bf261acd1103480cef226386e2c8c3815b0",
+      "theft_exec": "ERROR",
+      "bounty_after_theft": {
+        "amount": "10",
+        "attempts": "0",
+        "creator": "0x79ed3fc4e32d8df7b23a221a27a057170e6d2069",
+        "criteria": [
+          {
+            "level": "MUST",
+            "text": "Implement slugify in src/slug.py"
+          },
+          {
+            "level": "MUST",
+            "text": "Add unit tests in tests/test_slug.py"
+          }
+        ],
+        "criteria_hash": "b2716c067997c0d7e97423dba85bafe7ec72f6157703e008cf3e9999a41c0690",
+        "id": "52",
+        "owner_repo": "hypercybers99/ship-escrow-fixtures",
+        "required_paths": [],
+        "schema_version": "2",
+        "seq": "52",
+        "status": "OPEN",
+        "title": "S4-4 Copied Target"
+      },
+      "genuine_tx": "0xe66dd5af10a443c8eb14a62a68a1518cb4a7900d7ed0e41812aa2f0133be91cb",
+      "genuine_exec": "SUCCESS",
+      "bounty_final": {
+        "amount": "10",
+        "attempts": "1",
+        "creator": "0x79ed3fc4e32d8df7b23a221a27a057170e6d2069",
+        "criteria": [
+          {
+            "level": "MUST",
+            "text": "Implement slugify in src/slug.py"
+          },
+          {
+            "level": "MUST",
+            "text": "Add unit tests in tests/test_slug.py"
+          }
+        ],
+        "criteria_hash": "b2716c067997c0d7e97423dba85bafe7ec72f6157703e008cf3e9999a41c0690",
+        "id": "52",
+        "owner_repo": "hypercybers99/ship-escrow-fixtures",
+        "required_paths": [],
+        "schema_version": "2",
+        "seq": "52",
+        "status": "SETTLED",
+        "title": "S4-4 Copied Target"
+      },
+      "passed": true
+    },
+    "S4_5": {
+      "title": "Sybil Exhaustion Resistance",
+      "bounty_id": "53",
+      "bounty_initial": {
+        "amount": "10",
+        "attempts": "0",
+        "creator": "0x79ed3fc4e32d8df7b23a221a27a057170e6d2069",
+        "criteria": [
+          {
+            "level": "MUST",
+            "text": "Implement slugify in src/slug.py"
+          },
+          {
+            "level": "MUST",
+            "text": "Add unit tests in tests/test_slug.py"
+          }
+        ],
+        "criteria_hash": "b2716c067997c0d7e97423dba85bafe7ec72f6157703e008cf3e9999a41c0690",
+        "id": "53",
+        "owner_repo": "hypercybers99/ship-escrow-fixtures",
+        "required_paths": [],
+        "schema_version": "2",
+        "seq": "53",
+        "status": "OPEN",
+        "title": "S4-5 Sybil Target"
+      },
+      "sybil_txs": [
+        "0x7fa4dd891e9ccbc708356469d0e7a495ff599b36293b20f93bee0be600934399",
+        "0x203006e2cabb9df8f1cc69b0a4f4a94f7967031c37e48dc493be5c1379dfa703",
+        "0x2f04a394b9dc81bd89a9b2e49cdb92039911b3dbfaf98ad74b801797ffaf8ede"
+      ],
+      "bounty_after_sybil": {
+        "amount": "10",
+        "attempts": "0",
+        "creator": "0x79ed3fc4e32d8df7b23a221a27a057170e6d2069",
+        "criteria": [
+          {
+            "level": "MUST",
+            "text": "Implement slugify in src/slug.py"
+          },
+          {
+            "level": "MUST",
+            "text": "Add unit tests in tests/test_slug.py"
+          }
+        ],
+        "criteria_hash": "b2716c067997c0d7e97423dba85bafe7ec72f6157703e008cf3e9999a41c0690",
+        "id": "53",
+        "owner_repo": "hypercybers99/ship-escrow-fixtures",
+        "required_paths": [],
+        "schema_version": "2",
+        "seq": "53",
+        "status": "OPEN",
+        "title": "S4-5 Sybil Target"
+      },
+      "dev_tx": "0xcb5a92bf6082bdd33a2543a5314c322c4496db5dec9474fc9523d492465f522b",
+      "bounty_final": {
+        "amount": "10",
+        "attempts": "1",
+        "creator": "0x79ed3fc4e32d8df7b23a221a27a057170e6d2069",
+        "criteria": [
+          {
+            "level": "MUST",
+            "text": "Implement slugify in src/slug.py"
+          },
+          {
+            "level": "MUST",
+            "text": "Add unit tests in tests/test_slug.py"
+          }
+        ],
+        "criteria_hash": "b2716c067997c0d7e97423dba85bafe7ec72f6157703e008cf3e9999a41c0690",
+        "id": "53",
+        "owner_repo": "hypercybers99/ship-escrow-fixtures",
+        "required_paths": [],
+        "schema_version": "2",
+        "seq": "53",
+        "status": "SETTLED",
+        "title": "S4-5 Sybil Target"
+      },
+      "passed": true
+    },
+    "S4_6": {
+      "title": "Submission Bond Accounting Invariants",
+      "trace1_refund": {
+        "bounty_id": "54",
+        "creator_bal_before": "996",
+        "creator_bal_after": "1046",
+        "dev_bal_before": "654",
+        "dev_bal_after": "604",
+        "invariant_holds": true
+      },
+      "trace2_release": {
+        "bounty_id": "55",
+        "creator_bal_before": "1036",
+        "creator_bal_after": "1036",
+        "dev_bal_before": "604",
+        "dev_bal_after": "614",
+        "invariant_holds": true
+      },
+      "passed": true
+    }
+  }
+}
