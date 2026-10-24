@@ -369,8 +369,6 @@ def parse_wallet_marker(pr_body: str) -> str:
     return ""
 
 
-_leader_extra = {}
-
 
 # -------------------------------------------------------------------------
 # ShipEscrowV2 Intelligent Contract
@@ -781,8 +779,8 @@ class ShipEscrowV2(gl.Contract):
         api_url = f"https://api.github.com/repos/{url_owner}/{url_repo}/pulls/{pr_num_str}"
 
         # 2. Non-deterministic consensus block:
-        # Returns f"{verdict}|{payout_pct}|{packet_sha256}"
-        def evaluate_consensus() -> str:
+        # Uses gl.vm.run_nondet(leader_fn, validator_fn) to produce and persist the complete assessment packet
+        def compute_packet() -> dict:
             # Source A: Authoritative GitHub REST API metadata fetch
             try:
                 res_api = gl.nondet.web.get(api_url)
@@ -853,8 +851,10 @@ class ShipEscrowV2(gl.Contract):
 
             # Hard Gate: deleted test files (malicious CI gaming check)
             gate_fired = ""
+            gate_reason = ""
             if facts["test_files_deleted"]:
                 gate_fired = "test_deleted"
+                gate_reason = "Test files deleted in diff"
 
             # Hard Gate: required paths (EVERY mandatory prefix must be matched)
             if not gate_fired and b_required_paths:
@@ -866,6 +866,7 @@ class ShipEscrowV2(gl.Contract):
                             break
                     if not matched:
                         gate_fired = "required_path_untouched"
+                        gate_reason = f"Required path not touched: {req}"
                         break
 
             # If diff was truncated, gates or LLM evaluation on missing code must result in REVIEW
@@ -875,6 +876,7 @@ class ShipEscrowV2(gl.Contract):
                 parsed_labels = ["UNCLEAR"] * len(b_criteria)
                 if not gate_fired:
                     gate_fired = "diff_truncated"
+                    gate_reason = "Diff truncated by size cap"
             elif gate_fired == "test_deleted":
                 verdict = "REVIEW"
                 payout_pct = 0
@@ -910,10 +912,11 @@ class ShipEscrowV2(gl.Contract):
                 verdict, payout_pct = decide(b_criteria, parsed_labels, is_truncated=facts["is_truncated"])
 
             # Construct canonical assessment packet
-            packet = {
+            return {
                 "base_sha": base_sha,
                 "body_sha256": hashlib.sha256(pr_body.encode("utf-8")).hexdigest(),
                 "criteria_hash": bounty["criteria_hash"],
+                "criterion_results": parsed_labels,
                 "diff_sha256": diff_sha256,
                 "facts": {
                     "added_lines": facts["added_lines"],
@@ -925,6 +928,7 @@ class ShipEscrowV2(gl.Contract):
                     "test_files_touched": facts["test_files_touched"],
                 },
                 "gate": gate_fired,
+                "gate_reason": gate_reason,
                 "head_sha": valid_head_sha,
                 "metadata": {
                     "author_login": meta.get("user", {}).get("login", ""),
@@ -937,20 +941,41 @@ class ShipEscrowV2(gl.Contract):
                 "verdict": verdict,
             }
 
-            packet_sha256 = hashlib.sha256(canonical_json(packet).encode("utf-8")).hexdigest()
+        def leader_fn() -> str:
+            packet = compute_packet()
+            return canonical_json(packet)
 
-            # Record leader metadata for storage
-            _leader_extra["packet"] = packet
-            _leader_extra["packet_sha256"] = packet_sha256
-            _leader_extra["criterion_results"] = parsed_labels
+        def validator_fn(result) -> bool:
+            val_packet = compute_packet()
+            if not isinstance(result, gl.vm.Return):
+                return False
+            leader_json = gl.vm.unpack_result(result)
+            leader_packet = json.loads(leader_json)
 
-            return f"{verdict}|{payout_pct}|{packet_sha256}"
+            # Strict comparison of deterministic and structural fields
+            if leader_packet.get("head_sha") != val_packet.get("head_sha"):
+                return False
+            if leader_packet.get("base_sha") != val_packet.get("base_sha"):
+                return False
+            if leader_packet.get("diff_sha256") != val_packet.get("diff_sha256"):
+                return False
+            if leader_packet.get("facts") != val_packet.get("facts"):
+                return False
+            if leader_packet.get("gate") != val_packet.get("gate"):
+                return False
+            if leader_packet.get("verdict") != val_packet.get("verdict"):
+                return False
+            if int(leader_packet.get("payout_pct", -1)) != int(val_packet.get("payout_pct", -2)):
+                return False
+            return True
 
-        consensus_output = gl.eq_principle.strict_eq(evaluate_consensus)
-        c_parts = consensus_output.split("|")
-        verdict = c_parts[0]
-        payout_pct = int(c_parts[1])
-        packet_sha256 = c_parts[2]
+        leader_json = gl.vm.run_nondet(leader_fn, validator_fn)
+        packet = json.loads(leader_json)
+        packet_sha256 = hashlib.sha256(canonical_json(packet).encode("utf-8")).hexdigest()
+        verdict = packet["verdict"]
+        payout_pct = int(packet["payout_pct"])
+        criterion_results = packet.get("criterion_results", [])
+        gate = packet.get("gate", "")
 
         # 3. Post-consensus state mutations
         # Authenticated submission: consume attempt counters
@@ -978,18 +1003,16 @@ class ShipEscrowV2(gl.Contract):
         elif verdict == "RELEASE_25":
             self._set_counter("stat_v_release_25", self._get_counter("stat_v_release_25") + 1)
 
-        leader_packet = _leader_extra.get("packet", {})
-        criterion_results = _leader_extra.get("criterion_results", [])
-
         submission_record = {
             "attempt": str(new_bounty_attempts),
             "bounty_id": bounty_id,
             "criterion_results": criterion_results,
             "dev": dev,
             "dev_attempt": str(new_dev_attempts),
+            "gate": gate,
             "head_sha": valid_head_sha,
             "id": sub_id,
-            "packet": leader_packet,
+            "packet": packet,
             "packet_sha256": packet_sha256,
             "payout_pct": str(payout_pct),
             "pr_number": pr_num_str,
