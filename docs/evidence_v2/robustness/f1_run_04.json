@@ -1,32 +1,83 @@
 {
   "fixture_id": "F1",
   "run_index": 4,
-  "bounty_id": "31",
-  "submission_id": null,
-  "pr_url": "https://github.com/huzyow155/ship-escrow-fixtures/pull/2",
+  "bounty_id": "75",
+  "submission_id": "43",
+  "pr_url": "https://github.com/hypercybers99/ship-escrow-fixtures/pull/2",
   "head_sha": "5db0441e76af93606fd82feebbe49c5a2f145326",
-  "create_tx_hash": "0xb4c4e5eac67b4ddd4e569f5a80cc0f50132ce2ad9b51d40bdf439bedae2ff9e2",
+  "create_tx_hash": "0xddde9302b8c7596ca88818a2d48ebe649f5cf12d41288d9571604ebf15c2ebea",
   "create_receipt_status": "ACCEPTED",
-  "submit_tx_hash": "0x831fab9393653e9f67d0778fbe65967abd49559d20c3c5743036468efe5ba8a0",
+  "submit_tx_hash": "0x608a91f90a7ede613ff6dc0eec3bbc822286d1060a597ebafea6df6c5c5d1729",
   "submit_receipt": {
     "status_name": "ACCEPTED",
     "result_name": "MAJORITY_AGREE",
-    "execution_result": "ERROR",
+    "execution_result": "SUCCESS",
     "votes": {
+      "0x007d6451555Df7765c707284F844137927aE4e5E": "agree",
       "0x0eb3859451817bC25Cc717D4F676D54D0D3aD0aE": "idle",
       "0x378aED3bA912Ce77C3C66155961A7e61C2fE8F3B": "agree",
-      "0x5847AF34a4e5bA96490f8c883598f68EC9B0B907": "agree",
-      "0xCe0B66448435cA53665C954705Abd753515594Cf": "idle",
-      "0xe06A34A1eBd398AF3399d08593B8c3C433CdD947": "agree"
+      "0x9C182DE7F93AdbE8ee3D62570613eC23c5683cAc": "agree",
+      "0xb04cdDC4a6Ff6A0aDF715cfe00Fa307b901cebD4": "idle"
     }
   },
   "on_chain_submission": {
-    "verdict": null,
-    "payout_pct": null,
-    "packet_sha256": null,
-    "criterion_results": [],
-    "gate": null,
-    "packet": {}
+    "attempt": "1",
+    "bounty_id": "75",
+    "criterion_results": [
+      "YES",
+      "YES",
+      "YES"
+    ],
+    "dev": "0x6325b360db455435bf5e81d0ae18dc3b249f226c",
+    "dev_attempt": "1",
+    "gate": "",
+    "head_sha": "5db0441e76af93606fd82feebbe49c5a2f145326",
+    "id": "43",
+    "packet": {
+      "base_sha": "9d3e8ada2d4c7ed38e6a7843e971df38f6ab4207",
+      "body_sha256": "2227f3b75a39671f044409c885917accc56784c9a2b6a5d857fa94dbdfe68aa6",
+      "criteria_hash": "17caf857878a3eb317ec078325a6ffab59b167002bab49877b8893272416496d",
+      "criterion_results": [
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "diff_sha256": "ecd93f38b55992bcea34e00190252912c3a6c9742884d8d6666720882afb116c",
+      "facts": {
+        "added_lines": 25,
+        "changed_files": [
+          "README.md",
+          "src/slug.py",
+          "tests/test_slug.py"
+        ],
+        "deleted_files": [],
+        "deleted_lines": 0,
+        "is_truncated": false,
+        "test_files_deleted": [],
+        "test_files_touched": [
+          "tests/test_slug.py"
+        ]
+      },
+      "gate": "",
+      "gate_reason": "",
+      "head_sha": "5db0441e76af93606fd82feebbe49c5a2f145326",
+      "metadata": {
+        "author_login": "hypercybers99",
+        "commits": 1,
+        "draft": false,
+        "merged": false,
+        "state": "open"
+      },
+      "payout_pct": 100,
+      "verdict": "RELEASE_100"
+    },
+    "packet_sha256": "0409be9b875b9fe6ac0aea7b769333417cdc21b7029edaac1a8c682faaacb1e5",
+    "payout_pct": "100",
+    "pr_number": "2",
+    "pr_url": "https://github.com/hypercybers99/ship-escrow-fixtures/pull/2",
+    "schema_version": "2",
+    "seq": "43",
+    "verdict": "RELEASE_100"
   },
-  "timestamp": "2026-10-24T04:47:38.241Z"
+  "packet_sha256": "0409be9b875b9fe6ac0aea7b769333417cdc21b7029edaac1a8c682faaacb1e5"
 }

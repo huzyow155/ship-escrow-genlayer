@@ -1,44 +1,59 @@
 {
-  "evaluated_at": "2026-10-24T05:02:37.883Z",
+  "evaluated_at": "2026-10-24T06:07:51.455Z",
   "contract_address": "0x8a9c079a7E1F756e07e8FbE392a5E93106DE28bF",
-  "total_runs": 30,
-  "elapsed_seconds": "1084.8",
+  "total_successful_runs": 30,
+  "initial_failed_attempts": 20,
+  "total_attempts": 50,
   "batches": {
     "F1": {
-      "runs": 10,
-      "modal_label_vector": [],
-      "identical_labels_count": 9,
-      "modal_verdict": null,
-      "verdict_matches_count": 9,
+      "successful_runs": 10,
+      "modal_label_vector": [
+        "YES",
+        "YES",
+        "YES"
+      ],
+      "identical_labels_count": 10,
+      "modal_verdict": "RELEASE_100",
+      "verdict_matches_count": 10,
       "label_counts_distribution": {
-        "[]": 9,
-        "[\"YES\",\"YES\",\"YES\"]": 1
+        "[\"YES\",\"YES\",\"YES\"]": 10
+      },
+      "verdict_counts_distribution": {
+        "RELEASE_100": 10
       }
     },
     "F4": {
-      "runs": 10,
-      "modal_label_vector": [],
-      "identical_labels_count": 7,
-      "modal_verdict": null,
-      "verdict_matches_count": 7,
+      "successful_runs": 10,
+      "modal_label_vector": [
+        "YES",
+        "YES",
+        "NO"
+      ],
+      "identical_labels_count": 10,
+      "modal_verdict": "RELEASE_75",
+      "verdict_matches_count": 10,
       "label_counts_distribution": {
-        "[]": 7,
-        "[\"YES\",\"YES\",\"NO\"]": 3
+        "[\"YES\",\"YES\",\"NO\"]": 10
+      },
+      "verdict_counts_distribution": {
+        "RELEASE_75": 10
       }
     },
     "F5": {
-      "runs": 10,
+      "successful_runs": 10,
       "modal_label_vector": [
         "NO"
       ],
-      "identical_labels_count": 6,
+      "identical_labels_count": 10,
       "modal_verdict": "REFUND",
-      "verdict_matches_count": 6,
+      "verdict_matches_count": 10,
       "label_counts_distribution": {
-        "[\"NO\"]": 6,
-        "[]": 4
+        "[\"NO\"]": 10
+      },
+      "verdict_counts_distribution": {
+        "REFUND": 10
       }
     }
   },
-  "binding_decision": "DO_NOT_BIND_LABELS_KEEP_LEADER_ATTESTED"
+  "binding_decision": "PASS_BIND_LABELS_IN_CONSENSUS"
 }

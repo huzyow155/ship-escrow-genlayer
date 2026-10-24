@@ -41,9 +41,11 @@ function scanDir(dir) {
   const entries = fs.readdirSync(dir, { withFileTypes: true });
   for (const entry of entries) {
     const fullPath = path.join(dir, entry.name);
+    if (fullPath === reportPath) continue; // Don't index the file being verified
     if (entry.isDirectory()) {
+      if (entry.name === 'node_modules' || entry.name === '.git') continue;
       scanDir(fullPath);
-    } else if (entry.isFile() && (entry.name.endsWith('.json') || entry.name.endsWith('.py') || entry.name.endsWith('.md') || entry.name.endsWith('.txt'))) {
+    } else if (entry.isFile() && (entry.name.endsWith('.json') || entry.name.endsWith('.py') || entry.name.endsWith('.md') || entry.name.endsWith('.txt') || entry.name.endsWith('.js') || entry.name.endsWith('.mjs'))) {
       try {
         const content = fs.readFileSync(fullPath, 'utf8');
         addHashesFromText(content);
@@ -53,8 +55,8 @@ function scanDir(dir) {
 }
 
 console.log("Indexing known evidence hashes from repository...");
-scanDir(path.join(__dirname, '../docs/evidence_v2'));
-scanDir(path.join(__dirname, '../scripts/deploy'));
+scanDir(path.join(__dirname, '../docs'));
+scanDir(path.join(__dirname, '../scripts'));
 scanDir(path.join(__dirname, '../fixtures'));
 scanDir(path.join(__dirname, '../contracts'));
 
