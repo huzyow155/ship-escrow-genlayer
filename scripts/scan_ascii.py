@@ -9,18 +9,20 @@ def scan_ascii():
         return 0
 
     has_error = False
-    for fname in os.listdir(contracts_dir):
-        if not fname.endswith('.py'):
-            continue
-        fpath = os.path.join(contracts_dir, fname)
-        with open(fpath, 'rb') as fp:
-            data = fp.read()
-        try:
-            data.decode('ascii')
-            print(f"PASSED ASCII check: {fname}")
-        except UnicodeDecodeError as e:
-            print(f"FAILED ASCII check: {fname} contains non-ASCII characters at byte {e.start}: {e.reason}")
-            has_error = True
+    for dirpath, _, filenames in os.walk(contracts_dir):
+        for fname in filenames:
+            if not fname.endswith('.py'):
+                continue
+            fpath = os.path.join(dirpath, fname)
+            relpath = os.path.relpath(fpath, root)
+            with open(fpath, 'rb') as fp:
+                data = fp.read()
+            try:
+                data.decode('ascii')
+                print(f"PASSED ASCII check: {relpath}")
+            except UnicodeDecodeError as e:
+                print(f"FAILED ASCII check: {relpath} contains non-ASCII characters at byte {e.start}: {e.reason}")
+                has_error = True
 
     return 1 if has_error else 0
 

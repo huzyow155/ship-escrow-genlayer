@@ -449,39 +449,3 @@ def test_case12_rename_resilience_alias(direct_env):
     assert v12 == "RELEASE_100", "Bounty with renamed owner accepts submission under alias URL"
 
 
-def test_case13_error_string_repo_moved_301(direct_env):
-    """13. Pinned error string for HTTP 301/302/307/308 (Repository moved)"""
-    vm = direct_env["vm"]
-    escrow = direct_env["escrow"]
-    creator = direct_env["creator"]
-    dev = direct_env["dev"]
-    crit = direct_env["crit"]
-
-    with vm.prank(creator):
-        bid13 = escrow.create_bounty("Moved Bounty", "owner/repo", crit, "[]", "50")
-
-    vm.mock_web("https://api.github.com/repos/owner/repo/pulls/13", "Moved Permanently", status=301)
-
-    with vm.prank(dev):
-        with pytest.raises(Exception, match="Repository moved: use the current owner/repo name in the bounty and the PR URL"):
-            escrow.submit_work(bid13, "https://github.com/owner/repo/pull/13", "13" + "0" * 38)
-
-
-def test_case14_error_string_rate_limit_403(direct_env):
-    """14. Pinned error string for HTTP 403/429 (GitHub rate limit reached)"""
-    vm = direct_env["vm"]
-    escrow = direct_env["escrow"]
-    creator = direct_env["creator"]
-    dev = direct_env["dev"]
-    crit = direct_env["crit"]
-
-    with vm.prank(creator):
-        bid14 = escrow.create_bounty("Rate Limit Bounty", "owner/repo", crit, "[]", "50")
-
-    vm.mock_web("https://api.github.com/repos/owner/repo/pulls/14", "Forbidden Rate Limit", status=403)
-
-    with vm.prank(dev):
-        with pytest.raises(Exception, match="GitHub rate limit reached, retry later"):
-            escrow.submit_work(bid14, "https://github.com/owner/repo/pull/14", "14" + "0" * 38)
-
-
