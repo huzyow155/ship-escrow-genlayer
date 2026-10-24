@@ -11,6 +11,29 @@
 
 ---
 
+## Candidate Contracts (V2.2 - Gated Consensus Label-Binding & Diagnosable HTTP Errors)
+
+The following candidate contracts have been deployed on Studionet and are undergoing the pre-registered Gate Batch (Addendum 3):
+
+### ShipEscrowV2 (Candidate V2.2)
+- **Address**: [`0x5e403fCB8d05166A132cB9c8885bDc90b767EC6F`](https://explorer-studio.genlayer.com/address/0x5e403fCB8d05166A132cB9c8885bDc90b767EC6F)
+- **Deployment Tx**: [`0xc8c5459d3670a6824a58a1436ba3b6f4f84ce18fc8b1071236b8743a505616a9`](https://explorer-studio.genlayer.com/tx/0xc8c5459d3670a6824a58a1436ba3b6f4f84ce18fc8b1071236b8743a505616a9)
+- **Source File**: `contracts/ShipEscrowV2.py`
+- **Source SHA256**: `f2e5cd407e493763154307b77c65ad5c058d3985dec625d483991e1e85340f6c`
+- **Byte-for-Byte Exact Match**: `true`
+- **Deployment Status**: `ACCEPTED` / `MAJORITY_AGREE` / `SUCCESS`
+
+### ShipReputationV2 (Candidate V2.2)
+- **Address**: [`0xF4b6649e7213874140451e01Faa4d9632A8edDA2`](https://explorer-studio.genlayer.com/address/0xF4b6649e7213874140451e01Faa4d9632A8edDA2)
+- **Deployment Tx**: [`0x7f7f009063270cbebafe798864c4df1dacd3bbc67c81b8436575d63b5f2cc041`](https://explorer-studio.genlayer.com/tx/0x7f7f009063270cbebafe798864c4df1dacd3bbc67c81b8436575d63b5f2cc041)
+- **Source File**: `contracts/ShipReputationV2.py`
+- **Source SHA256**: `12e4c5e9cf8f480823ff778181b6a0d50ae7d37ec7c3a5b079cf6275779d1ed7`
+- **Byte-for-Byte Exact Match**: `true`
+- **Bound Escrow Address**: `0x5e403fCB8d05166A132cB9c8885bDc90b767EC6F`
+- **Deployment Status**: `ACCEPTED` / `MAJORITY_AGREE` / `SUCCESS`
+
+---
+
 ## Active Contracts (V2.1 - Auditable Assessment Packet Storage & Rename-Resilient)
 
 The following contracts are currently active and receive all live bounty escrow submissions:
