@@ -34,7 +34,7 @@
 - `gl.message.timestamp`: "no gl.message.timestamp attribute"
 - `time.time()`: returns the local host machine's system time (e.g., `1792505178.066999`).
 
-**Decision**: GenVM does NOT expose an on-chain, block-level deterministic transaction timestamp. System wall-clock time (`time.time()`) is inherently non-deterministic across independent validator hardware nodes and subject to node clock skew. Per the explicit prompt instructions: *"if there is no timestamp, document the stuck-bounty limitation in LIMITATIONS and report it to me as a decision, do not invent a clock."*
+**Decision**: GenVM does NOT expose an on-chain, block-level deterministic transaction timestamp. System wall-clock time (`time.time()`) is inherently non-deterministic across independent validator nodes and subject to node clock skew. Per the explicit prompt instructions: *"if there is no timestamp, document the stuck-bounty limitation in LIMITATIONS and report it to me as a decision, do not invent a clock."*
 
 Therefore, we do NOT invent a synthetic clock or rely on host `time.time()` for state-transition validation. Instead:
 - We record `created_at` purely as informational metadata if available, but do NOT enforce time-based execution transitions.
