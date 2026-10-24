@@ -2,6 +2,28 @@ class GlVM:
     class UserError(Exception):
         pass
 
+    class VMError(Exception):
+        pass
+
+    class Return:
+        def __init__(self, calldata):
+            self.calldata = calldata
+
+    @staticmethod
+    def unpack_result(res):
+        if isinstance(res, GlVM.Return):
+            return res.calldata
+        raise res
+
+    @staticmethod
+    def run_nondet(leader_fn, validator_fn, **kwargs):
+        res = leader_fn()
+        wrapped = GlVM.Return(res)
+        valid = validator_fn(wrapped)
+        if not valid:
+            raise GlVM.UserError("Validator rejected leader output")
+        return res
+
 
 class GlPublic:
     @staticmethod

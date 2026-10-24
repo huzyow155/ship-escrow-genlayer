@@ -88,6 +88,8 @@ class TestLayer3MockedContractPipelines(unittest.TestCase):
         # Packet recomputation audit
         stored_packet = sub["packet"]
         stored_hash = sub["packet_sha256"]
+        self.assertTrue(len(sub["criterion_results"]) > 0, "Criterion results must be populated")
+        self.assertTrue(len(stored_packet["criterion_results"]) > 0, "Packet criterion results must be populated")
         recomputed_hash = recompute_packet_sha256(stored_packet)
         self.assertEqual(recomputed_hash, stored_hash, "Recomputed packet sha256 must match stored hash!")
 
