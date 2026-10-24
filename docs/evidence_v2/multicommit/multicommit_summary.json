@@ -58,5 +58,71 @@
       "final_status": "OPEN"
     },
     "passed": true
+  },
+  "pr8_step_b": {
+    "step": "b",
+    "description": "Submit current real head sha (advancing PR) to open bounty 19",
+    "bounty_id": "19",
+    "pr_url": "https://github.com/hypercybers99/ship-escrow-fixtures/pull/8",
+    "head_sha": "2332a887996496eed2f20ed63e2c3b51fefde204",
+    "tx_hash": "0x545ecb5e088ddb43421f6707b3775e4a6a3c114552f72bd7f04bc8b30cec9cee",
+    "status_name": "ACCEPTED",
+    "execution_result": "SUCCESS",
+    "bounty_before": {
+      "amount": "10",
+      "attempts": "0",
+      "creator": "0x79ed3fc4e32d8df7b23a221a27a057170e6d2069",
+      "criteria": [
+        {
+          "level": "MUST",
+          "text": "Implement slugify in src/slug.py"
+        }
+      ],
+      "criteria_hash": "53f660f34bdf0667ca9e70adec4b427d79891631cd2e8beb22fcb310bf0b9785",
+      "id": "19",
+      "owner_repo": "huzyow155/ship-escrow-fixtures",
+      "required_paths": [],
+      "schema_version": "2",
+      "seq": "19",
+      "status": "OPEN",
+      "title": "Advancing Head PR#8 Test"
+    },
+    "bounty_after": {
+      "amount": "10",
+      "attempts": "1",
+      "creator": "0x79ed3fc4e32d8df7b23a221a27a057170e6d2069",
+      "criteria": [
+        {
+          "level": "MUST",
+          "text": "Implement slugify in src/slug.py"
+        }
+      ],
+      "criteria_hash": "53f660f34bdf0667ca9e70adec4b427d79891631cd2e8beb22fcb310bf0b9785",
+      "id": "19",
+      "owner_repo": "huzyow155/ship-escrow-fixtures",
+      "required_paths": [],
+      "schema_version": "2",
+      "seq": "19",
+      "status": "SETTLED",
+      "title": "Advancing Head PR#8 Test"
+    },
+    "settlement": {
+      "bounty_id": "19",
+      "creator": "0x79ed3fc4e32d8df7b23a221a27a057170e6d2069",
+      "creator_amount": "0",
+      "criteria_hash": "53f660f34bdf0667ca9e70adec4b427d79891631cd2e8beb22fcb310bf0b9785",
+      "dev": "0x6325b360db455435bf5e81d0ae18dc3b249f226c",
+      "dev_amount": "10",
+      "head_sha": "2332a887996496eed2f20ed63e2c3b51fefde204",
+      "packet_sha256": "0d4f277ff0e0bdbb568f2877d13771e030bb7ec77958565e687e9f1f55ec5682",
+      "payout_pct": "100",
+      "pr_url": "https://github.com/hypercybers99/ship-escrow-fixtures/pull/8",
+      "schema_version": "2",
+      "submission_id": "27",
+      "verdict": "RELEASE_100"
+    },
+    "submission_id": "27",
+    "verdict": "RELEASE_100",
+    "payout_pct": "100"
   }
 }
